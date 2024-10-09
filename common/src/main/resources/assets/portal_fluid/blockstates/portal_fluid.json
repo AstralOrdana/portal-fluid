@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "portal_fluid:block/portal_fluid"
+    }
+  }
+}

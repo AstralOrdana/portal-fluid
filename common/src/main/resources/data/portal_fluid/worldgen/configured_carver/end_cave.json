@@ -1,0 +1,47 @@
+{
+  "type": "minecraft:cave",
+  "config": {
+    "probability": 0.15,
+    "y": {
+      "type": "minecraft:uniform",
+      "min_inclusive": {
+        "above_bottom": 8
+      },
+      "max_inclusive": {
+        "absolute": 180
+      }
+    },
+    "yScale": {
+      "type": "minecraft:uniform",
+      "value": {
+        "min_inclusive": 0.1,
+        "max_exclusive": 0.9
+      }
+    },
+    "lava_level": {
+      "above_bottom": 8
+    },
+    "replaceable": "#portal_fluid:base_stone_end",
+    "horizontal_radius_multiplier": {
+      "type": "minecraft:uniform",
+      "value": {
+        "min_inclusive": 0.9,
+        "max_exclusive": 1.6
+      }
+    },
+    "vertical_radius_multiplier": {
+      "type": "minecraft:uniform",
+      "value": {
+        "min_inclusive": 1,
+        "max_exclusive": 1.5
+      }
+    },
+    "floor_level": {
+      "type": "minecraft:uniform",
+      "value": {
+        "min_inclusive": -1,
+        "max_exclusive": -0.4
+      }
+    }
+  }
+}

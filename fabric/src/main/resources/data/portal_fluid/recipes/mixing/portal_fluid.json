@@ -1,0 +1,27 @@
+{
+  "conditions": [
+    {
+      "modid": "create",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "minecraft:crying_obsidian"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "results": [
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "fluid": "portal_fluid:portal_fluid",
+      "amount": 27000
+    }
+  ],
+  "heatRequirement": "heated"
+}

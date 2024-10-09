@@ -15,8 +15,8 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig  "template_mod-common.mixins.json"
-        mixinConfig  "template_mod.mixins.json"
+        mixinConfig  "portal_fluid-common.mixins.json"
+        mixinConfig  "portal_fluid.mixins.json"
     }
 }
 
@@ -115,6 +115,6 @@ dependencies {
 
     implementation 'org.jetbrains:annotations:22.0.0'
 
-    modImplementation("curse.maven:selene-499980:5478857")
+    modImplementation("curse.maven:selene-499980:5726772")
 
 }

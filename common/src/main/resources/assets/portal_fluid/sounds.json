@@ -1,0 +1,60 @@
+{
+  "portal_fluid_bucket_empty": {
+    "subtitle": "subtitles.item.bucket.empty",
+    "sounds": [
+      "portal_fluid:item/bucket/empty_dimensional_tears_0",
+      "portal_fluid:item/bucket/empty_dimensional_tears_1",
+      "portal_fluid:item/bucket/empty_dimensional_tears_2"
+    ]
+  },
+  "portal_fluid_bucket_fill": {
+    "subtitle": "subtitles.item.bucket.fill",
+    "sounds": [
+      "portal_fluid:item/bucket/fill_dimensional_tears_0",
+      "portal_fluid:item/bucket/fill_dimensional_tears_1",
+      "portal_fluid:item/bucket/fill_dimensional_tears_2"
+    ]
+  },
+  "portal_fluid_bottle_empty": {
+    "subtitle": "subtitles.item.bottle.empty",
+    "sounds": [
+      "portal_fluid:item/bottle/empty_dimensional_tears_0",
+      "portal_fluid:item/bottle/empty_dimensional_tears_1"
+    ]
+  },
+  "portal_fluid_bottle_fill": {
+    "subtitle": "subtitles.item.bottle.fill",
+    "sounds": [
+      "portal_fluid:item/bottle/fill_dimensional_tears_0",
+      "portal_fluid:item/bottle/fill_dimensional_tears_1"
+    ]
+  },
+  "portal_fluid_submerge": {
+    "subtitle": "subtitles.block.portal_fluid.submerge",
+    "sounds": [
+      "portal_fluid:block/portal_fluid/submerge"
+    ]
+  },
+  "portal_fluid_teleport": {
+    "subtitle": "subtitles.block.portal_fluid.teleport",
+    "sounds": [
+      "portal_fluid:block/portal_fluid/teleport"
+    ]
+  },
+  "portal_fluid_ambient": {
+    "subtitle": "subtitles.block.portal_fluid.ambient",
+    "sounds": [
+      "portal_fluid:block/portal_fluid/ambient_0",
+      "portal_fluid:block/portal_fluid/ambient_1"
+    ]
+  },
+  "boat_paddle_portal_fluid": {
+    "subtitle": "subtitles.entity.boat.paddle_water",
+    "sounds": [
+      "portal_fluid:block/portal_fluid/paddle_portal_fluid_0",
+      "portal_fluid:block/portal_fluid/paddle_portal_fluid_1",
+      "portal_fluid:block/portal_fluid/paddle_portal_fluid_2",
+      "portal_fluid:block/portal_fluid/paddle_portal_fluid_3"
+    ]
+  }
+}

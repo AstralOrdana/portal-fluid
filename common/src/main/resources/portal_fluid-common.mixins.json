@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.ordana.portal_fluid.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+  ],
+  "mixins": [
+    "GlassBottleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

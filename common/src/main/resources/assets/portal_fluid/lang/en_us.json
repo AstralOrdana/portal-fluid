@@ -1,0 +1,28 @@
+{
+  "tooltip.portal_fluid.hold_crouch": "Hold %1$s for more details",
+  "tooltip.portal_fluid.flint_and_steel": "Not strong enough to Tear open a portal",
+  "tooltip.portal_fluid.rhymes_with_tears_0": "Rhymes with \"FEARS\"",
+  "tooltip.portal_fluid.rhymes_with_tears_1": "Rhymes with \"SCARES\"",
+  "tooltip.portal_fluid.portal_fluid_pos": "  Linked to: %1$s, %2$s, %3$s",
+  "tooltip.portal_fluid.portal_fluid_1": "  Drink to return to your spawnpoint or worldspawn",
+  "tooltip.portal_fluid.portal_fluid_2": "  Can be used to ignite Nether Portals",
+  "tooltip.portal_fluid.portal_fluid_3a": "  Use empty bottle on Crying Obsidian to obtain",
+  "tooltip.portal_fluid.portal_fluid_3b": "  Use empty bottle on a filled Respawn Anchor to obtain",
+  "tooltip.portal_fluid.portal_fluid_3c": "  Use empty bottle on Crying Obsidian or Respawn Anchor to obtain",
+  "tooltip.portal_fluid.portal_fluid_bucket_1": "  Contact with this fluid teleports players to their spawnpoint",
+  "tooltip.portal_fluid.portal_fluid_bucket_2": "  Any other entity will be teleported to worldspawn",
+  "tooltip.portal_fluid.portal_fluid_bucket_3": "  Obtain by filling a cauldron with Dimensional Tear Bottles",
+  "tooltip.portal_fluid.crying_obsidian": "Use empty bottle on to obtain Dimensional Tears",
+
+  "tag.portal_fluid.portal_fluid": "Dimensional Tears",
+
+  "subtitles.block.portal_fluid.ambient": "Dimensional Tears ripple",
+  "subtitles.block.portal_fluid.enter": "Dimensional Tears warp",
+  "subtitles.block.portal_fluid.teleport": "Dimensional Tears pulsate",
+
+  "item.portal_fluid.portal_fluid_bottle": "Bottle o' Dimensional Tears",
+  "item.portal_fluid.portal_fluid_bucket": "Bucket of Dimensional Tears",
+  "block.portal_fluid.portal_fluid": "Dimensional Tears",
+  "fluid.portal_fluid.portal_fluid": "Dimensional Tears",
+  "fluid_type.portal_fluid.portal_fluid": "Dimensional Tears"
+}

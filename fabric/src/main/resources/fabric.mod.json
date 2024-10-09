@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
-  "id": "template_mod",
+  "id": "portal_fluid",
   "version": "${version}",
-  "name": "Template Mod",
-  "description": "Template Mod Description",
+  "name": "Dimensional Tears",
+  "description": "Rymes with \"fears\" or \"scares\"",
   "authors": [
     "Ordana"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/template_mod",
-    "sources": "https://github.com/AstralOrdana/template_mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/portal_fluid",
+    "sources": "https://github.com/AstralOrdana/portal_fluid"
   },
   "license": "LGPLv3",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ordana.template_mod.fabric.TemplateModFabric"
+      "com.ordana.portal_fluid.fabric.PortalFluidRootFabric"
     ]
   },
   "mixins": [
-    "template_mod.mixins.json",
-    "template_mod-common.mixins.json"
+    "portal_fluid.mixins.json",
+    "portal_fluid-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
-    "moonlight": ">=1.20-2.7.0",
-    "minecraft": ">=1.20.1"
+    "minecraft": "1.20.1",
+    "moonlight": ">=1.20-2.12.21"
   }
 }
