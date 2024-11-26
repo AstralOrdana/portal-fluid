@@ -4,6 +4,7 @@ import com.ordana.portal_fluid.PortalFluidPlatform;
 import com.ordana.portal_fluid.PortalFluidRoot;
 import com.ordana.portal_fluid.worldgen_features.BlockStripeFeature;
 import com.ordana.portal_fluid.worldgen_features.BlockStripeFeatureConfig;
+import com.ordana.portal_fluid.worldgen_features.PortalFluidOceanConfig;
 import com.ordana.portal_fluid.worldgen_features.PortalFluidOceanFeature;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.registries.Registries;
@@ -12,7 +13,6 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.function.Supplier;
@@ -24,9 +24,9 @@ public class ModWorldgenFeatures {
             PortalFluidRoot.res("block_stripe"), () ->
                     new BlockStripeFeature(BlockStripeFeatureConfig.CODEC));
 
-    public static final Supplier<Feature<NoneFeatureConfiguration>> PORTAL_FLUID_OCEAN_FEATURE = RegHelper.registerFeature(
+    public static final Supplier<Feature<PortalFluidOceanConfig>> PORTAL_FLUID_OCEAN_FEATURE = RegHelper.registerFeature(
             PortalFluidRoot.res("portal_fluid_ocean"), () ->
-                    new PortalFluidOceanFeature(NoneFeatureConfiguration.CODEC));
+                    new PortalFluidOceanFeature(PortalFluidOceanConfig.CODEC));
 
     public static void init() {
 

@@ -9,16 +9,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class PortalFluidOceanFeature extends Feature<NoneFeatureConfiguration> {
-    public PortalFluidOceanFeature(Codec<NoneFeatureConfiguration> codec) {
+public class PortalFluidOceanFeature extends Feature<PortalFluidOceanConfig> {
+    public PortalFluidOceanFeature(Codec<PortalFluidOceanConfig> codec) {
         super(codec);
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+    public boolean place(FeaturePlaceContext<PortalFluidOceanConfig> context) {
         if (!CommonConfigs.PORTAL_FLUID_OCEAN.get()) return false;
+        PortalFluidOceanConfig config = context.config();
 
         BlockPos originPos = context.origin();
         WorldGenLevel worldGenLevel = context.level();
@@ -26,11 +26,11 @@ public class PortalFluidOceanFeature extends Feature<NoneFeatureConfiguration> {
 
         var getX = (originPos.getX() & ~15);
         var getZ = (originPos.getZ() & ~15);
-        var getY = (originPos.getY() & ~3);
+        var getY = (config.floorElevation);
 
         for (int x = getX; x < getX + 16; x++) {
             for (int z = getZ; z < getZ + 16; z++) {
-                for (int y = getY; y < 4; y++) {
+                for (int y = getY; y <= config.surfaceElevation; y++) {
                     BlockPos currentPos = new BlockPos(x, y, z);
                     if (cachedChunk.getBlockState(currentPos).isAir()) {
                         worldGenLevel.setBlock(currentPos, ModBlocks.PORTAL_FLUID.get().defaultBlockState(), Block.UPDATE_CLIENTS);
