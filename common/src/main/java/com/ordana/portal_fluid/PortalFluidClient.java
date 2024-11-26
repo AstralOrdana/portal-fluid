@@ -25,7 +25,7 @@ public class PortalFluidClient {
     }
 
     public static void checkIfFailed() {
-        if(!finishedSetup){
+        if(!finishedSetup) {
             throw new RuntimeException("Failed to run client setup. This is likely due to the mod integration code being outdated, crashing with other mods new versions. Terminating");
         }
     }

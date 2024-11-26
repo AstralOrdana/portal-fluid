@@ -6,7 +6,11 @@
   "client": [
   ],
   "mixins": [
-    "GlassBottleMixin"
+    "BoatPaddleSoundMixin",
+    "GlassBottleMixin",
+    "NetherPortalBlockMixin",
+    "NetherPortalSoundMixin",
+    "TooltipMixin"
   ],
   "injectors": {
     "defaultRequire": 1
