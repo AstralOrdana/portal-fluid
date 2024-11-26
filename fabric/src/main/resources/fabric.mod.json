@@ -12,7 +12,7 @@
     "sources": "https://github.com/AstralOrdana/portal-fluid"
   },
   "license": "LGPLv3",
-  "icon": "icon.png",
+  "icon": "icon.gif",
   "environment": "*",
   "entrypoints": {
     "main": [

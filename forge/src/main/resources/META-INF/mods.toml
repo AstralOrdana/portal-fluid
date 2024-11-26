@@ -13,7 +13,7 @@ version = "${version}"
 
 displayName="Dimensional Tears"
 
-logoFile="icon.png"
+logoFile="icon.gif"
 
 authors="Ordana"
 
