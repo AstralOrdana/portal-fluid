@@ -8,8 +8,8 @@
     "Ordana"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/portal_fluid",
-    "sources": "https://github.com/AstralOrdana/portal_fluid"
+    "homepage": "https://modrinth.com/mod/dimensional-tears",
+    "sources": "https://github.com/AstralOrdana/portal-fluid"
   },
   "license": "LGPLv3",
   "icon": "icon.png",
@@ -26,6 +26,6 @@
   "depends": {
     "fabric": "*",
     "minecraft": "1.20.1",
-    "moonlight": ">=1.20-2.12.21"
+    "moonlight": ">=1.20-2.3.30"
   }
 }
