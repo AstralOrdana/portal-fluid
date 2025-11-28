@@ -5,6 +5,7 @@ import com.ordana.portal_fluid.configs.CommonConfigs;
 import com.ordana.portal_fluid.items.PortalFluidBottleItem;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -130,7 +131,7 @@ public class ModEvents {
                 if (player instanceof ServerPlayer serverPlayer) {
 
                     ItemStack itemStack2 = new ItemStack(ModItems.PORTAL_FLUID_BOTTLE.get());
-                    PortalFluidBottleItem.addLocationTags(level.dimension(), pos, itemStack2.getOrCreateTag());
+                    itemStack2.set(ModComponents.ANCHOR_POS.get(), new GlobalPos(level.dimension(), pos));
 
                     if (!player.getInventory().add(itemStack2)) {
                         player.drop(itemStack2, false);

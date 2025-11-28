@@ -4,7 +4,9 @@ import com.ordana.portal_fluid.PortalFluidRoot;
 import com.ordana.portal_fluid.configs.ClientConfigs;
 import com.ordana.portal_fluid.reg.ModFluids;
 import net.mehvahdjukaar.moonlight.api.client.ModFluidRenderProperties;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -17,7 +19,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.Random;
 
@@ -414,6 +418,11 @@ public class PortalFluidFluidRenderer extends ModFluidRenderProperties {
         return this.renderOverlay;
     }
 
+    @Override
+    public @Nullable ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+        return this.getRenderOverlayTexture();
+    }
+
     public ResourceLocation getRenderOverlayTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
         return this.getRenderOverlayTexture();
     }
@@ -422,8 +431,9 @@ public class PortalFluidFluidRenderer extends ModFluidRenderProperties {
         return this.fogColor;
     }
 
-    public Vec3 modifyFogColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-        return this.modifyFogColor();
+    @Override
+    public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+        return this.modifyFogColor().toVector3f();
     }
 
 }

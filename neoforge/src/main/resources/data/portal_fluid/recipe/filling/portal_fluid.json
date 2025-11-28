@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "modid": "create",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "minecraft:glass_bottle"
+    },
+    {
+      "fluid": "portal_fluid:portal_fluid",
+      "amount": 144
+    }
+  ],
+  "results": [
+    {
+      "id": "portal_fluid:portal_fluid_bottle"
+    }
+  ]
+}

@@ -24,7 +24,7 @@ public class TooltipMixin {
 
     @Environment(EnvType.CLIENT)
     @Inject(method = "appendHoverText", at = @At("HEAD"))
-    private void vanillaItemTooltips(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag isAdvanced, CallbackInfo ci) {
+    private void vanillaItemTooltips(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag, CallbackInfo ci) {
 
         if (stack.is(Items.FLINT_AND_STEEL) && !CommonConfigs.FlINT_AND_STEEL_PORTAL_LIGHTING.get()) {
             tooltip.add(Component.translatable("tooltip.portal_fluid.flint_and_steel").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));

@@ -29,15 +29,15 @@ public class ModLootOverrides extends DynServerResourcesGenerator {
         return PortalFluidRoot.LOGGER;
     }
 
-    @Override
-    public boolean dependsOnLoadedPacks() {
-        return true;
-    }
+//    @Override
+//    public boolean dependsOnLoadedPacks() {
+//        return true;
+//    }
 
     public void overrideDataFile(ResourceManager manager, List list, String targetNamespace, String targetPath, String sourcePath, ResType resType) {
         for (var recipe : list) {
-            ResourceLocation target = new ResourceLocation(targetNamespace, targetPath + recipe);
-            ResourceLocation source = new ResourceLocation("portal_fluid", sourcePath + recipe + ".json");
+            ResourceLocation target = ResourceLocation.fromNamespaceAndPath(targetNamespace, targetPath + recipe);
+            ResourceLocation source = ResourceLocation.fromNamespaceAndPath("portal_fluid", sourcePath + recipe + ".json");
 
             try (var bsStream = manager.getResource(source).orElseThrow().open()) {
                 JsonElement bsElement = RPUtils.deserializeJson(bsStream);

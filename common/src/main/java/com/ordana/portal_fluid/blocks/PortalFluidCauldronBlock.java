@@ -1,8 +1,10 @@
 package com.ordana.portal_fluid.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.ordana.portal_fluid.reg.LevelHelper;
 import com.ordana.portal_fluid.reg.ModParticles;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,9 +34,14 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
     private static final int BASE_CONTENT_HEIGHT = 6;
     private static final double HEIGHT_PER_LEVEL = 3.0D;
 
-    public PortalFluidCauldronBlock(Properties properties, Map<Item, CauldronInteraction> map) {
+    public PortalFluidCauldronBlock(Properties properties, CauldronInteraction.InteractionMap map) {
         super(properties, map);
         this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, 1));
+    }
+
+    @Override
+    protected MapCodec<? extends AbstractCauldronBlock> codec() {
+        return null;
     }
 
     protected double getContentHeight(BlockState state) {
@@ -67,7 +74,7 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
 
         if (this.isEntityInsideContent(state, pos, entity)) {
-            if (!entity.isPassenger() && !entity.isVehicle() && entity.canChangeDimensions()) {
+            if (!entity.isPassenger() && !entity.isVehicle() && entity.canChangeDimensions(level, entity.getServer().overworld())) {
                 if (entity instanceof ServerPlayer player) {
                     LevelHelper.teleportToSpawnPosition(player);
                     this.handleEntityTeleport(state, level, pos);

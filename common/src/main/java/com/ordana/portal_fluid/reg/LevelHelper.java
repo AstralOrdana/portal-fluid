@@ -48,9 +48,9 @@ public class LevelHelper {
 
         if (respawnPosition != null) {
             float angle = player.getRespawnAngle();
-            Optional< Vec3 > spawnPosition = Player.findRespawnPositionAndUseSpawnBlock(serverLevel, respawnPosition, angle, true, true);
+            Optional<ServerPlayer.RespawnPosAngle> spawnPosition = ServerPlayer.findRespawnAndUseSpawnBlock(serverLevel, respawnPosition, angle, true, true);
             if (spawnPosition.isPresent())
-                exactSpawnPosition = spawnPosition.get();
+                exactSpawnPosition = spawnPosition.get().position();
         }
         if (exactSpawnPosition == null) {
             serverLevel = player.server.getLevel(Level.OVERWORLD);
@@ -70,7 +70,7 @@ public class LevelHelper {
     }
 
     public static void teleportToAnchorPosition(ServerPlayer player, GlobalPos pos) {
-
+        if (pos == null) return;
         player.teleportTo(Objects.requireNonNull(player.server.getLevel(pos.dimension())), pos.pos().getX() + 0.5, pos.pos().getY() + 1, pos.pos().getZ() + 0.5, player.getYRot(), player.getXRot());
         player.playSound(ModSoundEvents.PORTAL_FLUID_TELEPORT.get(), 1.0f, 1.0f);
     }

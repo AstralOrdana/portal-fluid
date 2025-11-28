@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.ordana.portal_fluid.configs.CommonConfigs;
 import com.ordana.portal_fluid.reg.LevelHelper;
+import com.ordana.portal_fluid.reg.ModComponents;
 import com.ordana.portal_fluid.reg.TranslationUtils;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.fabricmc.api.EnvType;
@@ -15,6 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
@@ -82,14 +85,12 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
-
-        CompoundTag compoundTag = stack.getOrCreateTag();
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
 
         if (getBoolean(stack)) tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_0").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         else tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_1", getBoolean(stack)).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
-        if (compoundTag.contains("anchorPos") && CommonConfigs.PORTAL_FLUID_DRINKING.get()) {
-            BlockPos blockPos = NbtUtils.readBlockPos(compoundTag.getCompound("anchorPos"));
+        if (stack.has(ModComponents.ANCHOR_POS.get()) && CommonConfigs.PORTAL_FLUID_DRINKING.get()) {
+            BlockPos blockPos = stack.get(ModComponents.ANCHOR_POS.get()).pos();
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_pos", blockPos.getX(), blockPos.getY(), blockPos.getZ()).setStyle(Style.EMPTY.applyFormat(ChatFormatting.LIGHT_PURPLE)));
         }
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Minecraft.getInstance().options.keyShift.key.getValue())) {
@@ -104,11 +105,11 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
     }
 
     public void setBoolean(@NotNull ItemStack stack, boolean tears) {
-        stack.getOrCreateTag().putBoolean("bool", tears);
+        stack.set(ModComponents.BOOL.get(), tears);
     }
 
     public boolean getBoolean(@NotNull ItemStack stack) {
-        return stack.getOrCreateTag().getBoolean("bool");
+        return stack.getOrDefault(ModComponents.BOOL.get(), false);
     }
 
     private static boolean inPortalDimension(@NotNull Level level) {
@@ -144,7 +145,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
         return true;
     }
 
-    public static final FoodProperties PORTAL_FLUID = (new FoodProperties.Builder()).nutrition(0).saturationMod(0F).alwaysEat().build();
+    public static final FoodProperties PORTAL_FLUID = (new FoodProperties.Builder()).nutrition(0).saturationModifier(0F).alwaysEdible().build();
 
     @Override
     @NotNull
@@ -171,43 +172,15 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
 
-            CompoundTag compoundTag = stack.getOrCreateTag();
-            boolean bl = compoundTag.contains("anchorPos");
-            boolean bl2 = compoundTag.contains("anchorDimension");
-            PortalFluidBottleItem.getDimension(compoundTag);
+            DataComponentMap compoundTag = stack.getComponents();
+            boolean bl = compoundTag.has(ModComponents.ANCHOR_POS.get());
 
-            if (bl && bl2) {
-                LevelHelper.teleportToAnchorPosition(serverPlayer, getAnchorPos(compoundTag));
+            if (bl) {
+                LevelHelper.teleportToAnchorPosition(serverPlayer, compoundTag.get(ModComponents.ANCHOR_POS.get()));
             }
             else LevelHelper.teleportToSpawnPosition(serverPlayer);
         }
         return stack;
-    }
-
-    public static void addLocationTags(ResourceKey<Level> anchorDimension, BlockPos pos, CompoundTag compoundTag) {
-        if (!compoundTag.contains("anchorPos")) compoundTag.put("anchorPos", NbtUtils.writeBlockPos(pos));
-        DataResult<Tag> var10000 = Level.RESOURCE_KEY_CODEC.encodeStart(NbtOps.INSTANCE, anchorDimension);
-        Logger var10001 = LOGGER;
-        Objects.requireNonNull(var10001);
-        var10000.resultOrPartial(var10001::error).ifPresent(tag -> compoundTag.put("anchorDimension", tag));
-    }
-
-    private static Optional<ResourceKey<Level>> getDimension(CompoundTag compoundTag) {
-        return Level.RESOURCE_KEY_CODEC.parse(NbtOps.INSTANCE, compoundTag.get("anchorDimension")).result();
-    }
-
-    public static GlobalPos getAnchorPos(CompoundTag compoundTag) {
-        boolean bl = compoundTag.contains("anchorPos");
-        boolean bl2 = compoundTag.contains("anchorDimension");
-        if (bl && bl2) {
-            Optional<ResourceKey<Level>> optional = getDimension(compoundTag);
-            if (optional.isPresent()) {
-                BlockPos blockPos = NbtUtils.readBlockPos(compoundTag.getCompound("anchorPos"));
-                return GlobalPos.of(optional.get(), blockPos);
-            }
-        }
-
-        return null;
     }
 
 }

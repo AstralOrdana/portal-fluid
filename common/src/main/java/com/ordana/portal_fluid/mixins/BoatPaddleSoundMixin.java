@@ -4,6 +4,7 @@ import com.ordana.portal_fluid.reg.ModFluids;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -58,7 +59,7 @@ public class BoatPaddleSoundMixin extends Entity {
 
 
     @Shadow
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 
     @Shadow

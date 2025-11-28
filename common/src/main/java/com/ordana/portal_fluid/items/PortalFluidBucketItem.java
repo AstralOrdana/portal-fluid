@@ -3,6 +3,7 @@ package com.ordana.portal_fluid.items;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.ordana.portal_fluid.blocks.PortalFluidCauldronBlock;
 import com.ordana.portal_fluid.reg.ModBlocks;
+import com.ordana.portal_fluid.reg.ModComponents;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.reg.TranslationUtils;
 import dev.architectury.injectables.annotations.PlatformOnly;
@@ -74,16 +75,16 @@ public class PortalFluidBucketItem extends BucketItem {
     }
 
     public void setBoolean(@NotNull ItemStack stack, boolean tears) {
-        stack.getOrCreateTag().putBoolean("bool", tears);
+        stack.set(ModComponents.BOOL.get(), tears);
     }
 
     public boolean getBoolean(@NotNull ItemStack stack) {
-        return stack.getOrCreateTag().getBoolean("bool");
+        return stack.getOrDefault(ModComponents.BOOL.get(), false);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
         if (getBoolean(stack)) tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_0").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         else tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_1", getBoolean(stack)).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Minecraft.getInstance().options.keyShift.key.getValue())) {

@@ -69,7 +69,7 @@ public class PortalFluidFluid extends ModFlowingFluid {
         return ParticleTypes.DRIPPING_OBSIDIAN_TEAR;
     }
 
-
+    @Override
     public void animateTick(Level level, BlockPos pos, FluidState state, RandomSource random) {
         BlockPos blockPos = pos.above();
         if (level.getBlockState(blockPos).isAir() && !level.getBlockState(blockPos).isSolidRender(level, blockPos)) {

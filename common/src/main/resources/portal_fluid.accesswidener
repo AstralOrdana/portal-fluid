@@ -1,1 +1,3 @@
 accessWidener   v2  named
+accessible method net/minecraft/server/level/ServerPlayer findRespawnAndUseSpawnBlock (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;FZZ)Ljava/util/Optional;
+accessible class net/minecraft/server/level/ServerPlayer$RespawnPosAngle

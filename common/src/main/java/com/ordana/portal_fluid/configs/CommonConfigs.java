@@ -2,14 +2,14 @@ package com.ordana.portal_fluid.configs;
 
 import com.ordana.portal_fluid.PortalFluidRoot;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigBuilder;
-import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigSpec;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigType;
+import net.mehvahdjukaar.moonlight.api.platform.configs.ModConfigHolder;
 
 import java.util.function.Supplier;
 
 public class CommonConfigs {
 
-    public static ConfigSpec SERVER_SPEC;
+    public static ModConfigHolder SERVER_SPEC;
 
     public static Supplier<Boolean> PORTAL_FLUID_DRINKING;
     public static Supplier<Boolean> INSTANT_TELEPORTATION;
@@ -30,7 +30,7 @@ public class CommonConfigs {
     static {
         ConfigBuilder builder = ConfigBuilder.create(PortalFluidRoot.res("common"), ConfigType.COMMON);
 
-        builder.setSynced();
+//        builder.setSynced();
 
         builder.push("config");
         FlINT_AND_STEEL_PORTAL_LIGHTING = builder.define("flint_and_steel_portal_lighting", true);
@@ -49,7 +49,7 @@ public class CommonConfigs {
         END_OCEAN_BUCKETABLE = builder.define("end_ocean_bucketable", false);
         builder.pop();
 
-        SERVER_SPEC = builder.buildAndRegister();
-        SERVER_SPEC.loadFromFile();
+        SERVER_SPEC = builder.build();
+        SERVER_SPEC.forceLoad();
     }
 }

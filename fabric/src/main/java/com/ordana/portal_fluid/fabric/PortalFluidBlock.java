@@ -4,6 +4,7 @@ import com.ordana.portal_fluid.configs.CommonConfigs;
 import com.ordana.portal_fluid.reg.LevelHelper;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.reg.ModTags;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -39,24 +41,26 @@ public class PortalFluidBlock extends LiquidBlock {
     }
 
     @Override
-    public ItemStack pickupBlock(LevelAccessor level, BlockPos pos, BlockState state) {
+    public ItemStack pickupBlock(Player player, LevelAccessor level, BlockPos pos, BlockState state) {
         Optional<? extends Registry<DimensionType>> registry = level.registryAccess().registry(Registries.DIMENSION_TYPE);
 
         if (registry.isPresent() && level.dimensionType() == registry.get().get(BuiltinDimensionTypes.END) && level.getMinBuildHeight() + 3 >= pos.getY() && !CommonConfigs.END_OCEAN_BUCKETABLE.get()) {
             return ItemStack.EMPTY;
         }
 
-        return super.pickupBlock(level, pos, state);
+        return super.pickupBlock(player, level, pos, state);
     }
 
 
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
 
+        if (entity instanceof LocalPlayer) return;
+
         if (entity.getType().is(ModTags.PORTAL_FLUID_IMMUNE)
                 || !entity.isInWater()
                 || entity.isPassenger()
                 || entity.isVehicle()
-                || !entity.canChangeDimensions()
+                || !entity.canChangeDimensions(level, entity.getServer().overworld())
                 || entity.isCrouching()
                 || pos.equals(level.getSharedSpawnPos())) return;
         if (entity instanceof ServerPlayer player && player.isSecondaryUseActive()) return;

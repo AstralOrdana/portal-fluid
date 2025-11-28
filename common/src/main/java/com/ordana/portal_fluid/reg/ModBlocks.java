@@ -21,9 +21,9 @@ public class ModBlocks {
     }
 
     public static final Supplier<LiquidBlock> PORTAL_FLUID = regBlock("portal_fluid", () ->
-            PortalFluidPlatform.doPortalFluid(ModFluids.PORTAL_FLUID, BlockBehaviour.Properties.copy(Blocks.WATER).noCollission().strength(100f).noLootTable().lightLevel((blockStatex) -> 5)));
+            PortalFluidPlatform.doPortalFluid(ModFluids.PORTAL_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noCollission().strength(100f).noLootTable().lightLevel((blockStatex) -> 5)));
 
     public static final Supplier<Block> PORTAL_CAULDRON = regBlock("portal_cauldron", () ->
-            new PortalFluidCauldronBlock(BlockBehaviour.Properties.copy(Blocks.CAULDRON).lightLevel((blockStatex) -> 5), CauldronInteraction.WATER));
+            new PortalFluidCauldronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAULDRON).lightLevel((blockStatex) -> 5), CauldronInteraction.WATER));
 
 }

@@ -17,7 +17,7 @@ public class ModLootInjects {
         ResourceLocation name = event.getTable();
 
         for (var loot : lootChests) {
-            if (name.equals(new ResourceLocation("minecraft", "chests/" + loot))) {
+            if (name.equals(ResourceLocation.withDefaultNamespace("chests/" + loot))) {
                 event.addTableReference(PortalFluidRoot.res("injects/" + loot));
             }
         }

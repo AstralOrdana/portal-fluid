@@ -16,7 +16,7 @@ public class PortalFluidRoot {
     private static boolean initiated = false;
 
     public static ResourceLocation res(String name) {
-        return new ResourceLocation(MOD_ID, name);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
     }
 
     public static void commonInit() {
@@ -33,6 +33,7 @@ public class PortalFluidRoot {
         ModBlocks.init();
         ModFluids.init();
         ModItems.init();
+        ModComponents.init();
         ModParticles.init();
         ModSoundEvents.init();
         ModCreativeTabs.init();
