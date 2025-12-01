@@ -3,8 +3,6 @@ package com.ordana.portal_fluid.mixins;
 import com.ordana.portal_fluid.reg.ModFluids;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -14,13 +12,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Boat.class)
-public class BoatPaddleSoundMixin extends Entity {
+public abstract class BoatPaddleSoundMixin extends Entity {
 
 
     public BoatPaddleSoundMixin(EntityType<?> entityType, Level level) {
@@ -55,18 +52,5 @@ public class BoatPaddleSoundMixin extends Entity {
         }
 
         return flag;
-    }
-
-
-    @Shadow
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-    }
-
-    @Shadow
-    protected void readAdditionalSaveData(CompoundTag compound) {
-    }
-
-    @Shadow
-    protected void addAdditionalSaveData(CompoundTag compound) {
     }
 }
