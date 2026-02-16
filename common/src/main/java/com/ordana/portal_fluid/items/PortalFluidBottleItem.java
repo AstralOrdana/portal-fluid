@@ -58,20 +58,10 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
         return false;
     }
 
-    private int tickCounter = 0;
-
-    public int setTickCounter(int tick) {
-        return tickCounter = tick;
-    }
-
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, levelIn, entityIn, itemSlot, isSelected);
-        tickCounter++;
-        if (tickCounter >= 200) {
-            setBoolean(stack, !getBoolean(stack));
-            setTickCounter(0);
-        }
+        setBoolean(stack, itemSlot % 2 == 0);
     }
 
     @Environment(EnvType.CLIENT)
