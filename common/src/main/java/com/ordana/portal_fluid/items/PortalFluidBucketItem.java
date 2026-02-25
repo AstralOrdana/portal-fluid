@@ -3,9 +3,10 @@ package com.ordana.portal_fluid.items;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.ordana.portal_fluid.blocks.PortalFluidCauldronBlock;
 import com.ordana.portal_fluid.reg.ModBlocks;
-import com.ordana.portal_fluid.reg.ModComponents;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.reg.TranslationUtils;
+import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
+import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,7 +22,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class PortalFluidBucketItem extends BucketItem {
+public class PortalFluidBucketItem extends BucketItem implements RhymingGaslightTooltipItem {
 
     private static final Field CONTENT = PlatHelper.findField(BucketItem.class, "content");
 
@@ -58,35 +58,10 @@ public class PortalFluidBucketItem extends BucketItem {
         return false;
     }
 
-    private int tickCounter = 0;
-
-    public int setTickCounter(int tick) {
-        return tickCounter = tick;
-    }
-
-    @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
-        super.inventoryTick(stack, levelIn, entityIn, itemSlot, isSelected);
-        tickCounter++;
-        if (tickCounter >= 200) {
-            setBoolean(stack, !getBoolean(stack));
-            setTickCounter(0);
-        }
-    }
-
-    public void setBoolean(@NotNull ItemStack stack, boolean tears) {
-        stack.set(ModComponents.BOOL.get(), tears);
-    }
-
-    public boolean getBoolean(@NotNull ItemStack stack) {
-        return stack.getOrDefault(ModComponents.BOOL.get(), false);
-    }
-
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
-        if (getBoolean(stack)) tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_0").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
-        else tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_1", getBoolean(stack)).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        tooltip.add(RhymingGaslightTooltipState.getText());
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Minecraft.getInstance().options.keyShift.key.getValue())) {
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_bucket_1").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_bucket_2").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
