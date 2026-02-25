@@ -6,6 +6,8 @@ import com.ordana.portal_fluid.configs.CommonConfigs;
 import com.ordana.portal_fluid.reg.LevelHelper;
 import com.ordana.portal_fluid.reg.ModComponents;
 import com.ordana.portal_fluid.reg.TranslationUtils;
+import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
+import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,7 +26,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -39,7 +40,7 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.Optional;
 
-public class PortalFluidBottleItem extends HoneyBottleItem {
+public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGaslightTooltipItem {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public PortalFluidBottleItem(Properties properties) {
@@ -58,18 +59,10 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
         return false;
     }
 
-    @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
-        super.inventoryTick(stack, levelIn, entityIn, itemSlot, isSelected);
-        setBoolean(stack, itemSlot % 2 == 0);
-    }
-
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
-
-        if (getBoolean(stack)) tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_0").setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
-        else tooltip.add(Component.translatable("tooltip.portal_fluid.rhymes_with_tears_1", getBoolean(stack)).setStyle(Style.EMPTY.applyFormat(ChatFormatting.DARK_PURPLE)));
+        tooltip.add(RhymingGaslightTooltipState.getText());
         if (stack.has(ModComponents.ANCHOR_POS.get()) && CommonConfigs.PORTAL_FLUID_DRINKING.get()) {
             BlockPos blockPos = stack.get(ModComponents.ANCHOR_POS.get()).pos();
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_pos", blockPos.getX(), blockPos.getY(), blockPos.getZ()).setStyle(Style.EMPTY.applyFormat(ChatFormatting.LIGHT_PURPLE)));
@@ -83,14 +76,6 @@ public class PortalFluidBottleItem extends HoneyBottleItem {
         } else {
             tooltip.add(TranslationUtils.CROUCH.component());
         }
-    }
-
-    public void setBoolean(@NotNull ItemStack stack, boolean tears) {
-        stack.set(ModComponents.BOOL.get(), tears);
-    }
-
-    public boolean getBoolean(@NotNull ItemStack stack) {
-        return stack.getOrDefault(ModComponents.BOOL.get(), false);
     }
 
     private static boolean inPortalDimension(@NotNull Level level) {
