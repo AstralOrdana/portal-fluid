@@ -31,7 +31,7 @@ public class RhymingGaslightTooltipMixin extends Screen {
         boolean portalFluidHovered = this.hoveredSlot != null && this.hoveredSlot.hasItem() && this.hoveredSlot.getItem().getItem() instanceof RhymingGaslightTooltipItem;
 
         if (portalFluidHovered) {
-            if (!this.portal_fluid$lastStackHoveredWasPortalFluid && this.minecraft != null && this.minecraft.level != null) {
+            if (!this.portal_fluid$lastStackHoveredWasPortalFluid) {
                 RhymingGaslightTooltipState.randomizeCurrent();
                 this.portal_fluid$lastStackHoveredWasPortalFluid = true;
             }

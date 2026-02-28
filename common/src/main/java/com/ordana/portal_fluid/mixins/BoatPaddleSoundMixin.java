@@ -1,7 +1,7 @@
 package com.ordana.portal_fluid.mixins;
 
-import com.ordana.portal_fluid.reg.ModFluids;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
+import com.ordana.portal_fluid.reg.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,31 +27,38 @@ public abstract class BoatPaddleSoundMixin extends Entity {
 
     @Inject(method = "getPaddleSound", at = @At("HEAD"), cancellable = true)
     public void insertFluidTick(CallbackInfoReturnable<SoundEvent> cir) {
-        if (isInPortalFluid()) cir.setReturnValue(ModSoundEvents.BOAT_PADDLE_PORTAL_FLUID.get());
+        if (this.isInPortalFluid()) cir.setReturnValue(ModSoundEvents.BOAT_PADDLE_PORTAL_FLUID.get());
     }
 
+    @Unique
     private boolean isInPortalFluid() {
-        AABB aabb = this.getBoundingBox();
-        int i = Mth.floor(aabb.minX);
-        int j = Mth.ceil(aabb.maxX);
-        int k = Mth.floor(aabb.minY);
-        int l = Mth.ceil(aabb.minY + 0.001D);
-        int i1 = Mth.floor(aabb.minZ);
-        int j1 = Mth.ceil(aabb.maxZ);
-        boolean flag = false;
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        AABB aABB = this.getBoundingBox();
 
-        for(int k1 = i; k1 < j; ++k1) {
-            for(int l1 = k; l1 < l; ++l1) {
-                for(int i2 = i1; i2 < j1; ++i2) {
-                    blockpos$mutableblockpos.set(k1, l1, i2);
-                    FluidState fluidstate = this.level().getFluidState(blockpos$mutableblockpos);
-                    return fluidstate.is(ModFluids.PORTAL_FLUID.get()) || fluidstate.is(ModFluids.FLOWING_PORTAL_FLUID.get());
+        int minX = Mth.floor(aABB.minX);
+        int maxX = Mth.ceil(aABB.maxX);
+        int minY = Mth.floor(aABB.minY);
+        int maxY = Mth.ceil(aABB.minY + 0.001);
+        int minZ = Mth.floor(aABB.minZ);
+        int maxZ = Mth.ceil(aABB.maxZ);
 
+        boolean inPortalFluid = false;
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
+                for (int z = minZ; z < maxZ; z++) {
+                    mutableBlockPos.set(x, y, z);
+                    FluidState fluidState = this.level().getFluidState(mutableBlockPos);
+
+                    if (fluidState.is(ModTags.PORTAL_FLUID)) {
+                        float height = y + fluidState.getHeight(this.level(), mutableBlockPos);
+                        inPortalFluid |= aABB.minY < height;
+                    }
                 }
             }
         }
 
-        return flag;
+        return inPortalFluid;
     }
+
 }

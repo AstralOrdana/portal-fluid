@@ -32,16 +32,16 @@ public class GlassBottleMixin extends Item {
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void useInject(Level level, Player player, InteractionHand usedHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-
         ItemStack itemStack = player.getItemInHand(usedHand);
-        {
-            BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
-            BlockPos blockPos = blockHitResult.getBlockPos();
-            if (level.getFluidState(blockPos).is(ModTags.PORTAL_FLUID)) {
-                level.playSound(player, player.getX(), player.getY(), player.getZ(), ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
-                level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
-                cir.setReturnValue(InteractionResultHolder.sidedSuccess(this.turnBottleIntoItem(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance()), level.isClientSide()));
-            }
+
+        BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+        BlockPos blockPos = blockHitResult.getBlockPos();
+
+        if (level.getFluidState(blockPos).is(ModTags.PORTAL_FLUID)) {
+            level.playSound(player, player.getX(), player.getY(), player.getZ(), ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+            level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
+
+            cir.setReturnValue(InteractionResultHolder.sidedSuccess(this.turnBottleIntoItem(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance()), level.isClientSide()));
         }
     }
 

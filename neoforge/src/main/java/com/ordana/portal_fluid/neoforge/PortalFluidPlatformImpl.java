@@ -1,7 +1,9 @@
 package com.ordana.portal_fluid.neoforge;
 
+import com.ordana.portal_fluid.blocks.PortalFluidBlock;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -21,6 +23,6 @@ public class PortalFluidPlatformImpl {
     }
 
     public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
-        return new PortalFluidBlock(flowingFluid, properties);
+        return new PortalFluidBlock(flowingFluid, properties, Entity::isInFluidType);
     }
 }
