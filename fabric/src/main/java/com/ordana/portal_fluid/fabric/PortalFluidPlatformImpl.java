@@ -1,9 +1,11 @@
 package com.ordana.portal_fluid.fabric;
 
+import com.ordana.portal_fluid.blocks.PortalFluidBlock;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -24,6 +26,6 @@ public class PortalFluidPlatformImpl {
     }
 
     public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
-        return new PortalFluidBlock(flowingFluid.get(), properties);
+        return new PortalFluidBlock(flowingFluid, properties, Entity::isInWater);
     }
 }

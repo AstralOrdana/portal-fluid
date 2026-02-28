@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -22,8 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-
-import java.util.Random;
 
 public class PortalFluidFluidRenderer extends ModFluidRenderProperties {
     private final ResourceLocation overlay;
@@ -106,7 +105,7 @@ public class PortalFluidFluidRenderer extends ModFluidRenderProperties {
     }
 
     private boolean isRandomPos(BlockPos pos, int rarity) {
-        Random random = new Random((long) (Mth.getSeed(pos) * ClientConfigs.PORTAL_FLUID_SEED.get()));
+        RandomSource random = RandomSource.create((long) (Mth.getSeed(pos) * ClientConfigs.PORTAL_FLUID_SEED.get()));
         return random.nextInt(rarity) == 0;
     }
 
@@ -123,9 +122,10 @@ public class PortalFluidFluidRenderer extends ModFluidRenderProperties {
         return level != null && !isPortalFluid(level.getFluidState(pos.relative(dir)));
     }
 
+    @Nullable
     private BlockState getBelowBlock(BlockPos pos) {
-        Level level = Minecraft.getInstance().level;
-        return level.getBlockState(pos.below());
+        ClientLevel clientLevel = Minecraft.getInstance().level;
+        return clientLevel == null ? null : clientLevel.getBlockState(pos.below());
     }
 
     @Override
@@ -138,8 +138,13 @@ public class PortalFluidFluidRenderer extends ModFluidRenderProperties {
             return portalFluidNESW;
         }
 
-        else if (getBelowBlock(pos).is(Blocks.HONEY_BLOCK)) return portalFluidMaple;
-        else if (getBelowBlock(pos).is(Blocks.RAW_IRON_BLOCK)) return portalFluidSnence;
+        BlockState belowBlock = this.getBelowBlock(pos);
+
+        if (belowBlock == null)
+            return texture;
+
+        if (belowBlock.is(Blocks.HONEY_BLOCK))return portalFluidMaple;
+        else if (belowBlock.is(Blocks.RAW_IRON_BLOCK)) return portalFluidSnence;
         else if (isNonFluidAdjacent(pos, Direction.NORTH)) {
             texture = portalFluidN;
 

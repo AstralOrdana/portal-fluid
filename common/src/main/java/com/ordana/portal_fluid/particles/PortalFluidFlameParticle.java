@@ -2,14 +2,21 @@ package com.ordana.portal_fluid.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.ordana.portal_fluid.reg.ModParticles;
+import com.ordana.portal_fluid.reg.ModSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -25,12 +32,6 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
         this.scale(2F);
         this.lifetime = 10;
         this.setSpriteFromAge(spriteSet);
-    }
-
-    public void setSpriteFromAge(SpriteSet sprite) {
-        if (!this.removed) {
-            this.setSprite(sprite.get(this.age, this.lifetime));
-        }
     }
 
     @Override
@@ -65,14 +66,18 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
         buffer.addVertex(vector3fs[3].x(), vector3fs[3].y(), vector3fs[3].z()).setUv(l, o).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p);
     }
 
+    @Override
     public int getLightColor(float partialTick) {
         return this.isGlowing ? 240 : super.getLightColor(partialTick);
     }
 
+    @Override
+    @NotNull
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
+    @Override
     public void tick() {
         this.setSpriteFromAge(this.sprites);
         if (this.age++ >= this.lifetime) {
@@ -80,17 +85,39 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
-        private final SpriteSet sprite;
+    public static void onAnimateTick(Level level, BlockPos blockPos, RandomSource randomSource) {
+        BlockPos above = blockPos.above();
 
-        public Provider(SpriteSet spriteSet) {
-            this.sprite = spriteSet;
+        if (!level.isEmptyBlock(above) || level.getBlockState(above).isSolidRender(level, above))
+            return;
+
+        if (randomSource.nextInt(20) == 0) {
+            double x = above.getX() + randomSource.nextDouble();
+            double y = above.getY() + 0.2;
+            double z = above.getZ() + randomSource.nextDouble();
+
+            level.addParticle(ModParticles.PORTAL_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);
         }
+
+        if (randomSource.nextInt(200) != 0)
+            return;
+
+        level.playLocalSound(
+            blockPos,
+            ModSoundEvents.PORTAL_FLUID_AMBIENT.get(),
+            SoundSource.BLOCKS,
+            Mth.randomBetween(randomSource, 0.2F, 0.4F),
+            Mth.randomBetween(randomSource, 0.9F, 1.05F),
+            false
+        );
+    }
+
+    @Environment(EnvType.CLIENT)
+    public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
 
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            PortalFluidFlameParticle flameParticle = new PortalFluidFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprite);
-            return flameParticle;
+            return new PortalFluidFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
+
     }
 }

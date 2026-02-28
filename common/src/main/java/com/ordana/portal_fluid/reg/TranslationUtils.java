@@ -23,8 +23,11 @@ enum Components {
 }
 
 enum Styles {
-    GRAY        (ChatFormatting.GRAY),
-    ITALIC_GRAY (ChatFormatting.GRAY, ChatFormatting.ITALIC),
+    GRAY         (ChatFormatting.GRAY),
+    ITALIC_GRAY  (ChatFormatting.GRAY, ChatFormatting.ITALIC),
+    DARK_PURPLE  (ChatFormatting.DARK_PURPLE),
+    LIGHT_PURPLE (ChatFormatting.LIGHT_PURPLE),
+    GOLD         (ChatFormatting.GOLD),
     ;
 
     final Style val;
@@ -35,8 +38,17 @@ enum Styles {
 }
 
 public enum TranslationUtils {
-    CROUCH              ("tooltip.portal_fluid.hold_crouch",
-            Style.EMPTY.withColor(ChatFormatting.GOLD), Components.SNEAK.val),
+    CROUCH                ("tooltip.portal_fluid.hold_crouch",           Styles.GOLD.val, Components.SNEAK.val),
+    FLINT_AND_STEEL       ("tooltip.portal_fluid.flint_and_steel",       Styles.DARK_PURPLE.val),
+    CRYING_OBSIDIAN       ("tooltip.portal_fluid.crying_obsidian",       Styles.DARK_PURPLE.val),
+    PORTAL_FLUID_1        ("tooltip.portal_fluid.portal_fluid_1",        Styles.GRAY.val),
+    PORTAL_FLUID_2        ("tooltip.portal_fluid.portal_fluid_2",        Styles.GRAY.val),
+    PORTAL_FLUID_3A       ("tooltip.portal_fluid.portal_fluid_3a",       Styles.GRAY.val),
+    PORTAL_FLUID_3B       ("tooltip.portal_fluid.portal_fluid_3b",       Styles.GRAY.val),
+    PORTAL_FLUID_3C       ("tooltip.portal_fluid.portal_fluid_3c",       Styles.GRAY.val),
+    PORTAL_FLUID_BUCKET_1 ("tooltip.portal_fluid.portal_fluid_bucket_1", Styles.GRAY.val),
+    PORTAL_FLUID_BUCKET_2 ("tooltip.portal_fluid.portal_fluid_bucket_2", Styles.GRAY.val),
+    PORTAL_FLUID_BUCKET_3 ("tooltip.portal_fluid.portal_fluid_bucket_3", Styles.GRAY.val),
     ;
 
     private final MutableComponent component;

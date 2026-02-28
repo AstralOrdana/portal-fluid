@@ -11,12 +11,10 @@ import dev.architectury.injectables.annotations.PlatformOnly;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
-import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -28,7 +26,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.CauldronBlock;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
@@ -37,6 +34,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.List;
+
+import static net.minecraft.world.level.block.LayeredCauldronBlock.LEVEL;
+import static net.minecraft.world.level.block.LayeredCauldronBlock.MAX_FILL_LEVEL;
 
 public class PortalFluidBucketItem extends BucketItem implements RhymingGaslightTooltipItem {
 
@@ -62,34 +62,40 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
         tooltip.add(RhymingGaslightTooltipState.getText());
+
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Minecraft.getInstance().options.keyShift.key.getValue())) {
-            tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_bucket_1").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-            tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_bucket_2").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-            tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_bucket_3").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-        } else {
-            tooltip.add(TranslationUtils.CROUCH.component());
+            tooltip.add(TranslationUtils.PORTAL_FLUID_BUCKET_1.component());
+            tooltip.add(TranslationUtils.PORTAL_FLUID_BUCKET_2.component());
+            tooltip.add(TranslationUtils.PORTAL_FLUID_BUCKET_3.component());
         }
+        else tooltip.add(TranslationUtils.CROUCH.component());
     }
 
     @Override
     @NotNull
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
+
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
-        Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
-        if (state.getBlock() instanceof CauldronBlock || (state.getBlock() instanceof PortalFluidCauldronBlock && state.getValue(LayeredCauldronBlock.LEVEL) < 3)) {
-            level.playSound(player, pos, ModSoundEvents.PORTAL_FLUID_BUCKET_EMPTY.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
-            if (player instanceof ServerPlayer serverPlayer) {
-                ItemStack itemStack2 = ItemUtils.createFilledResult(stack, player, Items.BUCKET.getDefaultInstance());
-                player.setItemInHand(context.getHand(), itemStack2);
-                level.setBlockAndUpdate(pos, ModBlocks.PORTAL_CAULDRON.get().defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
 
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+        Player player = context.getPlayer();
+        ItemStack itemStack = context.getItemInHand();
+
+        if (state.getBlock() instanceof CauldronBlock || state.getBlock() instanceof PortalFluidCauldronBlock && state.getValue(LEVEL) < MAX_FILL_LEVEL) {
+            level.playSound(player, pos, ModSoundEvents.PORTAL_FLUID_BUCKET_EMPTY.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, player, Items.BUCKET.getDefaultInstance());
+                player.setItemInHand(context.getHand(), itemStack2);
+                level.setBlockAndUpdate(pos, ModBlocks.PORTAL_CAULDRON.get().defaultBlockState().setValue(LEVEL, MAX_FILL_LEVEL));
+
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemStack);
             }
+
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
+
         return InteractionResult.PASS;
     }
 

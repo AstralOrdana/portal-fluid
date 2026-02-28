@@ -3,7 +3,7 @@ package com.ordana.portal_fluid.items;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import com.ordana.portal_fluid.configs.CommonConfigs;
-import com.ordana.portal_fluid.reg.LevelHelper;
+import com.ordana.portal_fluid.reg.TeleportHelper;
 import com.ordana.portal_fluid.reg.ModComponents;
 import com.ordana.portal_fluid.reg.TranslationUtils;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
@@ -16,6 +16,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -63,19 +64,25 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
         tooltip.add(RhymingGaslightTooltipState.getText());
-        if (stack.has(ModComponents.ANCHOR_POS.get()) && CommonConfigs.PORTAL_FLUID_DRINKING.get()) {
-            BlockPos blockPos = stack.get(ModComponents.ANCHOR_POS.get()).pos();
+        GlobalPos anchorPos = stack.get(ModComponents.ANCHOR_POS.get());
+
+        if (anchorPos != null && CommonConfigs.PORTAL_FLUID_DRINKING.get()) {
+            BlockPos blockPos = anchorPos.pos();
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_pos", blockPos.getX(), blockPos.getY(), blockPos.getZ()).setStyle(Style.EMPTY.applyFormat(ChatFormatting.LIGHT_PURPLE)));
         }
+
         if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Minecraft.getInstance().options.keyShift.key.getValue())) {
-            tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_1").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-            tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_2").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-            if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get() && CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get()) tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_3c").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-            else if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get()) tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_3a").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-            else if (CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get()) tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_3b").setStyle(Style.EMPTY.applyFormat(ChatFormatting.GRAY)));
-        } else {
-            tooltip.add(TranslationUtils.CROUCH.component());
+            tooltip.add(TranslationUtils.PORTAL_FLUID_1.component());
+            tooltip.add(TranslationUtils.PORTAL_FLUID_2.component());
+
+            if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get() && CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get())
+                tooltip.add(TranslationUtils.PORTAL_FLUID_3C.component());
+            else if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get())
+                tooltip.add(TranslationUtils.PORTAL_FLUID_3A.component());
+            else if (CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get())
+                tooltip.add(TranslationUtils.PORTAL_FLUID_3B.component());
         }
+        else tooltip.add(TranslationUtils.CROUCH.component());
     }
 
     private static boolean inPortalDimension(@NotNull Level level) {
@@ -87,22 +94,31 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     public InteractionResult useOn(@NotNull UseOnContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
-        if (inPortalDimension(level)) {
-            Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(level, pos.relative(context.getClickedFace()), Direction.Axis.X);
-            if (optional.isPresent()) {
-                optional.get().createPortalBlocks();
-                if (CommonConfigs.PORTAL_CREATION_SOUND.get()) level.playSound(null, pos, SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.BLOCKS, 1.0f, 1.0f);
 
-                ItemStack itemStack2 = ItemUtils.createFilledResult(stack, player, Items.GLASS_BOTTLE.getDefaultInstance());
-                player.setItemInHand(context.getHand(), itemStack2);
+        if (!inPortalDimension(level))
+            return InteractionResult.PASS;
 
-                //if (!player.getAbilities().instabuild) stack.shrink(1);
+        Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(level, pos.relative(context.getClickedFace()), Direction.Axis.X);
 
-                return InteractionResult.SUCCESS;
-            }
+        if (optional.isPresent()) {
+            optional.get().createPortalBlocks();
+
+            if (CommonConfigs.PORTAL_CREATION_SOUND.get())
+                level.playSound(null, pos, SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.BLOCKS, 1.0f, 1.0f);
+
+            Player player = context.getPlayer();
+
+            if (player == null)
+                return InteractionResult.PASS;
+
+            ItemStack itemStack2 = ItemUtils.createFilledResult(context.getItemInHand(), player, Items.GLASS_BOTTLE.getDefaultInstance());
+            player.setItemInHand(context.getHand(), itemStack2);
+
+            //if (!player.getAbilities().instabuild) stack.shrink(1);
+
+            return InteractionResult.SUCCESS;
         }
+
         return InteractionResult.PASS;
     }
 
@@ -132,20 +148,20 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         if (livingEntity instanceof Player player) {
             ItemStack itemStack2 = ItemUtils.createFilledResult(stack, player, Items.GLASS_BOTTLE.getDefaultInstance());
             player.setItemInHand(player.getUsedItemHand(), itemStack2);
-
         }
-        if (livingEntity instanceof ServerPlayer serverPlayer && CommonConfigs.PORTAL_FLUID_DRINKING.get()) {
-            CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
-            serverPlayer.awardStat(Stats.ITEM_USED.get(this));
 
-            DataComponentMap compoundTag = stack.getComponents();
-            boolean bl = compoundTag.has(ModComponents.ANCHOR_POS.get());
+        if (!(livingEntity instanceof ServerPlayer serverPlayer && CommonConfigs.PORTAL_FLUID_DRINKING.get()))
+            return stack;
 
-            if (bl) {
-                LevelHelper.teleportToAnchorPosition(serverPlayer, compoundTag.get(ModComponents.ANCHOR_POS.get()));
-            }
-            else LevelHelper.teleportToSpawnPosition(serverPlayer);
-        }
+        CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
+        serverPlayer.awardStat(Stats.ITEM_USED.get(this));
+
+        DataComponentMap compoundTag = stack.getComponents();
+
+        if (compoundTag.has(ModComponents.ANCHOR_POS.get()))
+            TeleportHelper.teleportToAnchorPosition(serverPlayer, compoundTag.get(ModComponents.ANCHOR_POS.get()));
+        else TeleportHelper.teleportPlayerToSpawnPosition(serverPlayer);
+
         return stack;
     }
 
