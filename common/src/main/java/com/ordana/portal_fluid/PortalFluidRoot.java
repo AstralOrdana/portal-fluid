@@ -33,6 +33,7 @@ public class PortalFluidRoot {
         ModBlocks.init();
         ModFluids.init();
         ModItems.init();
+        ModEffects.init();
         ModComponents.init();
         ModParticles.init();
         ModSoundEvents.init();
