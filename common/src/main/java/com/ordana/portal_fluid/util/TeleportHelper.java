@@ -45,14 +45,14 @@ import org.jetbrains.annotations.Nullable;
 
 public final class TeleportHelper {
 
-    private static final int DEFAULT_RIFTING_TICKS = SharedConstants.TICKS_PER_SECOND * 10;
-
     public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity) {
-        if (entity instanceof LivingEntity livingEntity && !CommonConfigs.INSTANT_TELEPORTATION.get()) {
+        int delaySeconds = CommonConfigs.TELEPORTATION_DELAY_SECONDS.get();
+
+        if (entity instanceof LivingEntity livingEntity && delaySeconds > 0) {
             Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
 
             if (!livingEntity.hasEffect(mobEffectHolder) && !livingEntity.isSpectator())
-                livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, DEFAULT_RIFTING_TICKS));
+                livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, SharedConstants.TICKS_PER_SECOND * delaySeconds));
         }
         else teleportEntity(serverLevel, entity, null);
     }
