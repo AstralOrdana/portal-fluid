@@ -1,4 +1,4 @@
-package com.ordana.portal_fluid.reg;
+package com.ordana.portal_fluid.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

@@ -10,7 +10,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 public class NeoForgeEvents {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        var ret = com.ordana.portal_fluid.reg.ModEvents.onBlockCLicked(event.getItemStack(),
+        var ret = com.ordana.portal_fluid.reg.ModEvents.onBlockClicked(event.getItemStack(),
                 event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
         if (ret != InteractionResult.PASS) {
             event.setCanceled(true);

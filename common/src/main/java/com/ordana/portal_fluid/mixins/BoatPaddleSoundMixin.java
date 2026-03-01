@@ -27,11 +27,12 @@ public abstract class BoatPaddleSoundMixin extends Entity {
 
     @Inject(method = "getPaddleSound", at = @At("HEAD"), cancellable = true)
     public void insertFluidTick(CallbackInfoReturnable<SoundEvent> cir) {
-        if (this.isInPortalFluid()) cir.setReturnValue(ModSoundEvents.BOAT_PADDLE_PORTAL_FLUID.get());
+        if (this.portal_fluid$isInPortalFluid())
+            cir.setReturnValue(ModSoundEvents.BOAT_PADDLE_PORTAL_FLUID.get());
     }
 
     @Unique
-    private boolean isInPortalFluid() {
+    private boolean portal_fluid$isInPortalFluid() {
         AABB aABB = this.getBoundingBox();
 
         int minX = Mth.floor(aABB.minX);

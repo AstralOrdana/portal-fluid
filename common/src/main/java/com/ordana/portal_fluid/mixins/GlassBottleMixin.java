@@ -41,12 +41,12 @@ public class GlassBottleMixin extends Item {
             level.playSound(player, player.getX(), player.getY(), player.getZ(), ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
             level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
 
-            cir.setReturnValue(InteractionResultHolder.sidedSuccess(this.turnBottleIntoItem(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance()), level.isClientSide()));
+            cir.setReturnValue(InteractionResultHolder.sidedSuccess(this.portal_fluid$turnBottleIntoItem(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance()), level.isClientSide()));
         }
     }
 
     @Unique
-    protected ItemStack turnBottleIntoItem(ItemStack bottleStack, Player player, ItemStack filledBottleStack) {
+    protected ItemStack portal_fluid$turnBottleIntoItem(ItemStack bottleStack, Player player, ItemStack filledBottleStack) {
         player.awardStat(Stats.ITEM_USED.get(this));
         return ItemUtils.createFilledResult(bottleStack, player, filledBottleStack);
     }

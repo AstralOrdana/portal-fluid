@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.ordana.portal_fluid.blocks.PortalFluidCauldronBlock;
 import com.ordana.portal_fluid.reg.ModBlocks;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
-import com.ordana.portal_fluid.reg.TranslationUtils;
+import com.ordana.portal_fluid.util.TranslationUtils;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
@@ -83,7 +83,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
         ItemStack itemStack = context.getItemInHand();
 
         if (state.getBlock() instanceof CauldronBlock || state.getBlock() instanceof PortalFluidCauldronBlock && state.getValue(LEVEL) < MAX_FILL_LEVEL) {
-            level.playSound(player, pos, ModSoundEvents.PORTAL_FLUID_BUCKET_EMPTY.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            this.playEmptySound(player, level, pos);
 
             if (player instanceof ServerPlayer serverPlayer) {
                 ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, player, Items.BUCKET.getDefaultInstance());
@@ -100,7 +100,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
     }
 
     @Override
-    protected void playEmptySound(@org.jetbrains.annotations.Nullable Player player, LevelAccessor level, BlockPos pos) {
+    protected void playEmptySound(@Nullable Player player, LevelAccessor level, BlockPos pos) {
         SoundEvent soundEvent = ModSoundEvents.PORTAL_FLUID_BUCKET_EMPTY.get();
         level.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
         level.gameEvent(player, GameEvent.FLUID_PLACE, pos);

@@ -2,7 +2,7 @@ package com.ordana.portal_fluid.mixins;
 
 
 import com.ordana.portal_fluid.configs.CommonConfigs;
-import com.ordana.portal_fluid.reg.TranslationUtils;
+import com.ordana.portal_fluid.util.TranslationUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;

@@ -3,12 +3,10 @@ package com.ordana.portal_fluid.blocks;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ordana.portal_fluid.particles.PortalFluidFlameParticle;
-import com.ordana.portal_fluid.reg.TeleportHelper;
+import com.ordana.portal_fluid.util.TeleportHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -40,7 +38,7 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
 
     public PortalFluidCauldronBlock(Properties properties, CauldronInteraction.InteractionMap map) {
         super(properties, map);
-        this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, 1));
+        this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, MIN_FILL_LEVEL));
     }
 
     @Override
@@ -66,34 +64,13 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (!this.isEntityInsideContent(state, pos, entity) || entity.isPassenger() || entity.isVehicle())
-            return;
-
-        if (entity instanceof ServerPlayer player) {
-            TeleportHelper.teleportPlayerToSpawnPosition(player);
-            this.handleEntityTeleport(state, level, pos);
-        }
-        else {
-            TeleportHelper.teleportToWorldspawn(level, entity);
-            level.playSound(null, entity.blockPosition(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.BLOCKS, 1.0F, 1.0F);
-        }
+        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(state, pos, entity) && TeleportHelper.canTeleportTo(serverLevel, entity, pos))
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity);
     }
 
     @Override
     protected boolean canReceiveStalactiteDrip(Fluid fluid) {
         return fluid == Fluids.WATER;
-    }
-
-    protected void handleEntityTeleport(BlockState state, Level level, BlockPos pos) {
-        lowerFillLevel(state, level, pos);
-    }
-
-    public static void lowerFillLevel(BlockState state, Level level, BlockPos pos) {
-        int i = state.getValue(LEVEL) - 1;
-        BlockState blockState = i == 0 ? Blocks.CAULDRON.defaultBlockState() : state.setValue(LEVEL, i);
-
-        level.setBlockAndUpdate(pos, blockState);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(blockState));
     }
 
     @Override

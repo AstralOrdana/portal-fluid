@@ -91,10 +91,10 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
         if (!level.isEmptyBlock(above) || level.getBlockState(above).isSolidRender(level, above))
             return;
 
-        if (randomSource.nextInt(20) == 0) {
-            double x = above.getX() + randomSource.nextDouble();
-            double y = above.getY() + 0.2;
-            double z = above.getZ() + randomSource.nextDouble();
+        {
+            double x = blockPos.getX() + randomSource.nextDouble();
+            double y = blockPos.getY() + 0.2;
+            double z = blockPos.getZ() + randomSource.nextDouble();
 
             level.addParticle(ModParticles.PORTAL_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);
         }
@@ -113,10 +113,16 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<SimpleParticleType> {
+
+        private final SpriteSet sprites;
+
+        public Provider(SpriteSet spriteSet) {
+            this.sprites = spriteSet;
+        }
 
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new PortalFluidFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new PortalFluidFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
         }
 
     }

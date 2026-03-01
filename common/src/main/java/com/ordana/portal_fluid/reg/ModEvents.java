@@ -2,7 +2,6 @@ package com.ordana.portal_fluid.reg;
 
 import com.ordana.portal_fluid.blocks.PortalFluidCauldronBlock;
 import com.ordana.portal_fluid.configs.CommonConfigs;
-import com.ordana.portal_fluid.items.PortalFluidBottleItem;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -48,7 +47,7 @@ public class ModEvents {
         EVENTS.add(ModEvents::portalCauldronLogic);
     }
 
-    public static InteractionResult onBlockCLicked(ItemStack stack, Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+    public static InteractionResult onBlockClicked(ItemStack stack, Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
         if (stack.isEmpty()) return InteractionResult.PASS;
         Item i = stack.getItem();
         BlockPos pos = hitResult.getBlockPos();

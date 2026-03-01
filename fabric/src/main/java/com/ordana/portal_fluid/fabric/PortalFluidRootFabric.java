@@ -33,7 +33,7 @@ public class PortalFluidRootFabric implements ModInitializer {
     }
 
     public static InteractionResult onRightClickBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        return ModEvents.onBlockCLicked(player.getItemInHand(hand), player, level, hand, hitResult);
+        return ModEvents.onBlockClicked(player.getItemInHand(hand), player, level, hand, hitResult);
     }
 
 }

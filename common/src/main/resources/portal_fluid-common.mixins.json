@@ -6,9 +6,9 @@
     "mixins": [
         "BoatPaddleSoundMixin",
         "GlassBottleMixin",
-        "NetherPortalBlockMixin",
-        "NetherPortalSoundMixin",
-        "TooltipMixin"
+        "TooltipMixin",
+        "nether_portal.NetherPortalBlockMixin",
+        "nether_portal.NetherPortalSoundMixin"
     ],
     "injectors": {
         "defaultRequire": 1

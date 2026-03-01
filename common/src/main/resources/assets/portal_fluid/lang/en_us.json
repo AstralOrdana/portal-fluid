@@ -24,5 +24,7 @@
   "item.portal_fluid.portal_fluid_bucket": "Bucket of Dimensional Tears",
   "block.portal_fluid.portal_fluid": "Dimensional Tears",
   "fluid.portal_fluid.portal_fluid": "Dimensional Tears",
-  "fluid_type.portal_fluid.portal_fluid": "Dimensional Tears"
+  "fluid_type.portal_fluid.portal_fluid": "Dimensional Tears",
+
+  "effect.portal_fluid.rifting": "Rifting"
 }
