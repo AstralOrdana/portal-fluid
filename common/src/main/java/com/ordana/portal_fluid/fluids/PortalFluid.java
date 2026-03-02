@@ -1,6 +1,5 @@
 package com.ordana.portal_fluid.fluids;
 
-import com.ordana.portal_fluid.PortalFluidRoot;
 import com.ordana.portal_fluid.particles.PortalFluidFlameParticle;
 import com.ordana.portal_fluid.reg.ModFluids;
 import com.ordana.portal_fluid.reg.ModItems;
@@ -19,28 +18,20 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class PortalFluidFluid extends ModFlowingFluid {
+public abstract class PortalFluid extends ModFlowingFluid {
 
-    public PortalFluidFluid(Properties properties, Supplier<? extends LiquidBlock> block) {
+    public PortalFluid(Properties properties, Supplier<? extends LiquidBlock> block) {
         super(properties, block);
     }
 
     @Override
     public ModFluidRenderProperties createRenderProperties() {
-        return new PortalFluidFluidRenderer(
-                PortalFluidRoot.res("block/portal_fluid"),
-                PortalFluidRoot.res("block/portal_fluid_flowing"),
-                -1,
-                PortalFluidRoot.res("block/portal_fluid_overlay"),
-                PortalFluidRoot.res("block/portal_fluid_overlay"),
-                new Vec3(133, 0, 0));
-
+        return new PortalFluidRenderer();
     }
 
     @NotNull
@@ -94,16 +85,12 @@ public class PortalFluidFluid extends ModFlowingFluid {
     }
 
     @Override
-    public boolean isSource(@NotNull FluidState state) {
-        return false;
-    }
-
-    @Override
     public int getAmount(@NotNull FluidState state) {
         return 0;
     }
 
-    public static class Flowing extends PortalFluidFluid {
+    public static class Flowing extends PortalFluid {
+
         public Flowing(Properties properties, Supplier<? extends LiquidBlock> block) {
             super(properties, block);
         }
@@ -119,9 +106,15 @@ public class PortalFluidFluid extends ModFlowingFluid {
             return state.getValue(LEVEL);
         }
 
+        @Override
+        public boolean isSource(FluidState fluidState) {
+            return false;
+        }
+
     }
 
-    public static class Source extends PortalFluidFluid {
+    public static class Source extends PortalFluid {
+
         public Source(Properties properties, Supplier<? extends LiquidBlock> block) {
             super(properties, block);
         }
@@ -135,5 +128,7 @@ public class PortalFluidFluid extends ModFlowingFluid {
         public boolean isSource(@NotNull FluidState state) {
             return true;
         }
+
     }
+
 }

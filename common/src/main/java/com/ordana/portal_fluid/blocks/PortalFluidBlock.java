@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -16,6 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -46,6 +50,15 @@ public class PortalFluidBlock extends LiquidBlock {
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level instanceof ServerLevel serverLevel && this.inFluidPredicate.test(entity) && TeleportHelper.canTeleportTo(serverLevel, entity, pos))
             TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity);
+    }
+
+    @Override
+    @NotNull
+    protected VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        if (blockGetter instanceof Level level && level.dimension() == Level.END && blockPos.getY() == 0)
+            return Shapes.block().move(0.0, -1.0, 0.0);
+
+        return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
 }

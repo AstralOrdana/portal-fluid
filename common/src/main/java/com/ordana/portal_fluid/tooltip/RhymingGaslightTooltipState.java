@@ -1,6 +1,6 @@
 package com.ordana.portal_fluid.tooltip;
 
-import com.ordana.portal_fluid.mixins.RhymingGaslightTooltipMixin;
+import com.ordana.portal_fluid.mixins.tooltip.RhymingGaslightTooltipMixin;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;

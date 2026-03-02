@@ -1,4 +1,4 @@
-package com.ordana.portal_fluid.mixins;
+package com.ordana.portal_fluid.mixins.tooltip;
 
 
 import com.ordana.portal_fluid.configs.CommonConfigs;

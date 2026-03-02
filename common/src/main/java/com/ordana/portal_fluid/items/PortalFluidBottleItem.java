@@ -9,8 +9,6 @@ import com.ordana.portal_fluid.util.TranslationUtils;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
@@ -19,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +27,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +36,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RespawnAnchorBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.level.portal.PortalShape;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +48,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGaslightTooltipItem {
+
+    public static final FoodProperties PORTAL_FLUID = (new FoodProperties.Builder()).nutrition(0).saturationModifier(0F).alwaysEdible().build();
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public PortalFluidBottleItem(Properties properties) {
@@ -64,7 +68,6 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         return false;
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
         tooltip.add(RhymingGaslightTooltipState.getText());
@@ -131,8 +134,6 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         return true;
     }
 
-    public static final FoodProperties PORTAL_FLUID = (new FoodProperties.Builder()).nutrition(0).saturationModifier(0F).alwaysEdible().build();
-
     @Override
     @NotNull
     public SoundEvent getDrinkingSound() {
@@ -145,6 +146,26 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         return SoundEvents.HONEY_DRINK;
     }
 
+    @Override
+    public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl) {
+        if (!(level instanceof ServerLevel serverLevel))
+            return;
+
+        GlobalPos globalPos = itemStack.get(ModComponents.ANCHOR_POS.get());
+
+        if (globalPos == null)
+            return;
+
+        ResourceKey<Level> dimensionKey = globalPos.dimension();
+        ServerLevel dimension = serverLevel.getServer().getLevel(dimensionKey);
+
+        if (dimension != null) {
+            BlockState blockState = dimension.getBlockState(globalPos.pos());
+
+            if (!(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.getValue(RespawnAnchorBlock.CHARGE) > 0))
+                itemStack.remove(ModComponents.ANCHOR_POS.get());
+        }
+    }
 
     @Override
     @NotNull
@@ -159,14 +180,14 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
 
-            TeleportHelper.teleportPlayerToSpawnPosition(serverLevel, serverPlayer, itemStack);
+            TeleportHelper.teleportEntity(serverLevel, serverPlayer, itemStack);
         }
 
         return itemStack;
     }
 
     @Nullable
-    public static Vec3 getAnchorRespawnPosition(MinecraftServer minecraftServer, @Nullable ItemStack itemStack) {
+    public static DimensionTransition getAnchorDimensionTransition(MinecraftServer minecraftServer, ServerPlayer serverPlayer, @Nullable ItemStack itemStack) {
         if (itemStack == null)
             return null;
 
@@ -178,7 +199,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         ServerLevel dimensionLevel = minecraftServer.getLevel(globalPos.dimension());
         Optional<Vec3> optional = RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, dimensionLevel, globalPos.pos());
 
-        return optional.orElse(null);
+        return optional.map(vec3 -> TeleportHelper.createDimensionTransition(dimensionLevel, serverPlayer, vec3)).orElse(null);
     }
 
 }

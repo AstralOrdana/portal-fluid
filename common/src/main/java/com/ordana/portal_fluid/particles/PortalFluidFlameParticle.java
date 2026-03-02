@@ -91,7 +91,7 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
         if (!level.isEmptyBlock(above) || level.getBlockState(above).isSolidRender(level, above))
             return;
 
-        {
+        if (randomSource.nextInt() < 20) {
             double x = blockPos.getX() + randomSource.nextDouble();
             double y = blockPos.getY() + 0.2;
             double z = blockPos.getZ() + randomSource.nextDouble();
@@ -99,7 +99,7 @@ public class PortalFluidFlameParticle extends TextureSheetParticle {
             level.addParticle(ModParticles.PORTAL_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);
         }
 
-        if (randomSource.nextInt(200) != 0)
+        if (randomSource.nextInt(200) > 0)
             return;
 
         level.playLocalSound(

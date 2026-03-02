@@ -1,4 +1,4 @@
-package com.ordana.portal_fluid.mixins;
+package com.ordana.portal_fluid.mixins.portal_fluid;
 
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.reg.ModTags;

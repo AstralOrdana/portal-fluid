@@ -4,16 +4,16 @@
     "package": "com.ordana.portal_fluid.mixins",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
-        "BoatPaddleSoundMixin",
         "GlassBottleMixin",
-        "TooltipMixin",
+        "tooltip.TooltipMixin",
         "nether_portal.NetherPortalBlockMixin",
-        "nether_portal.NetherPortalSoundMixin"
+        "nether_portal.NetherPortalSoundMixin",
+        "portal_fluid.BoatPaddleSoundMixin"
     ],
     "injectors": {
         "defaultRequire": 1
     },
     "client": [
-        "RhymingGaslightTooltipMixin"
+        "tooltip.RhymingGaslightTooltipMixin"
     ]
 }
