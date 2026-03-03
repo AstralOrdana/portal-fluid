@@ -62,21 +62,21 @@ public class BlockStripeFeature extends Feature<BlockStripeFeatureConfig> {
         for (int x = getX; x < getX + 16; x++) {
             for (int z = getZ; z < getZ + 16; z++) {
                 var heightmap = worldGenLevel.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z);
-                for (int y = chunkGenerator.getMinY(); y < heightmap - config.surfaceOffset; y++) {
+                for (int y = chunkGenerator.getMinY(); y < heightmap - config.surfaceOffset(); y++) {
                     BlockPos currentPos = new BlockPos(x, y, z);
 
-                    if (config.biomes != null && config.useBiomeFilter) {
-                        if (!config.biomes.contains(cachedChunk.getNoiseBiome(QuartPos.fromBlock(currentPos.getX()), QuartPos.fromBlock(currentPos.getY()), QuartPos.fromBlock(currentPos.getZ())))) {
+                    if (config.biomes() != null && config.useBiomeFilter()) {
+                        if (!config.biomes().contains(cachedChunk.getNoiseBiome(QuartPos.fromBlock(currentPos.getX()), QuartPos.fromBlock(currentPos.getY()), QuartPos.fromBlock(currentPos.getZ())))) {
                             continue;
                         }
                     }
 
                     BlockState currentState = cachedChunk.getBlockState(currentPos);
-                    boolean isTarget1 = currentState.is(config.firstTarget);
+                    boolean isTarget1 = currentState.is(config.firstTarget());
                     boolean isTarget2 = false;
 
-                    if (config.secondTarget != null && config.secondTargetPlacer != null)
-                        isTarget2 = config.useSecondTarget && currentState.is(config.secondTarget);
+                    if (config.secondTarget() != null && config.secondTargetPlacer() != null)
+                        isTarget2 = config.useSecondTarget() && currentState.is(config.secondTarget());
                     if (!isTarget1 && !isTarget2) continue;
 
                     domainWarpedVector.x = x;
@@ -85,11 +85,11 @@ public class BlockStripeFeature extends Feature<BlockStripeFeatureConfig> {
                     noise.DomainWarp(domainWarpedVector);
                     float cellValue = cellNoise.GetNoise(domainWarpedVector.x, domainWarpedVector.y, domainWarpedVector.z);
                     cellValue = (cellValue * 0.5F + 0.5F);
-                    int stoneIndex = Mth.floor((cellValue) * config.firstTargetPlacer.size());
+                    int stoneIndex = Mth.floor((cellValue) * config.firstTargetPlacer().size());
 
                     float seed = cellValue * 1000000;
                     Random patchRandom = new Random((long) seed);
-                    boolean isBlankPatch = (patchRandom.nextFloat() < config.blankPatchChance) || cellBufferNoise.GetNoise(domainWarpedVector.x, domainWarpedVector.y, domainWarpedVector.z) > -0.1;
+                    boolean isBlankPatch = (patchRandom.nextFloat() < config.blankPatchChance()) || cellBufferNoise.GetNoise(domainWarpedVector.x, domainWarpedVector.y, domainWarpedVector.z) > -0.1;
 
                     /*
                     if (CommonConfigs.CROSS_SECTION.get()) {
@@ -98,16 +98,16 @@ public class BlockStripeFeature extends Feature<BlockStripeFeatureConfig> {
                     }
                      */
                     if (!isBlankPatch) {
-                        if (!config.useHeightFilter || (y > (cachedChunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) - config.bottomOffset))) {
+                        if (!config.useHeightFilter() || (y > (cachedChunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z) - config.bottomOffset()))) {
 
                             List<StoneEntry> patternList = null;
-                            if (isTarget1) patternList = config.firstTargetPlacer;
-                            else if (isTarget2) patternList = config.secondTargetPlacer;
+                            if (isTarget1) patternList = config.firstTargetPlacer();
+                            else if (isTarget2) patternList = config.secondTargetPlacer();
 
 
                             if (patternList != null) {
                                 StoneEntry stoneEntry = patternList.get(stoneIndex);
-                                StonePattern stonePattern = stoneEntry.getStonePattern();
+                                StonePattern stonePattern = stoneEntry.stonePattern();
 
                                 if (stonePattern.shouldPlacePrimaryStone(currentPos)) {
                                     worldGenLevel.setBlock(currentPos, stoneEntry.getPrimaryStoneState(worldGenLevel, currentPos), Block.UPDATE_CLIENTS);

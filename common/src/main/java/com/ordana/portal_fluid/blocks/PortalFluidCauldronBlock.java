@@ -2,20 +2,30 @@ package com.ordana.portal_fluid.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.ordana.portal_fluid.items.PortalFluidBottleItem;
+import com.ordana.portal_fluid.items.PortalFluidBucketItem;
 import com.ordana.portal_fluid.particles.PortalFluidFlameParticle;
+import com.ordana.portal_fluid.reg.ModBlocks;
+import com.ordana.portal_fluid.reg.ModItems;
 import com.ordana.portal_fluid.util.TeleportHelper;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
@@ -64,8 +74,8 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(state, pos, entity) && TeleportHelper.canTeleportTo(serverLevel, entity, pos))
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity);
+        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(state, pos, entity) && TeleportHelper.canTeleportTo(entity))
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
     }
 
     @Override
@@ -83,14 +93,50 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
         builder.add(LEVEL);
     }
 
-    @Override
-    protected void receiveStalactiteDrip(BlockState state, Level level, BlockPos pos, Fluid fluid) {
-        if (!this.isFull(state)) {
-            BlockState blockState = state.setValue(LEVEL, state.getValue(LEVEL) + 1);
-            level.setBlockAndUpdate(pos, blockState);
-            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(blockState));
-            level.levelEvent(LevelEvent.SOUND_DRIP_WATER_INTO_CAULDRON, pos, 0);
-        }
+    public static boolean canEmptyInto(BlockState blockState) {
+        Block block = blockState.getBlock();
+        return block instanceof CauldronBlock || block instanceof PortalFluidCauldronBlock && blockState.getValue(LEVEL) < MAX_FILL_LEVEL;
+    }
+
+    public static BlockState getNextCauldronState(BlockState blockState) {
+        Block block = ModBlocks.PORTAL_CAULDRON.get();
+        return blockState.is(block) ? blockState.cycle(LEVEL) : block.defaultBlockState();
+    }
+
+    public static BlockState getPreviousCauldronState(BlockState blockState) {
+        if (blockState.getValue(LEVEL) == MIN_FILL_LEVEL)
+            return Blocks.CAULDRON.defaultBlockState();
+
+        return blockState.setValue(LEVEL, blockState.getValue(LEVEL) - 1);
+    }
+
+    public static InteractionResult tryCollectWithBottle(ItemStack itemStack, BlockPos blockPos, BlockState blockState, Player player, Level level, InteractionHand interactionHand) {
+        PortalFluidBottleItem.playSound(level, blockPos, player, true);
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance());
+
+        player.setItemInHand(interactionHand, filledResult);
+        level.setBlockAndUpdate(blockPos, getPreviousCauldronState(blockState));
+
+        if (player instanceof ServerPlayer serverPlayer)
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);
+
+        return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    public static InteractionResult tryCollectWithBucket(ItemStack itemStack, BlockPos blockPos, BlockState blockState, Player player, Level level, InteractionHand interactionHand) {
+        if (blockState.getValue(LEVEL) < MAX_FILL_LEVEL)
+            return InteractionResult.PASS;
+
+        PortalFluidBucketItem.playSound(level, blockPos, player, true);
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.PORTAL_FLUID_BUCKET.get().getDefaultInstance());
+
+        player.setItemInHand(interactionHand, filledResult);
+        level.setBlockAndUpdate(blockPos, Blocks.CAULDRON.defaultBlockState());
+
+        if (player instanceof ServerPlayer serverPlayer)
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);
+
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
 }

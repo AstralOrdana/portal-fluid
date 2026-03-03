@@ -25,9 +25,8 @@ public class PortalFluidRootFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(s -> currentServer = s);
 
-        if(PlatHelper.getPhysicalSide().isClient()) {
+        if (PlatHelper.getPhysicalSide().isClient())
             PortalFluidClient.init();
-        }
 
         UseBlockCallback.EVENT.register(PortalFluidRootFabric::onRightClickBlock);
     }

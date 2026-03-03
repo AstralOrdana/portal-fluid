@@ -38,7 +38,7 @@ public class GlassBottleMixin extends Item {
         BlockPos blockPos = blockHitResult.getBlockPos();
 
         if (level.getFluidState(blockPos).is(ModTags.PORTAL_FLUID)) {
-            level.playSound(player, player.getX(), player.getY(), player.getZ(), ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get(), SoundSource.NEUTRAL);
             level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
 
             cir.setReturnValue(InteractionResultHolder.sidedSuccess(this.portal_fluid$turnBottleIntoItem(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance()), level.isClientSide()));

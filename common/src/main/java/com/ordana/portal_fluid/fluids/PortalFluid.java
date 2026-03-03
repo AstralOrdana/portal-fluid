@@ -84,11 +84,6 @@ public abstract class PortalFluid extends ModFlowingFluid {
         return 100f;
     }
 
-    @Override
-    public int getAmount(@NotNull FluidState state) {
-        return 0;
-    }
-
     public static class Flowing extends PortalFluid {
 
         public Flowing(Properties properties, Supplier<? extends LiquidBlock> block) {

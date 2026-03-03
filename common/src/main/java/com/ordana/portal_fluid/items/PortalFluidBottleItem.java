@@ -1,20 +1,22 @@
 package com.ordana.portal_fluid.items;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
+import com.ordana.portal_fluid.blocks.PortalFluidCauldronBlock;
 import com.ordana.portal_fluid.configs.CommonConfigs;
+import com.ordana.portal_fluid.reg.ModItems;
+import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.util.TeleportHelper;
 import com.ordana.portal_fluid.reg.ModComponents;
-import com.ordana.portal_fluid.util.TranslationUtils;
+import com.ordana.portal_fluid.util.Translation;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +27,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.ParticleUtils;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -35,6 +39,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RespawnAnchorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.DimensionTransition;
@@ -45,12 +50,17 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGaslightTooltipItem {
 
-    public static final FoodProperties PORTAL_FLUID = (new FoodProperties.Builder()).nutrition(0).saturationModifier(0F).alwaysEdible().build();
     private static final Logger LOGGER = LogUtils.getLogger();
+    public static final FoodProperties FOOD_PROPERTIES = new FoodProperties.Builder()
+        .nutrition(0)
+        .saturationModifier(0F)
+        .alwaysEdible()
+        .build();
 
     public PortalFluidBottleItem(Properties properties) {
         super(properties);
@@ -78,55 +88,39 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_pos", blockPos.getX(), blockPos.getY(), blockPos.getZ()).setStyle(Style.EMPTY.applyFormat(ChatFormatting.LIGHT_PURPLE)));
         }
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), Minecraft.getInstance().options.keyShift.key.getValue())) {
-            tooltip.add(TranslationUtils.PORTAL_FLUID_1.component());
-            tooltip.add(TranslationUtils.PORTAL_FLUID_2.component());
-
-            if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get() && CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get())
-                tooltip.add(TranslationUtils.PORTAL_FLUID_3C.component());
-            else if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get())
-                tooltip.add(TranslationUtils.PORTAL_FLUID_3A.component());
-            else if (CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get())
-                tooltip.add(TranslationUtils.PORTAL_FLUID_3B.component());
+        if (!Translation.isShiftDown()) {
+            tooltip.add(Translation.CROUCH.component());
+            return;
         }
-        else tooltip.add(TranslationUtils.CROUCH.component());
-    }
 
-    private static boolean inPortalDimension(@NotNull Level level) {
-        return level.dimension() == Level.OVERWORLD || level.dimension() == Level.NETHER;
+        tooltip.add(Translation.PORTAL_FLUID_1.component());
+        tooltip.add(Translation.PORTAL_FLUID_2.component());
+
+        boolean respawnAnchorFluid = CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get();
+
+        if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get())
+            tooltip.add(respawnAnchorFluid ? Translation.FROM_EITHER.component() : Translation.FROM_CRYING_OBSIDIAN.component());
+        else if (respawnAnchorFluid)
+            tooltip.add(Translation.FROM_RESPAWN_ANCHOR.component());
     }
 
     @Override
     @NotNull
     public InteractionResult useOn(@NotNull UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
+        Player player = context.getPlayer();
 
-        if (!inPortalDimension(level))
+        if (player == null)
             return InteractionResult.PASS;
 
-        Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(level, pos.relative(context.getClickedFace()), Direction.Axis.X);
+        Level level = context.getLevel();
+        BlockPos blockPos = context.getClickedPos();
+        ItemStack itemStack = context.getItemInHand();
+        InteractionHand interactionHand = context.getHand();
 
-        if (optional.isPresent()) {
-            optional.get().createPortalBlocks();
+        InteractionResult emptyIntoCauldronResult = tryEmptyIntoCauldron(level, blockPos, itemStack, player, interactionHand);
+        InteractionResult createPortalResult = tryCreatePortal(level, blockPos, itemStack, player, interactionHand, context.getClickedFace());
 
-            if (CommonConfigs.PORTAL_CREATION_SOUND.get())
-                level.playSound(null, pos, SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.BLOCKS);
-
-            Player player = context.getPlayer();
-
-            if (player == null)
-                return InteractionResult.PASS;
-
-            ItemStack itemStack2 = ItemUtils.createFilledResult(context.getItemInHand(), player, Items.GLASS_BOTTLE.getDefaultInstance());
-            player.setItemInHand(context.getHand(), itemStack2);
-
-            //if (!player.getAbilities().instabuild) stack.shrink(1);
-
-            return InteractionResult.SUCCESS;
-        }
-
-        return InteractionResult.PASS;
+        return Objects.requireNonNullElse(emptyIntoCauldronResult, createPortalResult);
     }
 
     @Override
@@ -148,21 +142,21 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
 
     @Override
     public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl) {
-        if (!(level instanceof ServerLevel serverLevel))
-            return;
+        if (level instanceof ServerLevel serverLevel) {
+            GlobalPos globalPos = itemStack.get(ModComponents.ANCHOR_POS.get());
 
-        GlobalPos globalPos = itemStack.get(ModComponents.ANCHOR_POS.get());
+            if (globalPos == null)
+                return;
 
-        if (globalPos == null)
-            return;
+            ResourceKey<Level> dimensionKey = globalPos.dimension();
+            ServerLevel dimension = serverLevel.getServer().getLevel(dimensionKey);
 
-        ResourceKey<Level> dimensionKey = globalPos.dimension();
-        ServerLevel dimension = serverLevel.getServer().getLevel(dimensionKey);
+            if (dimension == null)
+                return;
 
-        if (dimension != null) {
             BlockState blockState = dimension.getBlockState(globalPos.pos());
 
-            if (!(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.getValue(RespawnAnchorBlock.CHARGE) > 0))
+            if (!(blockState.getBlock() instanceof RespawnAnchorBlock))
                 itemStack.remove(ModComponents.ANCHOR_POS.get());
         }
     }
@@ -170,36 +164,121 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     @Override
     @NotNull
     public ItemStack finishUsingItem(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
-        if (!CommonConfigs.PORTAL_FLUID_DRINKING.get())
-            return itemStack;
-
-        if (level instanceof ServerLevel serverLevel && livingEntity instanceof ServerPlayer serverPlayer) {
+        if (CommonConfigs.PORTAL_FLUID_DRINKING.get() && level instanceof ServerLevel serverLevel && livingEntity instanceof ServerPlayer serverPlayer) {
             ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, serverPlayer, Items.GLASS_BOTTLE.getDefaultInstance());
             serverPlayer.setItemInHand(serverPlayer.getUsedItemHand(), itemStack2);
 
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
 
-            TeleportHelper.teleportEntity(serverLevel, serverPlayer, itemStack);
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, serverPlayer, itemStack);
         }
 
         return itemStack;
     }
 
+    private static boolean inPortalDimension(@NotNull Level level) {
+        ResourceKey<Level> dimensionKey = level.dimension();
+        return dimensionKey == Level.OVERWORLD || dimensionKey == Level.NETHER;
+    }
+
+    private static InteractionResult tryCreatePortal(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand, Direction clickedFace) {
+        if (inPortalDimension(level)) {
+            Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(level, blockPos.relative(clickedFace), Direction.Axis.X);
+
+            if (optional.isEmpty())
+                return InteractionResult.PASS;
+
+            if (CommonConfigs.PORTAL_CREATION_SOUND.get())
+                level.playSound(player, blockPos, SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.BLOCKS);
+
+            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
+            player.setItemInHand(interactionHand, filledResult);
+
+            optional.get().createPortalBlocks();
+
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    private static InteractionResult tryEmptyIntoCauldron(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand) {
+        BlockState blockState = level.getBlockState(blockPos);
+
+        if (!PortalFluidCauldronBlock.canEmptyInto(blockState))
+            return InteractionResult.PASS;
+
+        playSound(level, blockPos, player, false);
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
+
+        player.setItemInHand(interactionHand, filledResult);
+        level.setBlockAndUpdate(blockPos, PortalFluidCauldronBlock.getNextCauldronState(blockState));
+
+        if (player instanceof ServerPlayer serverPlayer)
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);
+
+        return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    public static InteractionResult tryCollectObsidianTears(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand) {
+        if (!CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get())
+            return InteractionResult.PASS;
+
+        ParticleUtils.spawnParticlesOnBlockFaces(level, blockPos, ParticleTypes.FALLING_OBSIDIAN_TEAR, UniformInt.of(3, 5));
+        playSound(level, blockPos, player, true);
+
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance());
+
+        player.setItemInHand(interactionHand, filledResult);
+        level.setBlockAndUpdate(blockPos, Blocks.OBSIDIAN.defaultBlockState());
+
+        if (player instanceof ServerPlayer serverPlayer)
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    public static InteractionResult tryCollectRespawnAnchorTears(Level level, BlockPos blockPos, BlockState blockState, ItemStack itemStack, Player player, InteractionHand interactionHand) {
+        if (blockState.getValue(RespawnAnchorBlock.CHARGE) == 0 || !CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get())
+            return InteractionResult.PASS;
+
+        ParticleUtils.spawnParticlesOnBlockFaces(level, blockPos, ParticleTypes.FALLING_OBSIDIAN_TEAR, UniformInt.of(3, 5));
+        playSound(level, blockPos, player, true);
+
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance());
+        filledResult.set(ModComponents.ANCHOR_POS.get(), new GlobalPos(level.dimension(), blockPos));
+
+        player.setItemInHand(interactionHand, filledResult);
+        level.setBlockAndUpdate(blockPos, blockState.setValue(RespawnAnchorBlock.CHARGE, blockState.getValue(RespawnAnchorBlock.CHARGE) - 1));
+
+        if (player instanceof ServerPlayer serverPlayer)
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);
+
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    public static void playSound(Level level, BlockPos blockPos, Player player, boolean fill) {
+        SoundEvent soundEvent = fill ? ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get() : ModSoundEvents.PORTAL_FLUID_BOTTLE_EMPTY.get();
+        level.playSound(player, blockPos, soundEvent, SoundSource.BLOCKS);
+    }
+
     @Nullable
     public static DimensionTransition getAnchorDimensionTransition(MinecraftServer minecraftServer, ServerPlayer serverPlayer, @Nullable ItemStack itemStack) {
-        if (itemStack == null)
-            return null;
+        if (itemStack != null) {
+            GlobalPos globalPos = itemStack.get(ModComponents.ANCHOR_POS.get());
 
-        GlobalPos globalPos = itemStack.get(ModComponents.ANCHOR_POS.get());
+            if (globalPos == null)
+                return null;
 
-        if (globalPos == null)
-            return null;
+            ServerLevel dimensionLevel = minecraftServer.getLevel(globalPos.dimension());
+            Optional<Vec3> optional = RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, dimensionLevel, globalPos.pos());
 
-        ServerLevel dimensionLevel = minecraftServer.getLevel(globalPos.dimension());
-        Optional<Vec3> optional = RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, dimensionLevel, globalPos.pos());
+            if (optional.isPresent())
+                return TeleportHelper.createDimensionTransition(dimensionLevel, serverPlayer, optional.get());
+        }
 
-        return optional.map(vec3 -> TeleportHelper.createDimensionTransition(dimensionLevel, serverPlayer, vec3)).orElse(null);
+        return null;
     }
 
 }

@@ -1,12 +1,12 @@
 package com.ordana.portal_fluid.util;
 
 import com.ordana.portal_fluid.configs.CommonConfigs;
+import com.ordana.portal_fluid.effects.RiftingEffect;
 import com.ordana.portal_fluid.items.PortalFluidBottleItem;
 import com.ordana.portal_fluid.reg.ModEffects;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.reg.ModTags;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -25,20 +25,26 @@ import java.util.Objects;
 
 public final class TeleportHelper {
 
-    public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity) {
+    public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
         int delaySeconds = CommonConfigs.TELEPORTATION_DELAY_SECONDS.get();
 
-        if (entity instanceof LivingEntity livingEntity && delaySeconds > 0) {
-            Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
-
-            if (!livingEntity.hasEffect(mobEffectHolder) && !livingEntity.isSpectator())
-                livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, SharedConstants.TICKS_PER_SECOND * delaySeconds));
+        if (!(entity instanceof LivingEntity livingEntity) || delaySeconds <= 0) {
+            teleportEntity(serverLevel, entity, causingStack);
+            return;
         }
-        else teleportEntity(serverLevel, entity, null);
+
+        Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
+
+        if (!livingEntity.hasEffect(mobEffectHolder) && !livingEntity.isSpectator()) {
+            livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, SharedConstants.TICKS_PER_SECOND * delaySeconds));
+
+            if (causingStack != null)
+                ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
+        }
     }
 
-    public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack itemStack) {
-        entity.changeDimension(getDimensionTransition(serverLevel, entity, itemStack));
+    public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
+        entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
         playTeleportSound(serverLevel, entity);
     }
 
@@ -71,14 +77,8 @@ public final class TeleportHelper {
         serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.PORTAL_FLUID_TELEPORT.get(), SoundSource.NEUTRAL, volume, 1.0F);
     }
 
-    public static boolean canTeleportTo(ServerLevel serverLevel, Entity entity, BlockPos blockPos) {
-        if (entity.getType().is(ModTags.PORTAL_FLUID_IMMUNE))
-            return false;
-
-        if (entity.isPassenger() || entity.isVehicle())
-            return false;
-
-        return !entity.isCrouching() && !blockPos.equals(serverLevel.getSharedSpawnPos());
+    public static boolean canTeleportTo(Entity entity) {
+        return !entity.getType().is(ModTags.PORTAL_FLUID_IMMUNE) && !entity.isPassenger() && !entity.isVehicle() && !entity.isCrouching();
     }
 
 }

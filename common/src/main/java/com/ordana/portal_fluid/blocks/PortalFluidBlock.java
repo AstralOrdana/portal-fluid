@@ -48,14 +48,14 @@ public class PortalFluidBlock extends LiquidBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.inFluidPredicate.test(entity) && TeleportHelper.canTeleportTo(serverLevel, entity, pos))
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity);
+        if (level instanceof ServerLevel serverLevel && this.inFluidPredicate.test(entity) && TeleportHelper.canTeleportTo(entity))
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
     }
 
     @Override
     @NotNull
     protected VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        if (blockGetter instanceof Level level && level.dimension() == Level.END && blockPos.getY() == 0)
+        if (blockGetter instanceof Level level && level.dimension() == Level.END && blockPos.getY() == level.getMinBuildHeight())
             return Shapes.block().move(0.0, -1.0, 0.0);
 
         return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);

@@ -5,17 +5,25 @@ import com.ordana.portal_fluid.util.TeleportHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class RiftingEffect extends CountdownEffect {
+
+    @Nullable private ItemStack causingStack = null;
 
     public RiftingEffect(MobEffectCategory arg, int i) {
         super(arg, i, ModParticles.PORTAL_FLAME);
     }
 
+    public void setCausingStack(@Nullable ItemStack causingStack) {
+        this.causingStack = causingStack;
+    }
+
     @Override
     public void onEndCountdown(LivingEntity livingEntity, int amplifier) {
-        if (livingEntity.level() instanceof ServerLevel serverLevel && TeleportHelper.canTeleportTo(serverLevel, livingEntity, livingEntity.blockPosition()))
-            TeleportHelper.teleportEntity(serverLevel, livingEntity, null);
+        if (livingEntity.level() instanceof ServerLevel serverLevel && TeleportHelper.canTeleportTo(livingEntity))
+            TeleportHelper.teleportEntity(serverLevel, livingEntity, this.causingStack);
     }
 
 }
