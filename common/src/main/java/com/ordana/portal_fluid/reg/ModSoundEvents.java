@@ -5,24 +5,25 @@ import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class ModSoundEvents {
-    public static void init() {
-    }
 
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_AMBIENT = registerSoundEvent("portal_fluid_ambient");
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_SUBMERGE = registerSoundEvent("portal_fluid_submerge");
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_TELEPORT = registerSoundEvent("portal_fluid_teleport");
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_BUCKET_EMPTY = registerSoundEvent("portal_fluid_bucket_empty");
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_BUCKET_FILL = registerSoundEvent("portal_fluid_bucket_fill");
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_BOTTLE_EMPTY = registerSoundEvent("portal_fluid_bottle_empty");
-    public static final RegSupplier<SoundEvent> PORTAL_FLUID_BOTTLE_FILL = registerSoundEvent("portal_fluid_bottle_fill");
-    public static final RegSupplier<SoundEvent> BOAT_PADDLE_PORTAL_FLUID = registerSoundEvent("boat_paddle_portal_fluid");
+    public static final RegSupplier<SoundEvent> PORTAL_SPAWN = registerSoundEvent("block.portal.spawn");
+    public static final RegSupplier<SoundEvent> PORTAL_FLUID_AMBIENT = registerSoundEvent("block.portal_fluid.ambient");
+    public static final RegSupplier<SoundEvent> PORTAL_FLUID_TELEPORT = registerSoundEvent("block.portal_fluid.teleport");
+    public static final RegSupplier<SoundEvent> BUCKET_EMPTY_PORTAL_FLUID = registerSoundEvent("item.bucket.empty_portal_fluid");
+    public static final RegSupplier<SoundEvent> BUCKET_FILL_PORTAL_FLUID = registerSoundEvent("item.bucket.fill_portal_fluid");
+    public static final RegSupplier<SoundEvent> BOTTLE_EMPTY_PORTAL_FLUID = registerSoundEvent("item.bottle.empty_portal_fluid");
+    public static final RegSupplier<SoundEvent> BOTTLE_FILL_PORTAL_FLUID = registerSoundEvent("item.bottle.fill_portal_fluid");
+    public static final RegSupplier<SoundEvent> BOAT_PADDLE_PORTAL_FLUID = registerSoundEvent("entity.boat.paddle_portal_fluid");
+    public static final RegSupplier<SoundEvent> APPLY_EFFECT_RIFTING = registerSoundEvent("event.mob_effect.rifting");
+    public static final RegSupplier<SoundEvent> PORTAL_FLUID_BOTTLE_DRINK = registerSoundEvent("item.portal_fluid_bottle.drink");
 
-    @NotNull
-    private static RegSupplier<SoundEvent> registerSoundEvent(@NotNull String name) {
-        ResourceLocation id = PortalFluidRoot.res(name);
+    private static RegSupplier<SoundEvent> registerSoundEvent(String path) {
+        ResourceLocation id = PortalFluidRoot.res(path);
         return RegHelper.registerSound(id);
     }
+
+    public static void init() {}
+
 }

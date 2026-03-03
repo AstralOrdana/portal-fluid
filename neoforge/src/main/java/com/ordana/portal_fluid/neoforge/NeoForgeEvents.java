@@ -12,11 +12,11 @@ public class NeoForgeEvents {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        InteractionResult ret = ModEvents.onBlockClicked(event.getItemStack(), event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
+        InteractionResult interactionResult = ModEvents.onBlockClicked(event.getItemStack(), event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
 
-        if (ret != InteractionResult.PASS) {
+        if (interactionResult != InteractionResult.PASS) {
             event.setCanceled(true);
-            event.setCancellationResult(ret);
+            event.setCancellationResult(interactionResult);
         }
     }
 

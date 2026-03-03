@@ -6,6 +6,7 @@ import com.ordana.portal_fluid.worldgen_features.BlockStripeFeature;
 import com.ordana.portal_fluid.worldgen_features.BlockStripeFeatureConfig;
 import com.ordana.portal_fluid.worldgen_features.PortalFluidOceanConfig;
 import com.ordana.portal_fluid.worldgen_features.PortalFluidOceanFeature;
+import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +14,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.function.Supplier;
@@ -20,13 +22,19 @@ import java.util.function.Supplier;
 public class ModWorldgenFeatures {
 
 
-    public static final Supplier<Feature<BlockStripeFeatureConfig>> BLOCK_STRIPE_FEATURE = RegHelper.registerFeature(
-            PortalFluidRoot.res("block_stripe"), () ->
-                    new BlockStripeFeature(BlockStripeFeatureConfig.CODEC));
+    public static final RegSupplier<Feature<BlockStripeFeatureConfig>> BLOCK_STRIPE_FEATURE = registerFeature(
+        "block_stripe",
+        () -> new BlockStripeFeature(BlockStripeFeatureConfig.CODEC)
+    );
 
-    public static final Supplier<Feature<PortalFluidOceanConfig>> PORTAL_FLUID_OCEAN_FEATURE = RegHelper.registerFeature(
-            PortalFluidRoot.res("portal_fluid_ocean"), () ->
-                    new PortalFluidOceanFeature(PortalFluidOceanConfig.CODEC));
+    public static final RegSupplier<Feature<PortalFluidOceanConfig>> PORTAL_FLUID_OCEAN_FEATURE = registerFeature(
+        "portal_fluid_ocean",
+        () -> new PortalFluidOceanFeature(PortalFluidOceanConfig.CODEC)
+    );
+
+    private static <FC extends FeatureConfiguration, T extends Feature<FC>> RegSupplier<T> registerFeature(String path, Supplier<T> supplier) {
+        return RegHelper.registerFeature(PortalFluidRoot.res(path), supplier);
+    }
 
     public static void init() {
 

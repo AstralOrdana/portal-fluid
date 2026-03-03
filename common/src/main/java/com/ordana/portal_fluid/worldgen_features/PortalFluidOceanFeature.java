@@ -17,7 +17,9 @@ public class PortalFluidOceanFeature extends Feature<PortalFluidOceanConfig> {
 
     @Override
     public boolean place(FeaturePlaceContext<PortalFluidOceanConfig> context) {
-        if (!CommonConfigs.PORTAL_FLUID_OCEAN.get()) return false;
+        if (!CommonConfigs.PORTAL_FLUID_OCEAN.get())
+            return false;
+
         PortalFluidOceanConfig config = context.config();
 
         BlockPos originPos = context.origin();

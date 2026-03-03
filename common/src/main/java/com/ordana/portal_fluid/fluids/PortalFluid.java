@@ -1,9 +1,9 @@
 package com.ordana.portal_fluid.fluids;
 
-import com.ordana.portal_fluid.particles.PortalFluidFlameParticle;
 import com.ordana.portal_fluid.reg.ModFluids;
 import com.ordana.portal_fluid.reg.ModItems;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
+import com.ordana.portal_fluid.util.PortalFluidAnimation;
 import net.mehvahdjukaar.moonlight.api.client.ModFluidRenderProperties;
 import net.mehvahdjukaar.moonlight.api.fluids.ModFlowingFluid;
 import net.minecraft.core.BlockPos;
@@ -51,7 +51,7 @@ public abstract class PortalFluid extends ModFlowingFluid {
 
     @NotNull
     public Optional<SoundEvent> getPickupSound() {
-        return Optional.of(ModSoundEvents.PORTAL_FLUID_BUCKET_FILL.get());
+        return Optional.of(ModSoundEvents.BUCKET_FILL_PORTAL_FLUID.get());
     }
 
     @Override
@@ -60,8 +60,8 @@ public abstract class PortalFluid extends ModFlowingFluid {
     }
 
     @Override
-    public void animateTick(Level level, BlockPos pos, FluidState state, RandomSource random) {
-        PortalFluidFlameParticle.onAnimateTick(level, pos.above(), random);
+    public void animateTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
+        PortalFluidAnimation.onAnimateTick(level, blockPos.above(), randomSource);
     }
 
     @Override

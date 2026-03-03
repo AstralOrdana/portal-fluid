@@ -4,9 +4,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ordana.portal_fluid.items.PortalFluidBottleItem;
 import com.ordana.portal_fluid.items.PortalFluidBucketItem;
-import com.ordana.portal_fluid.particles.PortalFluidFlameParticle;
 import com.ordana.portal_fluid.reg.ModBlocks;
 import com.ordana.portal_fluid.reg.ModItems;
+import com.ordana.portal_fluid.util.PortalFluidAnimation;
 import com.ordana.portal_fluid.util.TeleportHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -58,8 +58,8 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
     }
 
     @Override
-    protected double getContentHeight(BlockState state) {
-        return (BASE_CONTENT_HEIGHT + state.getValue(LEVEL) * HEIGHT_PER_LEVEL) / 16.0D;
+    protected double getContentHeight(BlockState blockState) {
+        return (BASE_CONTENT_HEIGHT + blockState.getValue(LEVEL) * HEIGHT_PER_LEVEL) / 16.0D;
     }
 
     @Override
@@ -68,13 +68,13 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        PortalFluidFlameParticle.onAnimateTick(level, pos.above(), random);
+    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
+        PortalFluidAnimation.onAnimateTick(level, blockPos.above(), randomSource);
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(state, pos, entity) && TeleportHelper.canTeleportTo(entity))
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(blockState, blockPos, entity) && TeleportHelper.canTeleportTo(entity))
             TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
     }
 

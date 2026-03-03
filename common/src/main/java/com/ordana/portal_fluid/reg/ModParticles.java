@@ -7,13 +7,13 @@ import net.minecraft.core.particles.SimpleParticleType;
 import java.util.function.Supplier;
 
 public class ModParticles {
-    public static void init() {
-    }
+
+    public static final Supplier<SimpleParticleType> PORTAL_FLAME = registerParticle("portal_fluid_flame");
 
     public static Supplier<SimpleParticleType> registerParticle(String name) {
         return RegHelper.registerParticle(PortalFluidRoot.res(name));
     }
 
-    public static final Supplier<SimpleParticleType> PORTAL_FLAME = registerParticle("portal_fluid_flame");
+    public static void init() {}
 
 }

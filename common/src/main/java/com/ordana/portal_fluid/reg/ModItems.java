@@ -3,6 +3,7 @@ package com.ordana.portal_fluid.reg;
 import com.ordana.portal_fluid.PortalFluidRoot;
 import com.ordana.portal_fluid.items.PortalFluidBottleItem;
 import com.ordana.portal_fluid.items.PortalFluidBucketItem;
+import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ModItems {
 
-    public static final Supplier<Item> PORTAL_FLUID_BOTTLE = regItem(
+    public static final RegSupplier<PortalFluidBottleItem> PORTAL_FLUID_BOTTLE = regItem(
         "portal_fluid_bottle",
         () -> new PortalFluidBottleItem(
             new Item.Properties()
@@ -23,7 +24,7 @@ public class ModItems {
         )
     );
 
-    public static final Supplier<Item> PORTAL_FLUID_BUCKET = regItem(
+    public static final RegSupplier<PortalFluidBucketItem> PORTAL_FLUID_BUCKET = regItem(
         "portal_fluid_bucket",
         () -> new PortalFluidBucketItem(
             ModFluids.PORTAL_FLUID.get(),
@@ -33,7 +34,7 @@ public class ModItems {
         )
     );
 
-    public static <T extends Item> Supplier<T> regItem(String name, Supplier<T> itemSup) {
+    public static <T extends Item> RegSupplier<T> regItem(String name, Supplier<T> itemSup) {
         return RegHelper.registerItem(PortalFluidRoot.res(name), itemSup);
     }
 

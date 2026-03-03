@@ -35,11 +35,17 @@ public final class TeleportHelper {
 
         Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
 
-        if (!livingEntity.hasEffect(mobEffectHolder) && !livingEntity.isSpectator()) {
-            livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, SharedConstants.TICKS_PER_SECOND * delaySeconds));
+        if (livingEntity.hasEffect(mobEffectHolder) || livingEntity.isSpectator())
+            return;
 
-            if (causingStack != null)
-                ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
+        int delayTicks = SharedConstants.TICKS_PER_SECOND * delaySeconds;
+        livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, delayTicks));
+
+        if (causingStack != null) {
+            ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
+
+            if (entity instanceof ServerPlayer serverPlayer)
+                serverPlayer.getCooldowns().addCooldown(causingStack.getItem(), delayTicks);
         }
     }
 

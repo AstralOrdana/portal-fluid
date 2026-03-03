@@ -24,7 +24,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ParticleUtils;
@@ -53,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGaslightTooltipItem {
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -131,13 +131,13 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     @Override
     @NotNull
     public SoundEvent getDrinkingSound() {
-        return SoundEvents.HONEY_DRINK;
+        return ModSoundEvents.PORTAL_FLUID_BOTTLE_DRINK.get();
     }
 
     @Override
     @NotNull
     public SoundEvent getEatingSound() {
-        return SoundEvents.HONEY_DRINK;
+        return ModSoundEvents.PORTAL_FLUID_BOTTLE_DRINK.get();
     }
 
     @Override
@@ -165,8 +165,8 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     @NotNull
     public ItemStack finishUsingItem(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
         if (CommonConfigs.PORTAL_FLUID_DRINKING.get() && level instanceof ServerLevel serverLevel && livingEntity instanceof ServerPlayer serverPlayer) {
-            ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, serverPlayer, Items.GLASS_BOTTLE.getDefaultInstance());
-            serverPlayer.setItemInHand(serverPlayer.getUsedItemHand(), itemStack2);
+            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, serverPlayer, Items.GLASS_BOTTLE.getDefaultInstance());
+            serverPlayer.setItemInHand(serverPlayer.getUsedItemHand(), filledResult);
 
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
@@ -190,7 +190,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
                 return InteractionResult.PASS;
 
             if (CommonConfigs.PORTAL_CREATION_SOUND.get())
-                level.playSound(player, blockPos, SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.BLOCKS);
+                level.playSound(player, blockPos, ModSoundEvents.PORTAL_SPAWN.get(), SoundSource.BLOCKS);
 
             ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
             player.setItemInHand(interactionHand, filledResult);
@@ -259,7 +259,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     }
 
     public static void playSound(Level level, BlockPos blockPos, Player player, boolean fill) {
-        SoundEvent soundEvent = fill ? ModSoundEvents.PORTAL_FLUID_BOTTLE_FILL.get() : ModSoundEvents.PORTAL_FLUID_BOTTLE_EMPTY.get();
+        SoundEvent soundEvent = fill ? ModSoundEvents.BOTTLE_FILL_PORTAL_FLUID.get() : ModSoundEvents.BOTTLE_EMPTY_PORTAL_FLUID.get();
         level.playSound(player, blockPos, soundEvent, SoundSource.BLOCKS);
     }
 

@@ -1,60 +1,78 @@
 {
-  "portal_fluid_bucket_empty": {
-    "subtitle": "subtitles.item.bucket.empty",
-    "sounds": [
-      "portal_fluid:item/bucket/empty_dimensional_tears_0",
-      "portal_fluid:item/bucket/empty_dimensional_tears_1",
-      "portal_fluid:item/bucket/empty_dimensional_tears_2"
-    ]
-  },
-  "portal_fluid_bucket_fill": {
-    "subtitle": "subtitles.item.bucket.fill",
-    "sounds": [
-      "portal_fluid:item/bucket/fill_dimensional_tears_0",
-      "portal_fluid:item/bucket/fill_dimensional_tears_1",
-      "portal_fluid:item/bucket/fill_dimensional_tears_2"
-    ]
-  },
-  "portal_fluid_bottle_empty": {
-    "subtitle": "subtitles.item.bottle.empty",
-    "sounds": [
-      "portal_fluid:item/bottle/empty_dimensional_tears_0",
-      "portal_fluid:item/bottle/empty_dimensional_tears_1"
-    ]
-  },
-  "portal_fluid_bottle_fill": {
-    "subtitle": "subtitles.item.bottle.fill",
-    "sounds": [
-      "portal_fluid:item/bottle/fill_dimensional_tears_0",
-      "portal_fluid:item/bottle/fill_dimensional_tears_1"
-    ]
-  },
-  "portal_fluid_submerge": {
-    "subtitle": "subtitles.block.portal_fluid.submerge",
-    "sounds": [
-      "portal_fluid:block/portal_fluid/submerge"
-    ]
-  },
-  "portal_fluid_teleport": {
-    "subtitle": "subtitles.block.portal_fluid.teleport",
-    "sounds": [
-      "portal_fluid:block/portal_fluid/teleport"
-    ]
-  },
-  "portal_fluid_ambient": {
-    "subtitle": "subtitles.block.portal_fluid.ambient",
-    "sounds": [
-      "portal_fluid:block/portal_fluid/ambient_0",
-      "portal_fluid:block/portal_fluid/ambient_1"
-    ]
-  },
-  "boat_paddle_portal_fluid": {
-    "subtitle": "subtitles.entity.boat.paddle_water",
-    "sounds": [
-      "portal_fluid:block/portal_fluid/paddle_portal_fluid_0",
-      "portal_fluid:block/portal_fluid/paddle_portal_fluid_1",
-      "portal_fluid:block/portal_fluid/paddle_portal_fluid_2",
-      "portal_fluid:block/portal_fluid/paddle_portal_fluid_3"
-    ]
-  }
+    "block.portal.spawn": {
+        "sounds": [
+            {
+                "name": "minecraft:block.respawn_anchor.set_spawn",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.block.portal.spawn"
+    },
+    "block.portal_fluid.ambient": {
+        "sounds": [
+            "portal_fluid:liquid/portal_fluid0",
+            "portal_fluid:liquid/portal_fluid1"
+        ],
+        "subtitle": "subtitles.block.portal_fluid.ambient"
+    },
+    "block.portal_fluid.teleport": {
+        "sounds": [
+            "portal_fluid:liquid/portal_fluid_teleport"
+        ],
+        "subtitle": "subtitles.block.portal_fluid.teleport"
+    },
+    "entity.boat.paddle_portal_fluid": {
+        "sounds": [
+            "portal_fluid:entity/boat/paddle_portal_fluid0",
+            "portal_fluid:entity/boat/paddle_portal_fluid1",
+            "portal_fluid:entity/boat/paddle_portal_fluid2",
+            "portal_fluid:entity/boat/paddle_portal_fluid3"
+        ],
+        "subtitle": "subtitles.entity.boat.paddle_water"
+    },
+    "event.mob_effect.rifting": {
+        "sounds": [
+            "portal_fluid:event/mob_effects/rifting"
+        ],
+        "subtitle": "subtitles.event.mob_effect.rifting"
+    },
+    "item.bottle.empty_portal_fluid": {
+        "sounds": [
+            "portal_fluid:item/bottle/empty_portal_fluid0",
+            "portal_fluid:item/bottle/empty_portal_fluid1"
+        ],
+        "subtitle": "subtitles.item.bottle.empty"
+    },
+    "item.bottle.fill_portal_fluid": {
+        "sounds": [
+            "portal_fluid:item/bottle/fill_portal_fluid0",
+            "portal_fluid:item/bottle/fill_portal_fluid1"
+        ],
+        "subtitle": "subtitles.item.bottle.fill"
+    },
+    "item.bucket.empty_portal_fluid": {
+        "sounds": [
+            "portal_fluid:item/bucket/empty_portal_fluid0",
+            "portal_fluid:item/bucket/empty_portal_fluid1",
+            "portal_fluid:item/bucket/empty_portal_fluid2"
+        ],
+        "subtitle": "subtitles.item.bucket.empty"
+    },
+    "item.bucket.fill_portal_fluid": {
+        "sounds": [
+            "portal_fluid:item/bucket/fill_portal_fluid0",
+            "portal_fluid:item/bucket/fill_portal_fluid1",
+            "portal_fluid:item/bucket/fill_portal_fluid2"
+        ],
+        "subtitle": "subtitles.item.bucket.fill"
+    },
+    "item.portal_fluid_bottle.drink": {
+        "sounds": [
+            {
+                "name": "minecraft:item.honey_bottle.drink",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.item.honey_bottle.drink"
+    }
 }

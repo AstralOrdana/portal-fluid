@@ -5,21 +5,21 @@ import com.ordana.portal_fluid.PortalFluidRoot;
 import com.ordana.portal_fluid.configs.CommonConfigs;
 import net.mehvahdjukaar.moonlight.api.resources.RPUtils;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynServerResourcesGenerator;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.InputStream;
 import java.util.List;
 
-public class ModLootOverrides extends DynServerResourcesGenerator {
+@SuppressWarnings("removal")
+public class ModLootOverrides extends net.mehvahdjukaar.moonlight.api.resources.pack.DynServerResourcesGenerator {
 
     public static final ModLootOverrides INSTANCE = new ModLootOverrides();
 
     public ModLootOverrides() {
-        super(new DynamicDataPack(PortalFluidRoot.res("generated_pack"), Pack.Position.TOP, true, true));
+        super(new net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack(PortalFluidRoot.res("generated_pack"), Pack.Position.TOP, true, true));
         this.dynamicPack.setGenerateDebugResources(false);
         this.dynamicPack.addNamespaces("minecraft");
     }
@@ -34,33 +34,33 @@ public class ModLootOverrides extends DynServerResourcesGenerator {
 //        return true;
 //    }
 
-    public void overrideDataFile(ResourceManager manager, List list, String targetNamespace, String targetPath, String sourcePath, ResType resType) {
-        for (var recipe : list) {
-            ResourceLocation target = ResourceLocation.fromNamespaceAndPath(targetNamespace, targetPath + recipe);
-            ResourceLocation source = ResourceLocation.fromNamespaceAndPath("portal_fluid", sourcePath + recipe + ".json");
+    public void overrideDataFile(ResourceManager manager, List<String> recipePaths, String targetNamespace, String targetPath, String sourcePath, ResType resType) {
+        for (String recipePath : recipePaths) {
+            ResourceLocation target = ResourceLocation.fromNamespaceAndPath(targetNamespace, targetPath + recipePath);
+            ResourceLocation source = ResType.JSON.getPath(PortalFluidRoot.res(sourcePath + recipePath));
 
-            try (var bsStream = manager.getResource(source).orElseThrow().open()) {
-                JsonElement bsElement = RPUtils.deserializeJson(bsStream);
-                dynamicPack.addJson(target, bsElement, resType);
-
-            } catch (Exception ignored) {
+            try (InputStream inputStream = manager.getResource(source).orElseThrow().open()) {
+                JsonElement bsElement = RPUtils.deserializeJson(inputStream);
+                this.dynamicPack.addJson(target, bsElement, resType);
             }
+            catch (Exception ignored) {}
         }
     }
 
     @Override
     public void regenerateDynamicAssets(ResourceManager manager) {
+        if (!CommonConfigs.PIGLINS_GIVE_CRYING_OBSIDIAN.get())
+            return;
 
-        var vanillaLootPiglins = List.of(
-                "piglin_bartering"
+        //make piglins not give you crying obsidian as barter loot
+        this.overrideDataFile(
+            manager,
+            List.of("piglin_bartering"),
+            "minecraft",
+            "gameplay/",
+            "overrides/loot_tables/",
+            ResType.LOOT_TABLES
         );
-
-        if (CommonConfigs.PIGLINS_GIVE_CRYING_OBSIDIAN.get()) {
-
-            //make piglins not give you crying obsidian as barter loot
-            overrideDataFile(manager, vanillaLootPiglins,
-                    "minecraft", "gameplay/",
-                    "overrides/loot_tables/", ResType.LOOT_TABLES);
-        }
     }
+
 }

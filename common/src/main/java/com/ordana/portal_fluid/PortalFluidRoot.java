@@ -13,22 +13,25 @@ public class PortalFluidRoot {
 
     public static final String MOD_ID = "portal_fluid";
     public static final Logger LOGGER = LogManager.getLogger();
+
     private static boolean initiated = false;
 
-    public static ResourceLocation res(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
+    public static ResourceLocation res(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static void commonInit() {
-        if (initiated) {
+        if (initiated)
             return;
-        }
+
         initiated = true;
 
         CommonConfigs.init();
 
-        if(PlatHelper.getPhysicalSide().isClient()) ClientConfigs.init();
+        if (PlatHelper.getPhysicalSide().isClient())
+            ClientConfigs.init();
 
+        //noinspection removal
         ModLootOverrides.INSTANCE.register();
         ModBlocks.init();
         ModFluids.init();

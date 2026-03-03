@@ -32,6 +32,7 @@ import java.util.List;
 import static net.minecraft.world.level.block.LayeredCauldronBlock.LEVEL;
 import static net.minecraft.world.level.block.LayeredCauldronBlock.MAX_FILL_LEVEL;
 
+@SuppressWarnings("unused")
 public class PortalFluidBucketItem extends BucketItem implements RhymingGaslightTooltipItem {
 
     private static final Field CONTENT = PlatHelper.findField(BucketItem.class, "content");
@@ -97,7 +98,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
     }
 
     public static void playSound(LevelAccessor levelAccessor, BlockPos blockPos, Player player, boolean fill) {
-        SoundEvent soundEvent = fill ? ModSoundEvents.PORTAL_FLUID_BUCKET_FILL.get() : ModSoundEvents.PORTAL_FLUID_BUCKET_EMPTY.get();
+        SoundEvent soundEvent = fill ? ModSoundEvents.BUCKET_FILL_PORTAL_FLUID.get() : ModSoundEvents.BUCKET_EMPTY_PORTAL_FLUID.get();
         levelAccessor.playSound(player, blockPos, soundEvent, SoundSource.BLOCKS);
     }
 
