@@ -8,12 +8,14 @@
         "nether_portal.NetherPortalBlockMixin",
         "nether_portal.NetherPortalSoundMixin",
         "portal_fluid.BoatPaddleSoundMixin",
+        "portal_fluid.water_edge_cases.NoSplashWaterExceptionMixin",
         "tooltip.TooltipMixin"
     ],
     "injectors": {
         "defaultRequire": 1
     },
     "client": [
+        "portal_fluid.EndSkyboxHideInFluidMixin",
         "tooltip.RhymingGaslightTooltipMixin"
     ]
 }

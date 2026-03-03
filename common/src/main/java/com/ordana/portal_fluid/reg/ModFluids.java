@@ -4,15 +4,13 @@ import com.ordana.portal_fluid.PortalFluidRoot;
 import com.ordana.portal_fluid.fluids.PortalFluid;
 import net.mehvahdjukaar.moonlight.api.fluids.ModFlowingFluid;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Supplier;
 
-public class ModFluids extends Fluids {
+public class ModFluids {
 
-    public static final Supplier<FlowingFluid> FLOWING_PORTAL_FLUID = registerFluid(
+    public static final Supplier<PortalFluid.Flowing> FLOWING_PORTAL_FLUID = registerFluid(
         "flowing_portal_fluid",
         () -> new PortalFluid.Flowing(
             ModFlowingFluid.properties()
@@ -22,7 +20,7 @@ public class ModFluids extends Fluids {
         )
     );
 
-    public static final Supplier<FlowingFluid> PORTAL_FLUID = registerFluid(
+    public static final Supplier<PortalFluid.Source> PORTAL_FLUID = registerFluid(
         "portal_fluid",
         () -> new PortalFluid.Source(
             ModFlowingFluid.properties()

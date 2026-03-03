@@ -48,7 +48,7 @@ public class PortalFluidBlock extends LiquidBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.inFluidPredicate.test(entity) && TeleportHelper.canTeleportTo(entity))
+        if (level instanceof ServerLevel serverLevel && this.inFluidPredicate.test(entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
             TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
     }
 

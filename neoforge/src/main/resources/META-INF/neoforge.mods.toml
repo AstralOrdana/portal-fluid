@@ -12,7 +12,7 @@ credits="Ordana, cassiancc" #optional
 description = '''
 Rymes with "fears" or "scares"
 '''
-logoFile = "icon.gif"
+logoFile = "icon.png"
 
 [[dependencies.portal_fluid]]
 modId = "neoforge"

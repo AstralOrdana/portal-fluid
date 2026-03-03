@@ -45,7 +45,7 @@ public final class TeleportHelper {
             ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
 
             if (entity instanceof ServerPlayer serverPlayer)
-                serverPlayer.getCooldowns().addCooldown(causingStack.getItem(), delayTicks);
+                serverPlayer.getCooldowns().addCooldown(causingStack.getItem(), SharedConstants.TICKS_PER_SECOND * 10);
         }
     }
 
@@ -84,7 +84,10 @@ public final class TeleportHelper {
     }
 
     public static boolean canTeleportTo(Entity entity) {
-        return !entity.getType().is(ModTags.PORTAL_FLUID_IMMUNE) && !entity.isPassenger() && !entity.isVehicle() && !entity.isCrouching();
+        if (entity.getType().is(ModTags.PORTAL_FLUID_IMMUNE))
+            return false;
+
+        return entity.canUsePortal(false) && !entity.isPassenger() && !entity.isVehicle();
     }
 
 }

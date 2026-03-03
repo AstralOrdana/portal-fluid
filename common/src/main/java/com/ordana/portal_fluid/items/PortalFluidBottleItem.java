@@ -7,7 +7,6 @@ import com.ordana.portal_fluid.reg.ModItems;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
 import com.ordana.portal_fluid.util.TeleportHelper;
 import com.ordana.portal_fluid.reg.ModComponents;
-import com.ordana.portal_fluid.util.Translation;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
@@ -67,7 +66,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     }
 
     //Override
-    @PlatformOnly(PlatformOnly.FORGE)
+    @PlatformOnly("neoforge")
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
     }
@@ -88,20 +87,20 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
             tooltip.add(Component.translatable("tooltip.portal_fluid.portal_fluid_pos", blockPos.getX(), blockPos.getY(), blockPos.getZ()).setStyle(Style.EMPTY.applyFormat(ChatFormatting.LIGHT_PURPLE)));
         }
 
-        if (!Translation.isShiftDown()) {
-            tooltip.add(Translation.CROUCH.component());
-            return;
-        }
+//        if (!Translation.isShiftDown()) {
+//            tooltip.add(Translation.CROUCH.component());
+//            return;
+//        }
 
-        tooltip.add(Translation.PORTAL_FLUID_1.component());
-        tooltip.add(Translation.PORTAL_FLUID_2.component());
-
-        boolean respawnAnchorFluid = CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get();
-
-        if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get())
-            tooltip.add(respawnAnchorFluid ? Translation.FROM_EITHER.component() : Translation.FROM_CRYING_OBSIDIAN.component());
-        else if (respawnAnchorFluid)
-            tooltip.add(Translation.FROM_RESPAWN_ANCHOR.component());
+//        tooltip.add(Translation.PORTAL_FLUID_1.component());
+//        tooltip.add(Translation.PORTAL_FLUID_2.component());
+//
+//        boolean respawnAnchorFluid = CommonConfigs.RESPAWN_ANCHOR_PORTAL_FLUID.get();
+//
+//        if (CommonConfigs.CRYING_OBSIDIAN_PORTAL_FLUID.get())
+//            tooltip.add(respawnAnchorFluid ? Translation.FROM_EITHER.component() : Translation.FROM_CRYING_OBSIDIAN.component());
+//        else if (respawnAnchorFluid)
+//            tooltip.add(Translation.FROM_RESPAWN_ANCHOR.component());
     }
 
     @Override
@@ -246,8 +245,10 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         ParticleUtils.spawnParticlesOnBlockFaces(level, blockPos, ParticleTypes.FALLING_OBSIDIAN_TEAR, UniformInt.of(3, 5));
         playSound(level, blockPos, player, true);
 
-        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance());
-        filledResult.set(ModComponents.ANCHOR_POS.get(), new GlobalPos(level.dimension(), blockPos));
+        ItemStack portalFluidBottle = ModItems.PORTAL_FLUID_BOTTLE.get().getDefaultInstance();
+        portalFluidBottle.set(ModComponents.ANCHOR_POS.get(), new GlobalPos(level.dimension(), blockPos));
+
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, portalFluidBottle);
 
         player.setItemInHand(interactionHand, filledResult);
         level.setBlockAndUpdate(blockPos, blockState.setValue(RespawnAnchorBlock.CHARGE, blockState.getValue(RespawnAnchorBlock.CHARGE) - 1));
@@ -255,7 +256,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         if (player instanceof ServerPlayer serverPlayer)
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);
 
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     public static void playSound(Level level, BlockPos blockPos, Player player, boolean fill) {

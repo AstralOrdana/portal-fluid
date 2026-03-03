@@ -1,5 +1,6 @@
 package com.ordana.portal_fluid;
 
+import com.ordana.portal_fluid.fluids.PortalFluid;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -9,11 +10,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.material.FlowingFluid;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class PortalFluidPlatform {
     @Contract
     @ExpectPlatform
@@ -28,7 +29,7 @@ public class PortalFluidPlatform {
     }
 
     @ExpectPlatform
-    public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
+    public static <T extends PortalFluid> LiquidBlock doPortalFluid(Supplier<T> flowingFluid, BlockBehaviour.Properties properties) {
         throw new AssertionError();
     }
 

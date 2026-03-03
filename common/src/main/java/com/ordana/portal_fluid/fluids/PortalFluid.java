@@ -3,13 +3,15 @@ package com.ordana.portal_fluid.fluids;
 import com.ordana.portal_fluid.reg.ModFluids;
 import com.ordana.portal_fluid.reg.ModItems;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
-import com.ordana.portal_fluid.util.PortalFluidAnimation;
+import com.ordana.portal_fluid.reg.ModTags;
+import com.ordana.portal_fluid.util.PortalFluidVisuals;
 import net.mehvahdjukaar.moonlight.api.client.ModFluidRenderProperties;
 import net.mehvahdjukaar.moonlight.api.fluids.ModFlowingFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -61,7 +64,7 @@ public abstract class PortalFluid extends ModFlowingFluid {
 
     @Override
     public void animateTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
-        PortalFluidAnimation.onAnimateTick(level, blockPos.above(), randomSource);
+        PortalFluidVisuals.onAnimateTick(level, blockPos.above(), randomSource);
     }
 
     @Override
@@ -76,12 +79,40 @@ public abstract class PortalFluid extends ModFlowingFluid {
 
     @Override
     public int getTickDelay(@NotNull LevelReader level) {
-        return 5;
+        return 10;
     }
 
     @Override
     protected float getExplosionResistance() {
-        return 100f;
+        return 100.0F;
+    }
+
+    public static boolean isTouching(Level level, AABB boundingBox) {
+        int minX = Mth.floor(boundingBox.minX);
+        int maxX = Mth.ceil(boundingBox.maxX);
+        int minY = Mth.floor(boundingBox.minY);
+        int maxY = Mth.ceil(boundingBox.maxY);
+        int minZ = Mth.floor(boundingBox.minZ);
+        int maxZ = Mth.ceil(boundingBox.maxZ);
+
+        boolean bl = false;
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
+                for (int z = minZ; z < maxZ; z++) {
+                    mutableBlockPos.set(x, y, z);
+                    FluidState fluidState = level.getFluidState(mutableBlockPos);
+
+                    if (fluidState.is(ModTags.PORTAL_FLUID)) {
+                        float height = y + fluidState.getHeight(level, mutableBlockPos);
+                        bl |= boundingBox.minY < height;
+                    }
+                }
+            }
+        }
+
+        return bl;
     }
 
     public static class Flowing extends PortalFluid {

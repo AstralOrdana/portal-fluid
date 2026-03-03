@@ -19,7 +19,7 @@ public abstract class CountdownEffect extends MobEffect {
         this.mobEffect = mobEffect;
     }
 
-    public abstract void onEndCountdown(LivingEntity livingEntity, int amplifier);
+    public abstract void onFinalTick(LivingEntity livingEntity, int amplifier);
 
     @Override
     @NotNull
@@ -34,7 +34,7 @@ public abstract class CountdownEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        this.onEndCountdown(livingEntity, amplifier);
+        this.onFinalTick(livingEntity, amplifier);
         return true;
     }
 

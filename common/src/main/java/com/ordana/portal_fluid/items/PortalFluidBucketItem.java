@@ -1,8 +1,9 @@
 package com.ordana.portal_fluid.items;
 
 import com.ordana.portal_fluid.blocks.PortalFluidCauldronBlock;
+import com.ordana.portal_fluid.reg.ModBlocks;
 import com.ordana.portal_fluid.reg.ModSoundEvents;
-import com.ordana.portal_fluid.util.Translation;
+// import com.ordana.portal_fluid.util.Translation;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipItem;
 import com.ordana.portal_fluid.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
@@ -42,7 +43,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
     }
 
     //Override
-    @PlatformOnly(PlatformOnly.FORGE)
+    @PlatformOnly("neoforge")
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
     }
@@ -57,12 +58,12 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
     public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag context) {
         tooltip.add(RhymingGaslightTooltipState.getText());
 
-        if (Translation.isShiftDown()) {
-            tooltip.add(Translation.PORTAL_FLUID_BUCKET_1.component());
-            tooltip.add(Translation.PORTAL_FLUID_BUCKET_2.component());
-            tooltip.add(Translation.PORTAL_FLUID_BUCKET_3.component());
-        }
-        else tooltip.add(Translation.CROUCH.component());
+//        if (Translation.isShiftDown()) {
+//            tooltip.add(Translation.PORTAL_FLUID_BUCKET_1.component());
+//            tooltip.add(Translation.PORTAL_FLUID_BUCKET_2.component());
+//            tooltip.add(Translation.PORTAL_FLUID_BUCKET_3.component());
+//        }
+//        else tooltip.add(Translation.CROUCH.component());
     }
 
     @Override
@@ -83,7 +84,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
         ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, player, Items.BUCKET.getDefaultInstance());
 
         player.setItemInHand(context.getHand(), itemStack2);
-        level.setBlockAndUpdate(blockPos, blockState.setValue(LEVEL, MAX_FILL_LEVEL));
+        level.setBlockAndUpdate(blockPos, ModBlocks.PORTAL_CAULDRON.get().defaultBlockState().setValue(LEVEL, MAX_FILL_LEVEL));
 
         if (player instanceof ServerPlayer serverPlayer)
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);

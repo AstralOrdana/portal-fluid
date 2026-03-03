@@ -14,6 +14,7 @@ public class PortalFluidSpriteSet {
 
     public static final ResourceLocation FLOWING = PortalFluidRoot.res("block/portal_fluid_flowing");
     public static final ResourceLocation OVERLAY = PortalFluidRoot.res("block/portal_fluid_overlay");
+    public static final ResourceLocation SCREEN = PortalFluidRoot.res("textures/block/portal_fluid_screen.png");
 
     final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
     final ResourceLocation still;

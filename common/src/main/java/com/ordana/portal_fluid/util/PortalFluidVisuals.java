@@ -8,14 +8,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
-public final class PortalFluidAnimation {
+public final class PortalFluidVisuals {
 
     private static final int DEFAULT_SOUND_RARITY = 200;
     private static final int DEFAULT_PARTICLE_RARITY = 20;
     private static final float MIN_SOUND_VOLUME = 0.2F;
     private static final float MAX_SOUND_VOLUME = 0.4F;
     private static final float PITCH_DEVIANCE = 0.1F;
-    private static final double PARTICLE_OFFSET = 0.2;
+    private static final double PARTICLE_VERTICAL_OFFSET = 0.2;
 
     public static void onAnimateTick(Level level, BlockPos blockPos, RandomSource randomSource) {
         BlockPos above = blockPos.above();
@@ -29,7 +29,7 @@ public final class PortalFluidAnimation {
     public static void particle(Level level, BlockPos blockPos, RandomSource randomSource, int rarity) {
         if (randomSource.nextInt(rarity) == 0) {
             double x = blockPos.getX() + randomSource.nextDouble();
-            double y = blockPos.getY() + PARTICLE_OFFSET;
+            double y = blockPos.getY() + PARTICLE_VERTICAL_OFFSET;
             double z = blockPos.getZ() + randomSource.nextDouble();
 
             level.addParticle(ModParticles.PORTAL_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);

@@ -3,19 +3,20 @@
   "id": "portal_fluid",
   "version": "${version}",
   "name": "Dimensional Tears",
-  "description": "Rymes with \"fears\" or \"scares\"",
+  "description": "Rhymes with \"fears\" or \"scares\"",
   "authors": [
     "Ordana"
   ],
   "contributors": [
-    "cassiancc"
+    "cassiancc",
+    "axialeaa"
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/dimensional-tears",
     "sources": "https://github.com/AstralOrdana/portal-fluid"
   },
   "license": "LGPLv3",
-  "icon": "icon.gif",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [

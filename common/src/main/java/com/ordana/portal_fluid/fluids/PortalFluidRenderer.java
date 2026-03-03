@@ -1,11 +1,14 @@
 package com.ordana.portal_fluid.fluids;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.ordana.portal_fluid.configs.ClientConfigs;
 import com.ordana.portal_fluid.reg.ModTags;
 import net.mehvahdjukaar.moonlight.api.client.ModFluidRenderProperties;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -23,10 +26,15 @@ import org.joml.Vector3f;
 
 import static com.ordana.portal_fluid.fluids.PortalFluidSpriteSet.createSpriteSet;
 
+@SuppressWarnings("unused")
 public class PortalFluidRenderer extends ModFluidRenderProperties {
 
     private static final int UNCOMMON_RARITY = 10;
     private static final int RARE_RARITY = 20;
+
+    public static final float FOG_START = 0.1F;
+    public static final float FOG_END = 2.0F;
+    public static final Vector3f FOG_COLOR = Vec3.fromRGB24(0x100C1C).toVector3f();
     
     private static final PortalFluidSpriteSet
         NORTH = createSpriteSet("block/portal_fluid_n"),
@@ -49,33 +57,26 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
         DISCONNECTED_RARE = createSpriteSet("block/portal_fluid_disconnected_rare"),
         DISCONNECTED_SNENCE = createSpriteSet("block/portal_fluid_disconnected_snence");
 
-    private final ResourceLocation overlay;
-    private final ResourceLocation renderOverlay;
-    private final Vec3 fogColor;
-
     public PortalFluidRenderer() {
-        super(DISCONNECTED.still, PortalFluidSpriteSet.FLOWING, 0xFFFFFFFF);
-        this.overlay = PortalFluidSpriteSet.OVERLAY;
-        this.renderOverlay = PortalFluidSpriteSet.OVERLAY;
-        this.fogColor = Vec3.fromRGB24(0x100C1C);
+        super(DISCONNECTED.still, PortalFluidSpriteSet.FLOWING);
     }
 
     @Nullable
     @Override
     public ResourceLocation getOverlayTexture() {
-        return this.overlay;
+        return PortalFluidSpriteSet.OVERLAY;
     }
 
     @Nullable
     @Override
     public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-        return this.renderOverlay;
+        return PortalFluidSpriteSet.SCREEN;
     }
 
     @NotNull
     @Override
     public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-        return this.fogColor.toVector3f();
+        return FOG_COLOR;
     }
 
     @Override
@@ -163,6 +164,18 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
         }
 
         return spriteSet.sprites;
+    }
+
+    @Override
+    public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float viewDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
+        if (camera.getEntity().isSpectator()) {
+            RenderSystem.setShaderFogStart(-8.0F);
+            RenderSystem.setShaderFogEnd(viewDistance * 0.5F);
+        }
+        else {
+            RenderSystem.setShaderFogStart(PortalFluidRenderer.FOG_START);
+            RenderSystem.setShaderFogEnd(PortalFluidRenderer.FOG_END);
+        }
     }
 
     private PortalFluidSpriteSet getDisconnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {

@@ -6,7 +6,7 @@ import com.ordana.portal_fluid.items.PortalFluidBottleItem;
 import com.ordana.portal_fluid.items.PortalFluidBucketItem;
 import com.ordana.portal_fluid.reg.ModBlocks;
 import com.ordana.portal_fluid.reg.ModItems;
-import com.ordana.portal_fluid.util.PortalFluidAnimation;
+import com.ordana.portal_fluid.util.PortalFluidVisuals;
 import com.ordana.portal_fluid.util.TeleportHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -69,12 +69,12 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
-        PortalFluidAnimation.onAnimateTick(level, blockPos.above(), randomSource);
+        PortalFluidVisuals.onAnimateTick(level, blockPos.above(), randomSource);
     }
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(blockState, blockPos, entity) && TeleportHelper.canTeleportTo(entity))
+        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(blockState, blockPos, entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
             TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
     }
 

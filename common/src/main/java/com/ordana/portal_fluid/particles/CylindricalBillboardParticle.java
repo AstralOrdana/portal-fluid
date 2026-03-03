@@ -12,10 +12,11 @@ import org.joml.Vector3f;
 
 public abstract class CylindricalBillboardParticle extends TextureSheetParticle {
 
-    private final Quaternionf rotation = new Quaternionf();
+    private final Quaternionf rotation;
 
     protected CylindricalBillboardParticle(ClientLevel clientLevel, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
         super(clientLevel, x, y, z, velocityX, velocityY, velocityZ);
+        this.rotation = new Quaternionf();
     }
 
     @Override
@@ -75,6 +76,7 @@ public abstract class CylindricalBillboardParticle extends TextureSheetParticle 
     }
 
     private void transformRotation(float partialTicks, Camera camera) {
+        this.rotation.set(new Quaternionf());
         this.rotation.mul(Axis.YN.rotationDegrees(camera.getYRot()));
 
         if (this.roll != 0.0F)

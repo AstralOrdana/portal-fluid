@@ -21,7 +21,7 @@ public class ClientConfigs {
         ConfigBuilder builder = ConfigBuilder.create(PortalFluidRoot.res("client"), ConfigType.CLIENT);
 
         builder.push("general");
-        PORTAL_FLUID_SEED = builder.define("portal_fluid_seed", 1D, 0.01D, 1D);
+        PORTAL_FLUID_SEED = builder.define("portal_fluid_seed", 1.0, 0.01, 1.0);
         builder.pop();
 
         CONFIG_SPEC = builder.build();
