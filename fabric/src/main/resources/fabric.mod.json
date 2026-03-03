@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "com.ordana.portal_fluid.fabric.PortalFluidRootFabric"
+    ],
+    "modmenu": [
+      "com.ordana.portal_fluid.fabric.ModMenuCompat"
     ]
   },
   "mixins": [

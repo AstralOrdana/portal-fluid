@@ -1,4 +1,10 @@
 {
+  "neoforge.configuration.uitext.common": "Common Options",
+  "neoforge.configuration.uitext.client": "Client Options",
+  "moonlight.configuration.no_library": "Please install Cloth Config in order to edit this mod's configs in-game.",
+  "moonlight.configuration.download_library": "Download Cloth Config on Modrinth",
+
+
   "tooltip.portal_fluid.hold_crouch": "Hold %1$s for more details",
   "tooltip.portal_fluid.flint_and_steel": "Not strong enough to Tear open a portal",
   "tooltip.portal_fluid.rhymes_with_tears_0": "Rhymes with \"FEARS\"",
