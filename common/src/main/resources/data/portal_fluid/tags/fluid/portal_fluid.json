@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "portal_fluid:portal_fluid",
-    "portal_fluid:flowing_portal_fluid"
-  ]
-}

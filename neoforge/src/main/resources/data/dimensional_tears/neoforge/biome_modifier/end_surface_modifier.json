@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#dimensional_tears:has_end_noise",
+  "features": [
+    "dimensional_tears:dimensional_tears_pool",
+    "dimensional_tears:dimensional_tears_spring"
+  ],
+  "step": "surface_structures"
+}

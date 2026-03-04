@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.ordana.dimensional_tears.mixins.fabric",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "FogRendererMixin",
+    "ScreenEffectRendererMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

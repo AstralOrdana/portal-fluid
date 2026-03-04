@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "portal_fluid",
+  "id": "dimensional_tears",
   "version": "${version}",
   "name": "Dimensional Tears",
   "description": "Rhymes with \"fears\" or \"scares\"",
@@ -20,15 +20,15 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ordana.portal_fluid.fabric.PortalFluidRootFabric"
+      "com.ordana.dimensional_tears.fabric.PortalFluidRootFabric"
     ],
     "modmenu": [
-      "com.ordana.portal_fluid.fabric.ModMenuCompat"
+      "com.ordana.dimensional_tears.fabric.ModMenuCompat"
     ]
   },
   "mixins": [
-    "portal_fluid.mixins.json",
-    "portal_fluid-common.mixins.json"
+    "dimensional_tears.mixins.json",
+    "dimensional_tears-common.mixins.json"
   ],
   "depends": {
     "fabric-api": "*",

@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#dimensional_tears:has_end_noise",
+  "features": [
+    "dimensional_tears:obsidian_patch",
+    "dimensional_tears:noise_end"
+  ],
+  "step": "raw_generation"
+}

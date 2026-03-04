@@ -11,4 +11,4 @@ include("common")
 include("fabric")
 include("neoforge")
 
-rootProject.name = "portal_fluid"
+rootProject.name = "dimensional_tears"

@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "modid": "create",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "fluid": "dimensional_tears:dimensional_tears",
+      "amount": 144
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:crying_obsidian"
+    }
+  ]
+}

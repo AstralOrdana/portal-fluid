@@ -1,10 +1,10 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
-issueTrackerURL = "https://github.com/AstralOrdana/portal_fluid/issues"
+issueTrackerURL = "https://github.com/AstralOrdana/dimensional_tears/issues"
 license = "LGPLv3"
 
 [[mods]]
-modId = "portal_fluid"
+modId = "dimensional_tears"
 version = "${version}"
 displayName = "Dimensional Tears"
 authors = "Ordana"
@@ -14,21 +14,21 @@ Rymes with "fears" or "scares"
 '''
 logoFile = "icon.png"
 
-[[dependencies.portal_fluid]]
+[[dependencies.dimensional_tears]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.portal_fluid]]
+[[dependencies.dimensional_tears]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.portal_fluid]]
+[[dependencies.dimensional_tears]]
 modId="moonlight"
 type = "required"
 versionRange="[1.20-2.13.30,]"
@@ -37,4 +37,4 @@ side="BOTH"
 
 
 [[mixins]]
-config = "portal_fluid-common.mixins.json"
+config = "dimensional_tears-common.mixins.json"

@@ -1,0 +1,93 @@
+package com.ordana.dimensional_tears.util;
+
+import com.ordana.dimensional_tears.configs.CommonConfigs;
+import com.ordana.dimensional_tears.effects.RiftingEffect;
+import com.ordana.dimensional_tears.items.PortalFluidBottleItem;
+import com.ordana.dimensional_tears.reg.ModEffects;
+import com.ordana.dimensional_tears.reg.ModSoundEvents;
+import com.ordana.dimensional_tears.reg.ModTags;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.Holder;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+
+public final class TeleportHelper {
+
+    public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
+        int delaySeconds = CommonConfigs.TELEPORTATION_DELAY_SECONDS.get();
+
+        if (!(entity instanceof LivingEntity livingEntity) || delaySeconds <= 0) {
+            teleportEntity(serverLevel, entity, causingStack);
+            return;
+        }
+
+        Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
+
+        if (livingEntity.hasEffect(mobEffectHolder) || livingEntity.isSpectator())
+            return;
+
+        int delayTicks = SharedConstants.TICKS_PER_SECOND * delaySeconds;
+        livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, delayTicks));
+
+        if (causingStack != null) {
+            ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
+
+            if (entity instanceof ServerPlayer serverPlayer)
+                serverPlayer.getCooldowns().addCooldown(causingStack.getItem(), SharedConstants.TICKS_PER_SECOND * 10);
+        }
+    }
+
+    public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
+        entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
+        playTeleportSound(serverLevel, entity);
+    }
+
+    private static DimensionTransition getDimensionTransition(ServerLevel serverLevel, Entity entity, @Nullable ItemStack itemStack) {
+        MinecraftServer server = serverLevel.getServer();
+
+        if (entity instanceof ServerPlayer serverPlayer) {
+            return Objects.requireNonNullElse(
+                PortalFluidBottleItem.getAnchorDimensionTransition(server, serverPlayer, itemStack),
+                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.DO_NOTHING)
+            );
+        }
+
+        return createDimensionTransition(server.overworld(), entity, getSpawnPosition(serverLevel, entity));
+    }
+
+    private static Vec3 getSpawnPosition(ServerLevel serverLevel, Entity entity) {
+        return entity.adjustSpawnLocation(serverLevel, serverLevel.getSharedSpawnPos()).getBottomCenter();
+    }
+
+    public static DimensionTransition createDimensionTransition(ServerLevel serverLevel, Entity entity, Vec3 spawnPosition) {
+        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
+    }
+
+    private static void playTeleportSound(ServerLevel serverLevel, Entity entity) {
+        playTeleportSound(serverLevel, entity, 1.0F);
+    }
+
+    private static void playTeleportSound(ServerLevel serverLevel, Entity entity, float volume) {
+        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.DIMENSIONAL_TEARS_TELEPORT.get(), SoundSource.NEUTRAL, volume, 1.0F);
+    }
+
+    public static boolean canTeleportTo(Entity entity) {
+        if (entity.getType().is(ModTags.DIMENSIONAL_TEARS_IMMUNE))
+            return false;
+
+        return entity.canUsePortal(false) && !entity.isPassenger() && !entity.isVehicle();
+    }
+
+}

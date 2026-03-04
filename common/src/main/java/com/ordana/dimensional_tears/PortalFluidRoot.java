@@ -1,0 +1,52 @@
+package com.ordana.dimensional_tears;
+
+import com.ordana.dimensional_tears.configs.ClientConfigs;
+import com.ordana.dimensional_tears.configs.CommonConfigs;
+import com.ordana.dimensional_tears.reg.*;
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class PortalFluidRoot {
+
+    public static final String MOD_ID = "dimensional_tears";
+    public static final Logger LOGGER = LogManager.getLogger();
+
+    private static boolean initiated = false;
+
+    public static ResourceLocation res(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static void commonInit() {
+        if (initiated)
+            return;
+
+        initiated = true;
+
+        CommonConfigs.init();
+
+        if (PlatHelper.getPhysicalSide().isClient())
+            ClientConfigs.init();
+
+        //noinspection removal
+        ModLootOverrides.INSTANCE.register();
+        ModBlocks.init();
+        ModFluids.init();
+        ModItems.init();
+        ModEffects.init();
+        ModComponents.init();
+        ModParticles.init();
+        ModSoundEvents.init();
+        ModCreativeTabs.init();
+        ModWorldgenFeatures.init();
+        RegHelper.addLootTableInjects(ModLootInjects::onLootInject);
+    }
+
+    public static boolean isInitiated() {
+        return initiated;
+    }
+
+}

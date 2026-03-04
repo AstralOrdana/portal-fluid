@@ -2,11 +2,11 @@
   "sources": [
     {
       "type": "single",
-      "resource": "portal_fluid:block/portal_fluid_n"
+      "resource": "dimensional_tears:block/dimensional_tears_n"
     },
     {
       "type": "single",
-      "resource": "portal_fluid:block/portal_fluid_s"
+      "resource": "dimensional_tears:block/dimensional_tears_s"
     }
   ]
 }

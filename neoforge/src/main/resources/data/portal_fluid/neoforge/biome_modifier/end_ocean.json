@@ -1,8 +1,0 @@
-{
-  "type": "neoforge:add_features",
-  "biomes": "#minecraft:is_end",
-  "features": [
-    "portal_fluid:portal_fluid_ocean"
-  ],
-  "step": "raw_generation"
-}
