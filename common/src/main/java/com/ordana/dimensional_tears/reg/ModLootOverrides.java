@@ -1,7 +1,7 @@
 package com.ordana.dimensional_tears.reg;
 
 import com.google.gson.JsonElement;
-import com.ordana.dimensional_tears.PortalFluidRoot;
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import net.mehvahdjukaar.moonlight.api.resources.RPUtils;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
@@ -19,14 +19,14 @@ public class ModLootOverrides extends net.mehvahdjukaar.moonlight.api.resources.
     public static final ModLootOverrides INSTANCE = new ModLootOverrides();
 
     public ModLootOverrides() {
-        super(new net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack(PortalFluidRoot.res("generated_pack"), Pack.Position.TOP, true, true));
+        super(new net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack(DimensionalTearsRoot.res("generated_pack"), Pack.Position.TOP, true, true));
         this.dynamicPack.setGenerateDebugResources(false);
         this.dynamicPack.addNamespaces("minecraft");
     }
 
     @Override
     public Logger getLogger() {
-        return PortalFluidRoot.LOGGER;
+        return DimensionalTearsRoot.LOGGER;
     }
 
 //    @Override
@@ -36,8 +36,8 @@ public class ModLootOverrides extends net.mehvahdjukaar.moonlight.api.resources.
 
     public void overrideDataFile(ResourceManager manager, List<String> recipePaths, String targetNamespace, String targetPath, String sourcePath, ResType resType) {
         for (String recipePath : recipePaths) {
-            ResourceLocation target = ResourceLocation.fromNamespaceAndPath(targetNamespace, targetPath + recipePath);
-            ResourceLocation source = ResType.JSON.getPath(PortalFluidRoot.res(sourcePath + recipePath));
+            ResourceLocation target = ResourceLocation.fromNamespaceAndPath(targetNamespace, recipePath).withPrefix(targetPath);
+            ResourceLocation source = ResType.JSON.getPath(DimensionalTearsRoot.res(recipePath).withPrefix(sourcePath));
 
             try (InputStream inputStream = manager.getResource(source).orElseThrow().open()) {
                 JsonElement bsElement = RPUtils.deserializeJson(inputStream);

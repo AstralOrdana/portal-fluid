@@ -1,6 +1,6 @@
 package com.ordana.dimensional_tears.items;
 
-import com.ordana.dimensional_tears.blocks.PortalFluidCauldronBlock;
+import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
 import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 // import com.ordana.dimensional_tears.util.Translation;
@@ -34,11 +34,11 @@ import static net.minecraft.world.level.block.LayeredCauldronBlock.LEVEL;
 import static net.minecraft.world.level.block.LayeredCauldronBlock.MAX_FILL_LEVEL;
 
 @SuppressWarnings("unused")
-public class PortalFluidBucketItem extends BucketItem implements RhymingGaslightTooltipItem {
+public class DimensionalTearsBucketItem extends BucketItem implements RhymingGaslightTooltipItem {
 
     private static final Field CONTENT = PlatHelper.findField(BucketItem.class, "content");
 
-    public PortalFluidBucketItem(Fluid fluid, Properties properties) {
+    public DimensionalTearsBucketItem(Fluid fluid, Properties properties) {
         super(fluid, properties);
     }
 
@@ -75,7 +75,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
 
         Player player = context.getPlayer();
 
-        if (!PortalFluidCauldronBlock.canEmptyInto(blockState) || player == null)
+        if (!DimensionalTearsCauldronBlock.canEmptyInto(blockState) || player == null)
             return InteractionResult.PASS;
 
         this.playEmptySound(player, level, blockPos);
@@ -84,7 +84,7 @@ public class PortalFluidBucketItem extends BucketItem implements RhymingGaslight
         ItemStack itemStack2 = ItemUtils.createFilledResult(itemStack, player, Items.BUCKET.getDefaultInstance());
 
         player.setItemInHand(context.getHand(), itemStack2);
-        level.setBlockAndUpdate(blockPos, ModBlocks.PORTAL_CAULDRON.get().defaultBlockState().setValue(LEVEL, MAX_FILL_LEVEL));
+        level.setBlockAndUpdate(blockPos, ModBlocks.DIMENSIONAL_TEARS_CAULDRON.get().defaultBlockState().setValue(LEVEL, MAX_FILL_LEVEL));
 
         if (player instanceof ServerPlayer serverPlayer)
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);

@@ -24,19 +24,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import static com.ordana.dimensional_tears.fluids.PortalFluidSpriteSet.createSpriteSet;
+import static com.ordana.dimensional_tears.fluids.DimensionalTearsFluidSpriteSet.createSpriteSet;
 
 @SuppressWarnings("unused")
-public class PortalFluidRenderer extends ModFluidRenderProperties {
+public class DimensionalTearsFluidRenderer extends ModFluidRenderProperties {
 
     private static final int UNCOMMON_RARITY = 10;
-    private static final int RARE_RARITY = 20;
+    private static final int RARE_RARITY = 600;
 
     public static final float FOG_START = 0.1F;
     public static final float FOG_END = 2.0F;
     public static final Vector3f FOG_COLOR = Vec3.fromRGB24(0x100C1C).toVector3f();
     
-    private static final PortalFluidSpriteSet
+    private static final DimensionalTearsFluidSpriteSet
         NORTH = createSpriteSet("block/dimensional_tears_n"),
         EAST = createSpriteSet("block/dimensional_tears_e"),
         SOUTH = createSpriteSet("block/dimensional_tears_s"),
@@ -57,20 +57,20 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
         DISCONNECTED_RARE = createSpriteSet("block/dimensional_tears_disconnected_rare"),
         DISCONNECTED_SNENCE = createSpriteSet("block/dimensional_tears_disconnected_snence");
 
-    public PortalFluidRenderer() {
-        super(DISCONNECTED.still, PortalFluidSpriteSet.FLOWING);
+    public DimensionalTearsFluidRenderer() {
+        super(DISCONNECTED.still, DimensionalTearsFluidSpriteSet.FLOWING);
     }
 
     @Nullable
     @Override
     public ResourceLocation getOverlayTexture() {
-        return PortalFluidSpriteSet.OVERLAY;
+        return DimensionalTearsFluidSpriteSet.OVERLAY;
     }
 
     @Nullable
     @Override
     public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-        return PortalFluidSpriteSet.SCREEN;
+        return DimensionalTearsFluidSpriteSet.SCREEN;
     }
 
     @NotNull
@@ -81,7 +81,7 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
 
     @Override
     public ResourceLocation getStillTexture(FluidState fluidState, BlockAndTintGetter getter, BlockPos blockPos) {
-        @Nullable PortalFluidSpriteSet spriteSet = this.getConnectedSpriteSet(getter, blockPos);
+        @Nullable DimensionalTearsFluidSpriteSet spriteSet = this.getConnectedSpriteSet(getter, blockPos);
 
         if (spriteSet == null)
             spriteSet = this.getDisconnectedSpriteSet(getter, blockPos);
@@ -90,16 +90,16 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
     }
 
     @Nullable
-    private PortalFluidSpriteSet getConnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {
+    private DimensionalTearsFluidSpriteSet getConnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {
         if (this.areAllNeighborsNonFluid(getter, blockPos))
             return ALL;
 
-        boolean northNonFluid = !this.isFluidAdjacent(getter, blockPos, Direction.NORTH);
-        boolean southNonFluid = !this.isFluidAdjacent(getter, blockPos, Direction.SOUTH);
-        boolean eastNonFluid = !this.isFluidAdjacent(getter, blockPos, Direction.EAST);
-        boolean westNonFluid = !this.isFluidAdjacent(getter, blockPos, Direction.WEST);
+        boolean northNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.NORTH);
+        boolean southNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.SOUTH);
+        boolean eastNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.EAST);
+        boolean westNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.WEST);
 
-        PortalFluidSpriteSet spriteSet = null;
+        DimensionalTearsFluidSpriteSet spriteSet = null;
 
         if (northNonFluid) {
             spriteSet = NORTH;
@@ -150,11 +150,11 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
     }
 
     public void reloadTextures(TextureAtlas textureAtlas) {
-        PortalFluidSpriteSet.populateSpriteSetArrays(textureAtlas);
+        DimensionalTearsFluidSpriteSet.populateSpriteSetArrays(textureAtlas);
     }
 
     public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter getter, @Nullable BlockPos blockPos, FluidState fluidState) {
-        PortalFluidSpriteSet spriteSet = DISCONNECTED;
+        DimensionalTearsFluidSpriteSet spriteSet = DISCONNECTED;
 
         if (blockPos != null && getter != null) {
             spriteSet = this.getConnectedSpriteSet(getter, blockPos);
@@ -173,12 +173,12 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
             RenderSystem.setShaderFogEnd(viewDistance * 0.5F);
         }
         else {
-            RenderSystem.setShaderFogStart(PortalFluidRenderer.FOG_START);
-            RenderSystem.setShaderFogEnd(PortalFluidRenderer.FOG_END);
+            RenderSystem.setShaderFogStart(DimensionalTearsFluidRenderer.FOG_START);
+            RenderSystem.setShaderFogEnd(DimensionalTearsFluidRenderer.FOG_END);
         }
     }
 
-    private PortalFluidSpriteSet getDisconnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {
+    private DimensionalTearsFluidSpriteSet getDisconnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {
         if (getter.getBlockState(blockPos.below()).is(Blocks.RAW_IRON_BLOCK))
             return DISCONNECTED_SNENCE;
 
@@ -191,8 +191,8 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
         return DISCONNECTED;
     }
 
-    private boolean isPortalFluid(FluidState state) {
-        return state.is(ModTags.DIMENSIONAL_TEARS);
+    private boolean canConnectTo(BlockAndTintGetter getter, BlockPos blockPos, FluidState other) {
+        return other.is(ModTags.DIMENSIONAL_TEARS) && other.getFlow(getter, blockPos).horizontalDistanceSqr() == 0;
     }
 
     @SuppressWarnings("deprecation")
@@ -203,15 +203,17 @@ public class PortalFluidRenderer extends ModFluidRenderProperties {
 
     private boolean areAllNeighborsNonFluid(BlockAndTintGetter getter, BlockPos pos) {
         for (Direction direction : Direction.Plane.HORIZONTAL) {
-            if (this.isFluidAdjacent(getter, pos, direction))
+            if (this.hasConnectibleNeighbor(getter, pos, direction))
                 return false;
         }
 
         return true;
     }
 
-    private boolean isFluidAdjacent(BlockAndTintGetter getter, BlockPos pos, Direction dir) {
-        return this.isPortalFluid(getter.getFluidState(pos.relative(dir)));
+    private boolean hasConnectibleNeighbor(BlockAndTintGetter getter, BlockPos pos, Direction dir) {
+        BlockPos blockPos = pos.relative(dir);
+        FluidState fluidState = getter.getFluidState(blockPos);
+        return this.canConnectTo(getter, blockPos, fluidState);
     }
 
 }

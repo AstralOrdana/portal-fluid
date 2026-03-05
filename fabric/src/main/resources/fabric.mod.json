@@ -20,7 +20,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ordana.dimensional_tears.fabric.PortalFluidRootFabric"
+        "com.ordana.dimensional_tears.fabric.DimensionalTearsRootFabric"
     ],
     "modmenu": [
       "com.ordana.dimensional_tears.fabric.ModMenuCompat"

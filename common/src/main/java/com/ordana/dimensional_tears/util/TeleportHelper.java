@@ -2,7 +2,7 @@ package com.ordana.dimensional_tears.util;
 
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.effects.RiftingEffect;
-import com.ordana.dimensional_tears.items.PortalFluidBottleItem;
+import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
 import com.ordana.dimensional_tears.reg.ModEffects;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.reg.ModTags;
@@ -59,8 +59,8 @@ public final class TeleportHelper {
 
         if (entity instanceof ServerPlayer serverPlayer) {
             return Objects.requireNonNullElse(
-                PortalFluidBottleItem.getAnchorDimensionTransition(server, serverPlayer, itemStack),
-                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.DO_NOTHING)
+                DimensionalTearsBottleItem.getAnchorDimensionTransition(server, serverPlayer, itemStack),
+                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.PLACE_PORTAL_TICKET)
             );
         }
 
@@ -72,7 +72,7 @@ public final class TeleportHelper {
     }
 
     public static DimensionTransition createDimensionTransition(ServerLevel serverLevel, Entity entity, Vec3 spawnPosition) {
-        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
+        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET);
     }
 
     private static void playTeleportSound(ServerLevel serverLevel, Entity entity) {
@@ -87,7 +87,7 @@ public final class TeleportHelper {
         if (entity.getType().is(ModTags.DIMENSIONAL_TEARS_IMMUNE))
             return false;
 
-        return entity.canUsePortal(false) && !entity.isPassenger() && !entity.isVehicle();
+        return entity.canUsePortal(true) && !entity.isPassenger() && !entity.isVehicle();
     }
 
 }

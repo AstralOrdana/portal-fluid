@@ -1,7 +1,7 @@
 package com.ordana.dimensional_tears.reg;
 
-import com.ordana.dimensional_tears.blocks.PortalFluidCauldronBlock;
-import com.ordana.dimensional_tears.items.PortalFluidBottleItem;
+import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
+import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,11 +16,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModEvents {
+public class ModInteractionEvents {
 
     private static final List<InteractionEvent> EVENTS = new ArrayList<>(List.of(
-        ModEvents::glassBottle,
-        ModEvents::bucket
+        ModInteractionEvents::glassBottle,
+        ModInteractionEvents::bucket
     ));
 
     public static InteractionResult onBlockClicked(ItemStack itemStack, Player player, Level level, InteractionHand interactionHand, BlockHitResult blockHitResult) {
@@ -41,8 +41,8 @@ public class ModEvents {
     }
 
     private static InteractionResult bucket(ItemStack itemStack, BlockPos blockPos, BlockState blockState, Player player, Level level, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (itemStack.is(Items.BUCKET) && blockState.getBlock() instanceof PortalFluidCauldronBlock)
-            return PortalFluidCauldronBlock.tryCollectWithBucket(itemStack, blockPos, blockState, player, level, interactionHand);
+        if (itemStack.is(Items.BUCKET) && blockState.getBlock() instanceof DimensionalTearsCauldronBlock)
+            return DimensionalTearsCauldronBlock.tryCollectWithBucket(itemStack, blockPos, blockState, player, level, interactionHand);
 
         return InteractionResult.PASS;
     }
@@ -52,12 +52,12 @@ public class ModEvents {
             return InteractionResult.PASS;
 
         return switch (blockState.getBlock()) {
-            case PortalFluidCauldronBlock ignored ->
-                PortalFluidCauldronBlock.tryCollectWithBottle(itemStack, blockPos, blockState, player, level, interactionHand);
+            case DimensionalTearsCauldronBlock ignored ->
+                DimensionalTearsCauldronBlock.tryCollectWithBottle(itemStack, blockPos, blockState, player, level, interactionHand);
             case CryingObsidianBlock ignored ->
-                PortalFluidBottleItem.tryCollectObsidianTears(level, blockPos, itemStack, player, interactionHand);
+                DimensionalTearsBottleItem.tryCollectObsidianTears(level, blockPos, itemStack, player, interactionHand);
             case RespawnAnchorBlock ignored ->
-                PortalFluidBottleItem.tryCollectRespawnAnchorTears(level, blockPos, blockState, itemStack, player, interactionHand);
+                DimensionalTearsBottleItem.tryCollectRespawnAnchorTears(level, blockPos, blockState, itemStack, player, interactionHand);
             default -> InteractionResult.PASS;
         };
     }

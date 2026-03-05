@@ -11,9 +11,9 @@ import net.minecraft.world.level.ItemLike;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-public class ModCreativeTabs {
+public interface ModCreativeTabs {
 
-    public static void registerItemsToTabs(RegHelper.ItemToTabEvent event) {
+    static void registerItemsToTabs(RegHelper.ItemToTabEvent event) {
         after(event, Items.MILK_BUCKET, CreativeModeTabs.TOOLS_AND_UTILITIES,
             ModItems.DIMENSIONAL_TEARS_BUCKET, ModItems.DIMENSIONAL_TEARS_BOTTLE
         );
@@ -29,7 +29,7 @@ public class ModCreativeTabs {
         event.addBefore(tab, itemStack -> itemStack.is(target), entries);
     }
 
-    public static void init() {
+    static void bootstrap() {
         RegHelper.addItemsToTabsRegistration(ModCreativeTabs::registerItemsToTabs);
     }
 

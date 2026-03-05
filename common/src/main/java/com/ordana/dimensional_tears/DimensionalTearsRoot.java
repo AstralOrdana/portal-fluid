@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PortalFluidRoot {
+public class DimensionalTearsRoot {
 
     public static final String MOD_ID = "dimensional_tears";
     public static final Logger LOGGER = LogManager.getLogger();
@@ -40,8 +40,8 @@ public class PortalFluidRoot {
         ModComponents.init();
         ModParticles.init();
         ModSoundEvents.init();
-        ModCreativeTabs.init();
-        ModWorldgenFeatures.init();
+        ModCreativeTabs.bootstrap();
+        ModWorldgenFeatures.bootstrap();
         RegHelper.addLootTableInjects(ModLootInjects::onLootInject);
     }
 

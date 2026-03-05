@@ -1,19 +1,18 @@
 package com.ordana.dimensional_tears.reg;
 
-import com.ordana.dimensional_tears.PortalFluidRoot;
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
+import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.particles.SimpleParticleType;
 
-import java.util.function.Supplier;
+public interface ModParticles {
 
-public class ModParticles {
+    RegSupplier<SimpleParticleType> RIFT_FLAME = registerParticle("rift_flame");
 
-    public static final Supplier<SimpleParticleType> PORTAL_FLAME = registerParticle("dimensional_tears_flame");
-
-    public static Supplier<SimpleParticleType> registerParticle(String name) {
-        return RegHelper.registerParticle(PortalFluidRoot.res(name));
+    static RegSupplier<SimpleParticleType> registerParticle(String path) {
+        return RegHelper.registerParticle(DimensionalTearsRoot.res(path));
     }
 
-    public static void init() {}
+    static void init() {}
 
 }

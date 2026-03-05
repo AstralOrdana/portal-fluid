@@ -1,6 +1,6 @@
 package com.ordana.dimensional_tears.configs;
 
-import com.ordana.dimensional_tears.PortalFluidRoot;
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigBuilder;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigType;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ModConfigHolder;
@@ -18,7 +18,7 @@ public class ClientConfigs {
     public static Supplier<Double> DIMENSIONAL_TEARS_SEED;
 
     static {
-        ConfigBuilder builder = ConfigBuilder.create(PortalFluidRoot.res("client"), ConfigType.CLIENT);
+        ConfigBuilder builder = ConfigBuilder.create(DimensionalTearsRoot.res("client"), ConfigType.CLIENT);
 
         builder.push("general");
         DIMENSIONAL_TEARS_SEED = builder.define("dimensional_tears_seed", 1.0, 0.01, 1.0);

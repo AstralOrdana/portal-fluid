@@ -13,7 +13,7 @@ public class RiftingEffect extends CountdownEffect {
     @Nullable private ItemStack causingStack = null;
 
     public RiftingEffect(MobEffectCategory arg, int i) {
-        super(arg, i, ModParticles.PORTAL_FLAME);
+        super(arg, i, ModParticles.RIFT_FLAME);
     }
 
     public void setCausingStack(@Nullable ItemStack causingStack) {

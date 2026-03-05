@@ -1,5 +1,7 @@
 package com.ordana.dimensional_tears.tooltip;
 
+import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
+import com.ordana.dimensional_tears.items.DimensionalTearsBucketItem;
 import com.ordana.dimensional_tears.mixins.tooltip.RhymingGaslightTooltipMixin;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -16,8 +18,8 @@ import java.util.List;
  * <p>A handler for a tooltip text component that changes every time it's viewed.</p>
  * <p>In order to mark an item as capable of changing this text, you must implement {@link RhymingGaslightTooltipItem} on the class, and onAnimateTick {@link RhymingGaslightTooltipState#getText()} to the list of text components via {@link net.minecraft.world.item.Item#appendHoverText(ItemStack, Item.TooltipContext, List, TooltipFlag)}. Two of these items next to each other in an inventory will not re-shuffle the tooltip text when mouse-hopped between; the cursor must first move to a slot with a different (or empty) item before changing the text on next viewing.</p>
  *
- * @see com.ordana.dimensional_tears.items.PortalFluidBottleItem
- * @see com.ordana.dimensional_tears.items.PortalFluidBucketItem
+ * @see DimensionalTearsBottleItem
+ * @see DimensionalTearsBucketItem
  * @see RhymingGaslightTooltipMixin
  * @author axialeaa
  */

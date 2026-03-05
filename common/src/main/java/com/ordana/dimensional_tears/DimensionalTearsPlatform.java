@@ -1,6 +1,6 @@
-package com.ordana.dimensional_tears.neoforge;
+package com.ordana.dimensional_tears;
 
-import com.ordana.dimensional_tears.blocks.PortalFluidBlock;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -11,18 +11,33 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.material.FlowingFluid;
+import org.jetbrains.annotations.Contract;
 
 import java.util.function.Supplier;
 
-public class PortalFluidPlatformImpl {
+@SuppressWarnings("unused")
+public class DimensionalTearsPlatform {
+
+    @Contract
+    @ExpectPlatform
     public static void addFeatureToBiome(GenerationStep.Decoration step, TagKey<Biome> tagKey, ResourceKey<PlacedFeature> feature) {
+        throw new AssertionError();
     }
 
-
-    public static void addCarverToBiome(GenerationStep.Carving step, TagKey<Biome> tagKey, ResourceKey<ConfiguredWorldCarver<?>> carver) {
+    @Contract
+    @ExpectPlatform
+    public static void addCarverToBiome(GenerationStep.Carving step, TagKey<Biome> tagKey, ResourceKey<ConfiguredWorldCarver<?>> feature) {
+        throw new AssertionError();
     }
 
+    @ExpectPlatform
     public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
-        return new PortalFluidBlock(flowingFluid, properties, Entity::isInFluidType);
+        throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static boolean isEyeInDimTears(Entity entity) {
+        throw new AssertionError();
+    }
+
 }

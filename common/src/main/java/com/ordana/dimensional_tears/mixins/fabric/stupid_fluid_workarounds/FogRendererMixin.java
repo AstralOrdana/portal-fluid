@@ -1,7 +1,7 @@
-package com.ordana.dimensional_tears.mixins.fabric;
+package com.ordana.dimensional_tears.mixins.fabric.stupid_fluid_workarounds;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.ordana.dimensional_tears.fluids.PortalFluidRenderer;
+import com.ordana.dimensional_tears.fluids.DimensionalTearsFluidRenderer;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -25,9 +25,9 @@ public class FogRendererMixin {
     @Inject(method = "setupColor", at = @At("HEAD"), cancellable = true)
     private static void setupPortalFluidColor(Camera camera, float f, ClientLevel clientLevel, int i, float g, CallbackInfo ci) {
         if (camera.getEntity().isEyeInFluid(ModTags.DIMENSIONAL_TEARS)) {
-            fogRed = PortalFluidRenderer.FOG_COLOR.x;
-            fogGreen = PortalFluidRenderer.FOG_COLOR.y;
-            fogBlue = PortalFluidRenderer.FOG_COLOR.z;
+            fogRed = DimensionalTearsFluidRenderer.FOG_COLOR.x;
+            fogGreen = DimensionalTearsFluidRenderer.FOG_COLOR.y;
+            fogBlue = DimensionalTearsFluidRenderer.FOG_COLOR.z;
             biomeChangedTime = -1L;
 
             RenderSystem.clearColor(fogRed, fogGreen, fogBlue, 0.0F);
@@ -46,8 +46,8 @@ public class FogRendererMixin {
                 RenderSystem.setShaderFogEnd(viewDistance * 0.5F);
             }
             else {
-                RenderSystem.setShaderFogStart(PortalFluidRenderer.FOG_START);
-                RenderSystem.setShaderFogEnd(PortalFluidRenderer.FOG_END);
+                RenderSystem.setShaderFogStart(DimensionalTearsFluidRenderer.FOG_START);
+                RenderSystem.setShaderFogEnd(DimensionalTearsFluidRenderer.FOG_END);
             }
 
             ci.cancel();

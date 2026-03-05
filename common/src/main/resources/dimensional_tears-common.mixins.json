@@ -5,10 +5,10 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
         "GlassBottleMixin",
+        "dimensional_tears.BoatPaddleSoundMixin",
+        "dimensional_tears.LakeFeatureMixin",
         "nether_portal.NetherPortalBlockMixin",
         "nether_portal.NetherPortalSoundMixin",
-        "dimensional_tears.BoatPaddleSoundMixin",
-        "dimensional_tears.water_edge_cases.NoSplashWaterExceptionMixin",
         "tooltip.TooltipMixin"
     ],
     "injectors": {
@@ -16,6 +16,7 @@
     },
     "client": [
         "dimensional_tears.EndSkyboxHideInFluidMixin",
+        "dimensional_tears.ScreenEffectRendererMixin",
         "tooltip.RhymingGaslightTooltipMixin"
     ]
 }

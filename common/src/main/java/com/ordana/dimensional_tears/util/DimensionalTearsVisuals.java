@@ -8,7 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
-public final class PortalFluidVisuals {
+public final class DimensionalTearsVisuals {
 
     private static final int DEFAULT_SOUND_RARITY = 200;
     private static final int DEFAULT_PARTICLE_RARITY = 20;
@@ -20,7 +20,7 @@ public final class PortalFluidVisuals {
     public static void onAnimateTick(Level level, BlockPos blockPos, RandomSource randomSource) {
         BlockPos above = blockPos.above();
 
-        if (level.isEmptyBlock(above)) {
+        if (level.isEmptyBlock(above) && !level.getBlockState(above).isSolidRender(level, above)) {
             particle(level, blockPos, randomSource, DEFAULT_PARTICLE_RARITY);
             sound(level, blockPos, randomSource, DEFAULT_SOUND_RARITY);
         }
@@ -32,7 +32,7 @@ public final class PortalFluidVisuals {
             double y = blockPos.getY() + PARTICLE_VERTICAL_OFFSET;
             double z = blockPos.getZ() + randomSource.nextDouble();
 
-            level.addParticle(ModParticles.PORTAL_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);
+            level.addParticle(ModParticles.RIFT_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);
         }
     }
 

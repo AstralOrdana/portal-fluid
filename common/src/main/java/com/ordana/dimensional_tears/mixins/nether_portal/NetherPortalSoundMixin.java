@@ -1,6 +1,6 @@
 package com.ordana.dimensional_tears.mixins.nether_portal;
 
-import com.ordana.dimensional_tears.PortalFluidRoot;
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -18,7 +18,7 @@ public abstract class NetherPortalSoundMixin {
 
     @Inject(method = "getSoundType", at = @At("TAIL"), cancellable = true)
     private void getSoundGroupMixin(CallbackInfoReturnable<SoundType> cir){
-        if (PortalFluidRoot.isInitiated() && this.asBlock() == Blocks.NETHER_PORTAL)
+        if (DimensionalTearsRoot.isInitiated() && this.asBlock() == Blocks.NETHER_PORTAL)
             cir.setReturnValue(SoundType.EMPTY);
     }
 

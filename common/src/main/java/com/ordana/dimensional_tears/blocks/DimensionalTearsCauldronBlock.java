@@ -2,11 +2,11 @@ package com.ordana.dimensional_tears.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.ordana.dimensional_tears.items.PortalFluidBottleItem;
-import com.ordana.dimensional_tears.items.PortalFluidBucketItem;
+import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
+import com.ordana.dimensional_tears.items.DimensionalTearsBucketItem;
 import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModItems;
-import com.ordana.dimensional_tears.util.PortalFluidVisuals;
+import com.ordana.dimensional_tears.util.DimensionalTearsVisuals;
 import com.ordana.dimensional_tears.util.TeleportHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -30,14 +30,14 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
-public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
+public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
 
-    public static final MapCodec<PortalFluidCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+    public static final MapCodec<DimensionalTearsCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
         .group(
             propertiesCodec(),
             CauldronInteraction.CODEC.fieldOf("interactions").forGetter(portalFluidCauldronBlock -> portalFluidCauldronBlock.interactions)
         )
-        .apply(instance, PortalFluidCauldronBlock::new)
+        .apply(instance, DimensionalTearsCauldronBlock::new)
     );
 
     public static final int MIN_FILL_LEVEL = 1;
@@ -46,7 +46,7 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
     private static final int BASE_CONTENT_HEIGHT = 6;
     private static final double HEIGHT_PER_LEVEL = 3.0D;
 
-    public PortalFluidCauldronBlock(Properties properties, CauldronInteraction.InteractionMap map) {
+    public DimensionalTearsCauldronBlock(Properties properties, CauldronInteraction.InteractionMap map) {
         super(properties, map);
         this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, MIN_FILL_LEVEL));
     }
@@ -69,7 +69,7 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
-        PortalFluidVisuals.onAnimateTick(level, blockPos.above(), randomSource);
+        DimensionalTearsVisuals.onAnimateTick(level, blockPos.above(), randomSource);
     }
 
     @Override
@@ -95,11 +95,11 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
 
     public static boolean canEmptyInto(BlockState blockState) {
         Block block = blockState.getBlock();
-        return block instanceof CauldronBlock || block instanceof PortalFluidCauldronBlock && blockState.getValue(LEVEL) < MAX_FILL_LEVEL;
+        return block instanceof CauldronBlock || block instanceof DimensionalTearsCauldronBlock && blockState.getValue(LEVEL) < MAX_FILL_LEVEL;
     }
 
     public static BlockState getNextCauldronState(BlockState blockState) {
-        Block block = ModBlocks.PORTAL_CAULDRON.get();
+        Block block = ModBlocks.DIMENSIONAL_TEARS_CAULDRON.get();
         return blockState.is(block) ? blockState.cycle(LEVEL) : block.defaultBlockState();
     }
 
@@ -111,7 +111,7 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
     }
 
     public static InteractionResult tryCollectWithBottle(ItemStack itemStack, BlockPos blockPos, BlockState blockState, Player player, Level level, InteractionHand interactionHand) {
-        PortalFluidBottleItem.playSound(level, blockPos, player, true);
+        DimensionalTearsBottleItem.playSound(level, blockPos, player, true);
         ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.DIMENSIONAL_TEARS_BOTTLE.get().getDefaultInstance());
 
         player.setItemInHand(interactionHand, filledResult);
@@ -127,7 +127,7 @@ public class PortalFluidCauldronBlock extends AbstractCauldronBlock {
         if (blockState.getValue(LEVEL) < MAX_FILL_LEVEL)
             return InteractionResult.PASS;
 
-        PortalFluidBucketItem.playSound(level, blockPos, player, true);
+        DimensionalTearsBucketItem.playSound(level, blockPos, player, true);
         ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.DIMENSIONAL_TEARS_BUCKET.get().getDefaultInstance());
 
         player.setItemInHand(interactionHand, filledResult);

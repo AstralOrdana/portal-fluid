@@ -1,6 +1,6 @@
 package com.ordana.dimensional_tears.reg;
 
-import com.ordana.dimensional_tears.PortalFluidRoot;
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,9 +14,8 @@ public class ModLootInjects {
         ResourceLocation name = event.getTable();
 
         for (String loot : lootChests) {
-            if (name.equals(ResourceLocation.withDefaultNamespace("chests/" + loot))) {
-                event.addTableReference(PortalFluidRoot.res("injects/" + loot));
-            }
+            if (name.equals(ResourceLocation.withDefaultNamespace("chests/" + loot)))
+                event.addTableReference(DimensionalTearsRoot.res(loot).withPrefix("injects/"));
         }
     }
 

@@ -1,7 +1,7 @@
 package com.ordana.dimensional_tears.items;
 
 import com.mojang.logging.LogUtils;
-import com.ordana.dimensional_tears.blocks.PortalFluidCauldronBlock;
+import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.reg.ModItems;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
@@ -52,7 +52,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
-public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGaslightTooltipItem {
+public class DimensionalTearsBottleItem extends HoneyBottleItem implements RhymingGaslightTooltipItem {
 
     private static final Logger LOGGER = LogUtils.getLogger();
     public static final FoodProperties FOOD_PROPERTIES = new FoodProperties.Builder()
@@ -61,7 +61,7 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
         .alwaysEdible()
         .build();
 
-    public PortalFluidBottleItem(Properties properties) {
+    public DimensionalTearsBottleItem(Properties properties) {
         super(properties);
     }
 
@@ -205,14 +205,14 @@ public class PortalFluidBottleItem extends HoneyBottleItem implements RhymingGas
     private static InteractionResult tryEmptyIntoCauldron(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand) {
         BlockState blockState = level.getBlockState(blockPos);
 
-        if (!PortalFluidCauldronBlock.canEmptyInto(blockState))
+        if (!DimensionalTearsCauldronBlock.canEmptyInto(blockState))
             return InteractionResult.PASS;
 
         playSound(level, blockPos, player, false);
         ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
 
         player.setItemInHand(interactionHand, filledResult);
-        level.setBlockAndUpdate(blockPos, PortalFluidCauldronBlock.getNextCauldronState(blockState));
+        level.setBlockAndUpdate(blockPos, DimensionalTearsCauldronBlock.getNextCauldronState(blockState));
 
         if (player instanceof ServerPlayer serverPlayer)
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockPos, itemStack);

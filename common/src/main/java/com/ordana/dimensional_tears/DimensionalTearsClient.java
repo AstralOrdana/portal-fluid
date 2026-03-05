@@ -1,18 +1,18 @@
 package com.ordana.dimensional_tears;
 
-import com.ordana.dimensional_tears.particles.PortalFluidFlameParticle;
+import com.ordana.dimensional_tears.particles.RiftFlameParticle;
 import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModFluids;
 import com.ordana.dimensional_tears.reg.ModParticles;
 import net.mehvahdjukaar.moonlight.api.platform.ClientHelper;
 import net.minecraft.client.renderer.RenderType;
 
-public class PortalFluidClient {
+public class DimensionalTearsClient {
     private static boolean finishedSetup = false;
 
     public static void init() {
-        ClientHelper.addClientSetup(PortalFluidClient::setup);
-        ClientHelper.addParticleRegistration(PortalFluidClient::registerParticles);
+        ClientHelper.addClientSetup(DimensionalTearsClient::setup);
+        ClientHelper.addParticleRegistration(DimensionalTearsClient::registerParticles);
     }
 
     public static void setup() {
@@ -31,6 +31,6 @@ public class PortalFluidClient {
     }
 
     private static void registerParticles(ClientHelper.ParticleEvent event) {
-        event.register(ModParticles.PORTAL_FLAME.get(), PortalFluidFlameParticle.Provider::new);
+        event.register(ModParticles.RIFT_FLAME.get(), RiftFlameParticle.Provider::new);
     }
 }

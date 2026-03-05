@@ -1,6 +1,6 @@
 package com.ordana.dimensional_tears.configs;
 
-import com.ordana.dimensional_tears.PortalFluidRoot;
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigBuilder;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigType;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ModConfigHolder;
@@ -24,11 +24,11 @@ public class CommonConfigs {
     public static Supplier<Float> PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE;
 
     public static void init() {
-        // bump class load init
+        // bump class load bootstrap
     }
 
     static {
-        ConfigBuilder builder = ConfigBuilder.create(PortalFluidRoot.res("common"), ConfigType.COMMON);
+        ConfigBuilder builder = ConfigBuilder.create(DimensionalTearsRoot.res("common"), ConfigType.COMMON);
 
 //        builder.setSynced();
 

@@ -6,12 +6,12 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import org.jetbrains.annotations.NotNull;
 
-public class PortalFluidFlameParticle extends CylindricalBillboardParticle {
+public class RiftFlameParticle extends CylindricalBillboardParticle {
 
     private static final int MAX_AGE_TICKS = 10;
     private final SpriteSet spriteSet;
 
-    PortalFluidFlameParticle(ClientLevel clientLevel, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteSet) {
+    RiftFlameParticle(ClientLevel clientLevel, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteSet) {
         super(clientLevel, x, y, z, velocityX, velocityY, velocityZ);
         this.spriteSet = spriteSet;
         this.lifetime = MAX_AGE_TICKS;
@@ -41,7 +41,7 @@ public class PortalFluidFlameParticle extends CylindricalBillboardParticle {
     public record Provider(SpriteSet sprites) implements ParticleProvider<SimpleParticleType> {
 
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new PortalFluidFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
+            return new RiftFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
         }
 
     }
