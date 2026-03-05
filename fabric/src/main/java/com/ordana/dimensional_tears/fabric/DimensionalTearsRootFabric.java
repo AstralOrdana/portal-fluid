@@ -10,6 +10,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +35,7 @@ public class DimensionalTearsRootFabric implements ModInitializer {
         UseBlockCallback.EVENT.register(DimensionalTearsRootFabric::onRightClickBlock);
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             // delayed to prevent a crash from accessing it before registration
-            CauldronFluidContent.registerCauldron(ModBlocks.DIMENSIONAL_TEARS.get(), ModFluids.DIMENSIONAL_TEARS.get(), 27000L, DimensionalTearsCauldronBlock.LEVEL);
+            CauldronFluidContent.registerCauldron(ModBlocks.DIMENSIONAL_TEARS.get(), ModFluids.DIMENSIONAL_TEARS.get(), FluidConstants.BOTTLE, DimensionalTearsCauldronBlock.LEVEL);
         });
     }
 
