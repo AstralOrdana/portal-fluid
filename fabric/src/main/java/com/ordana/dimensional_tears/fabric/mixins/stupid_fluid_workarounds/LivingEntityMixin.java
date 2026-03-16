@@ -1,4 +1,4 @@
-package com.ordana.dimensional_tears.mixins.fabric.stupid_fluid_workarounds;
+package com.ordana.dimensional_tears.fabric.mixins.stupid_fluid_workarounds;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -33,38 +33,39 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isControlledByLocalInstance()Z"))
-    private boolean test(boolean original, @Local(argsOnly = true) Vec3 vec3) {
-        if (original) {
-            if (!DimensionalTearsFluid.isIn(this))
-                return true;
+    private boolean moveEntityInDimTears(boolean original, @Local(argsOnly = true) Vec3 vec3) {
+        if (!original)
+            return false;
 
-            double gravity = this.getGravity();
-            boolean falling = this.getDeltaMovement().y <= 0.0;
+        if (!DimensionalTearsFluid.isIn(this))
+            return true;
 
-            if (falling && this.hasEffect(MobEffects.SLOW_FALLING))
-                gravity = Math.min(gravity, 0.01);
+        double gravity = this.getGravity();
+        boolean falling = this.getDeltaMovement().y <= 0.0;
 
-            DimensionalTearsFluid.manipulateMovementIn((LivingEntity) (Object) this, gravity, falling, vec3);
-        }
+        if (falling && this.hasEffect(MobEffects.SLOW_FALLING))
+            gravity = Math.min(gravity, 0.01);
+
+        DimensionalTearsFluid.move((LivingEntity) (Object) this, gravity, falling, vec3);
 
         return false;
     }
 
     @WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tags/TagKey;)D", ordinal = 1))
-    private double test(LivingEntity instance, TagKey<Fluid> tagKey, Operation<Double> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
-        boolean bl = DimensionalTearsFluid.isIn(this);
-        isInDimTearsRef.set(bl);
+    private double getDimTearsFluidHeight(LivingEntity instance, TagKey<Fluid> tagKey, Operation<Double> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
+        boolean in = DimensionalTearsFluid.isIn(this);
+        isInDimTearsRef.set(in);
 
-        return bl ? DimensionalTearsFluid.getHeight(this) : original.call(instance, tagKey);
+        return in ? DimensionalTearsFluid.getHeight(this) : original.call(instance, tagKey);
     }
 
     @WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInLava()Z", ordinal = 1))
-    private boolean test2(LivingEntity instance, Operation<Boolean> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
+    private boolean shouldHandleJumpingLikeLava(LivingEntity instance, Operation<Boolean> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
         return original.call(instance) || isInDimTearsRef.get();
     }
 
     @WrapOperation(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/tags/FluidTags;LAVA:Lnet/minecraft/tags/TagKey;", ordinal = 1, opcode = Opcodes.GETSTATIC))
-    private TagKey<Fluid> test2(Operation<TagKey<Fluid>> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
+    private TagKey<Fluid> finalizeTagForMovement(Operation<TagKey<Fluid>> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
         return isInDimTearsRef.get() ? ModTags.DIMENSIONAL_TEARS : original.call();
     }
 

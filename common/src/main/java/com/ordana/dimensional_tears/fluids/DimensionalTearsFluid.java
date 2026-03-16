@@ -1,9 +1,8 @@
 package com.ordana.dimensional_tears.fluids;
 
+import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.reg.*;
 import com.ordana.dimensional_tears.util.DimensionalTearsVisuals;
-import net.mehvahdjukaar.moonlight.api.client.ModFluidRenderProperties;
-import net.mehvahdjukaar.moonlight.api.fluids.ModFlowingFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -15,12 +14,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -30,25 +35,19 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-public abstract class DimensionalTearsFluid extends ModFlowingFluid {
+public abstract class DimensionalTearsFluid extends FlowingFluid {
 
     public static final double MOTION_SCALE = 0.007; // same as nether lava
-    private static final Properties PROPERTIES = ModFlowingFluid.properties()
-        .supportsBoating(true)
-        .motionScale(MOTION_SCALE)
-        .canDrown(false)
-        .canSwim(false)
-        .adjacentPathType(PathType.LAVA) // needs fabric impl
-        .fallDistanceModifier(0.0F)
-        .lightLevel(5);
 
-    public DimensionalTearsFluid() {
-        super(PROPERTIES, ModBlocks.DIMENSIONAL_TEARS);
+    @Override
+    protected boolean canConvertToSource(Level level) {
+        return CommonConfigs.DIMENSIONAL_TEARS_SOURCE_CONVERSION.get();
     }
 
     @Override
-    public ModFluidRenderProperties createRenderProperties() {
-        return new DimensionalTearsFluidRenderer();
+    protected void beforeDestroyingBlock(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
+        BlockEntity blockEntity = blockState.hasBlockEntity() ? levelAccessor.getBlockEntity(blockPos) : null;
+        Block.dropResources(blockState, levelAccessor, blockPos, blockEntity);
     }
 
     @NotNull
@@ -77,6 +76,11 @@ public abstract class DimensionalTearsFluid extends ModFlowingFluid {
     }
 
     @Override
+    protected boolean canBeReplacedWith(FluidState fluidState, BlockGetter blockGetter, BlockPos blockPos, Fluid fluid, Direction direction) {
+        return direction == Direction.DOWN && !this.isSame(fluid);
+    }
+
+    @Override
     public void animateTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
         DimensionalTearsVisuals.onAnimateTick(level, blockPos.above(), randomSource);
     }
@@ -99,6 +103,17 @@ public abstract class DimensionalTearsFluid extends ModFlowingFluid {
     @Override
     protected float getExplosionResistance() {
         return 100.0F;
+    }
+
+    @Override
+    @NotNull
+    protected BlockState createLegacyBlock(FluidState fluidState) {
+        return ModBlocks.DIMENSIONAL_TEARS.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState));
+    }
+
+    @Override
+    public boolean isSame(Fluid fluid) {
+        return fluid == ModFluids.DIMENSIONAL_TEARS.get() || fluid == ModFluids.FLOWING_DIMENSIONAL_TEARS.get();
     }
 
     public static double getHeight(Entity entity) {
@@ -133,7 +148,7 @@ public abstract class DimensionalTearsFluid extends ModFlowingFluid {
         return inFluid;
     }
 
-    public static void manipulateMovementIn(LivingEntity livingEntity, double gravity, boolean falling, Vec3 original) {
+    public static void move(LivingEntity livingEntity, double gravity, boolean falling, Vec3 original) {
         double oldY = livingEntity.getY();
 
         livingEntity.moveRelative(0.02F, original);

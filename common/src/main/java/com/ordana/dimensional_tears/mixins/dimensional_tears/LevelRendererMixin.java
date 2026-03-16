@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = LevelRenderer.class, priority = 1500)
-public class EndSkyboxHideInFluidMixin {
+@Mixin(LevelRenderer.class)
+public class LevelRendererMixin {
 
     @Shadow @Final private Minecraft minecraft;
 
     @Inject(method = "renderEndSky", at = @At("HEAD"), cancellable = true)
-    private void test(PoseStack poseStack, CallbackInfo ci) {
+    private void cancelEndSkyboxRenderingInDimTears(PoseStack poseStack, CallbackInfo ci) {
         assert this.minecraft.player != null;
         if (DimensionalTearsPlatform.isEyeInDimTears(this.minecraft.player))
             ci.cancel();

@@ -1,7 +1,8 @@
 package com.ordana.dimensional_tears.neoforge;
 
+import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsBlock;
-import com.ordana.dimensional_tears.reg.ModFluids;
+import com.ordana.dimensional_tears.neoforge.reg.ModFluidTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -25,11 +26,11 @@ public class DimensionalTearsPlatformImpl {
     }
 
     public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
-        return new DimensionalTearsBlock(flowingFluid, properties, entity -> entity.isInFluidType(ModFluids.DIMENSIONAL_TEARS.get().getFluidType()));
+        return new DimensionalTearsBlock(flowingFluid, properties, entity -> DimensionalTearsRoot.isInitiated() && entity.isInFluidType(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get()));
     }
 
     public static boolean isEyeInDimTears(Entity entity) {
-        return entity.isEyeInFluidType(ModFluids.DIMENSIONAL_TEARS.get().getFluidType());
+        return DimensionalTearsRoot.isInitiated() && entity.isEyeInFluidType(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
     }
 
 }

@@ -2,6 +2,7 @@ package com.ordana.dimensional_tears.neoforge;
 
 import com.ordana.dimensional_tears.DimensionalTearsClient;
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
+import com.ordana.dimensional_tears.neoforge.reg.ModFluidTypes;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.neoforged.fml.common.Mod;
 
@@ -12,6 +13,7 @@ public class DimensionalTearsRootNeoForge {
 
     public DimensionalTearsRootNeoForge() {
         DimensionalTearsRoot.commonInit();
+        ModFluidTypes.init();
 
         if (PlatHelper.getPhysicalSide().isClient())
             DimensionalTearsClient.init();

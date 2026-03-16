@@ -2,63 +2,37 @@ package com.ordana.dimensional_tears.fluids;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.ordana.dimensional_tears.configs.ClientConfigs;
-import com.ordana.dimensional_tears.reg.ModTags;
+import com.mojang.blaze3d.vertex.*;
 import net.mehvahdjukaar.moonlight.api.client.ModFluidRenderProperties;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import static com.ordana.dimensional_tears.fluids.DimensionalTearsFluidSpriteSet.createSpriteSet;
-
-@SuppressWarnings("unused")
 public class DimensionalTearsFluidRenderer extends ModFluidRenderProperties {
-
-    private static final int UNCOMMON_RARITY = 10;
-    private static final int RARE_RARITY = 600;
 
     public static final float FOG_START = 0.1F;
     public static final float FOG_END = 2.0F;
     public static final Vector3f FOG_COLOR = Vec3.fromRGB24(0x100C1C).toVector3f();
-    
-    private static final DimensionalTearsFluidSpriteSet
-        NORTH = createSpriteSet("block/dimensional_tears_n"),
-        EAST = createSpriteSet("block/dimensional_tears_e"),
-        SOUTH = createSpriteSet("block/dimensional_tears_s"),
-        WEST = createSpriteSet("block/dimensional_tears_w"),
-        SOUTH_WEST = createSpriteSet("block/dimensional_tears_sw"),
-        SOUTH_EAST = createSpriteSet("block/dimensional_tears_se"),
-        NORTH_WEST = createSpriteSet("block/dimensional_tears_nw"),
-        NORTH_EAST = createSpriteSet("block/dimensional_tears_ne"),
-        NORTH_SOUTH = createSpriteSet("block/dimensional_tears_ns"),
-        EAST_WEST = createSpriteSet("block/dimensional_tears_ew"),
-        WEST_NORTH_EAST = createSpriteSet("block/dimensional_tears_wne"),
-        NORTH_EAST_SOUTH = createSpriteSet("block/dimensional_tears_nes"),
-        EAST_SOUTH_WEST = createSpriteSet("block/dimensional_tears_esw"),
-        SOUTH_WEST_NORTH = createSpriteSet("block/dimensional_tears_swn"),
-        ALL = createSpriteSet("block/dimensional_tears_all"),
-        DISCONNECTED = createSpriteSet("block/dimensional_tears_disconnected"),
-        DISCONNECTED_UNCOMMON = createSpriteSet("block/dimensional_tears_disconnected_uncommon"),
-        DISCONNECTED_RARE = createSpriteSet("block/dimensional_tears_disconnected_rare"),
-        DISCONNECTED_SNENCE = createSpriteSet("block/dimensional_tears_disconnected_snence");
 
     public DimensionalTearsFluidRenderer() {
-        super(DISCONNECTED.still, DimensionalTearsFluidSpriteSet.FLOWING);
+        super(DimensionalTearsFluidSpriteSet.DISCONNECTED.location, DimensionalTearsFluidSpriteSet.FLOWING);
     }
 
     @Nullable
@@ -81,139 +55,68 @@ public class DimensionalTearsFluidRenderer extends ModFluidRenderProperties {
 
     @Override
     public ResourceLocation getStillTexture(FluidState fluidState, BlockAndTintGetter getter, BlockPos blockPos) {
-        @Nullable DimensionalTearsFluidSpriteSet spriteSet = this.getConnectedSpriteSet(getter, blockPos);
+        @Nullable DimensionalTearsFluidSpriteSet spriteSet = DimensionalTearsFluidSpriteSet.getConnected(getter, blockPos);
 
         if (spriteSet == null)
-            spriteSet = this.getDisconnectedSpriteSet(getter, blockPos);
+            spriteSet = DimensionalTearsFluidSpriteSet.getDisconnected(getter, blockPos);
 
-        return spriteSet.still;
+        return spriteSet.location;
     }
 
-    @Nullable
-    private DimensionalTearsFluidSpriteSet getConnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {
-        if (this.areAllNeighborsNonFluid(getter, blockPos))
-            return ALL;
-
-        boolean northNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.NORTH);
-        boolean southNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.SOUTH);
-        boolean eastNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.EAST);
-        boolean westNonFluid = !this.hasConnectibleNeighbor(getter, blockPos, Direction.WEST);
-
-        DimensionalTearsFluidSpriteSet spriteSet = null;
-
-        if (northNonFluid) {
-            spriteSet = NORTH;
-            if (eastNonFluid) {
-                spriteSet = NORTH_EAST;
-                if (westNonFluid) {
-                    return WEST_NORTH_EAST;
-                }
-            }
-            else if (westNonFluid) {
-                spriteSet = NORTH_WEST;
-                if (southNonFluid) {
-                    return SOUTH_WEST_NORTH;
-                }
-            }
-
-            if (southNonFluid) {
-                spriteSet = NORTH_SOUTH;
-                if (eastNonFluid) {
-                    return NORTH_EAST_SOUTH;
-                }
-            }
-            return spriteSet;
-        }
-        else if (eastNonFluid) {
-            spriteSet = EAST;
-            if (southNonFluid) {
-                spriteSet = SOUTH_EAST;
-                if (westNonFluid) {
-                    return EAST_SOUTH_WEST;
-                }
-            }
-            else if (westNonFluid) {
-                spriteSet = EAST_WEST;
-            }
-        }
-        else if (southNonFluid) {
-            spriteSet = SOUTH;
-            if (westNonFluid) {
-                return SOUTH_WEST;
-            }
-        }
-        else if (westNonFluid) {
-            spriteSet = WEST;
-        }
-
-        return spriteSet;
-    }
-
+    // fabric
     public void reloadTextures(TextureAtlas textureAtlas) {
         DimensionalTearsFluidSpriteSet.populateSpriteSetArrays(textureAtlas);
     }
 
+    // fabric
     public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter getter, @Nullable BlockPos blockPos, FluidState fluidState) {
-        DimensionalTearsFluidSpriteSet spriteSet = DISCONNECTED;
-
-        if (blockPos != null && getter != null) {
-            spriteSet = this.getConnectedSpriteSet(getter, blockPos);
-
-            if (spriteSet == null)
-                spriteSet = this.getDisconnectedSpriteSet(getter, blockPos);
-        }
-
-        return spriteSet.sprites;
+        return DimensionalTearsFluidSpriteSet.getSpriteSet(getter, blockPos).sprites;
     }
 
     @Override
     public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float viewDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-        if (camera.getEntity().isSpectator()) {
+        renderFog(camera.getEntity(), viewDistance);
+    }
+
+    public static void renderFog(Entity entity, float viewDistance) {
+        if (entity.isSpectator()) {
             RenderSystem.setShaderFogStart(-8.0F);
             RenderSystem.setShaderFogEnd(viewDistance * 0.5F);
         }
         else {
-            RenderSystem.setShaderFogStart(DimensionalTearsFluidRenderer.FOG_START);
-            RenderSystem.setShaderFogEnd(DimensionalTearsFluidRenderer.FOG_END);
+            RenderSystem.setShaderFogStart(FOG_START);
+            RenderSystem.setShaderFogEnd(FOG_END);
         }
     }
 
-    private DimensionalTearsFluidSpriteSet getDisconnectedSpriteSet(BlockAndTintGetter getter, BlockPos blockPos) {
-        if (getter.getBlockState(blockPos.below()).is(Blocks.RAW_IRON_BLOCK))
-            return DISCONNECTED_SNENCE;
+    /**
+     * Currently applies identical logic to vanilla's water overlay.
+     */
+    public static void renderScreenEffect(LevelReader levelReader, LocalPlayer player, PoseStack poseStack) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, DimensionalTearsFluidSpriteSet.SCREEN);
 
-        if (this.isRandomPos(blockPos, RARE_RARITY))
-            return DISCONNECTED_RARE;
+        BlockPos blockPos = BlockPos.containing(player.getX(), player.getEyeY(), player.getZ());
+        float brightness = LightTexture.getBrightness(levelReader.dimensionType(), levelReader.getMaxLocalRawBrightness(blockPos));
 
-        if (this.isRandomPos(blockPos, UNCOMMON_RARITY))
-            return DISCONNECTED_UNCOMMON;
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(brightness, brightness, brightness, 0.1F);
 
-        return DISCONNECTED;
-    }
+        float yaw = -player.getYRot() / 64.0F;
+        float pitch = player.getXRot() / 64.0F;
 
-    private boolean canConnectTo(BlockAndTintGetter getter, BlockPos blockPos, FluidState other) {
-        return other.is(ModTags.DIMENSIONAL_TEARS) && other.getFlow(getter, blockPos).horizontalDistanceSqr() == 0;
-    }
+        Matrix4f matrix4f = poseStack.last().pose();
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-    @SuppressWarnings("deprecation")
-    private boolean isRandomPos(BlockPos pos, int rarity) {
-        long seed = (long) (Mth.getSeed(pos) * ClientConfigs.DIMENSIONAL_TEARS_SEED.get());
-        return RandomSource.create(seed).nextInt(rarity) == 0;
-    }
+        bufferBuilder.addVertex(matrix4f, -1.0F, -1.0F, -0.5F).setUv(4.0F + yaw, 4.0F + pitch);
+        bufferBuilder.addVertex(matrix4f, 1.0F, -1.0F, -0.5F).setUv(0.0F + yaw, 4.0F + pitch);
+        bufferBuilder.addVertex(matrix4f, 1.0F, 1.0F, -0.5F).setUv(0.0F + yaw, 0.0F + pitch);
+        bufferBuilder.addVertex(matrix4f, -1.0F, 1.0F, -0.5F).setUv(4.0F + yaw, 0.0F + pitch);
 
-    private boolean areAllNeighborsNonFluid(BlockAndTintGetter getter, BlockPos pos) {
-        for (Direction direction : Direction.Plane.HORIZONTAL) {
-            if (this.hasConnectibleNeighbor(getter, pos, direction))
-                return false;
-        }
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 
-        return true;
-    }
-
-    private boolean hasConnectibleNeighbor(BlockAndTintGetter getter, BlockPos pos, Direction dir) {
-        BlockPos blockPos = pos.relative(dir);
-        FluidState fluidState = getter.getFluidState(blockPos);
-        return this.canConnectTo(getter, blockPos, fluidState);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableBlend();
     }
 
 }

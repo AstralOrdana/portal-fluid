@@ -37,4 +37,7 @@ side="BOTH"
 
 
 [[mixins]]
+config = "dimensional_tears.mixins.json"
+
+[[mixins]]
 config = "dimensional_tears-common.mixins.json"

@@ -16,10 +16,10 @@ public class DimensionalTearsClient {
     }
 
     public static void setup() {
-        ClientHelper.registerFluidRenderType(ModFluids.FLOWING_DIMENSIONAL_TEARS.get(), RenderType.translucent());
+/*        ClientHelper.registerFluidRenderType(ModFluids.FLOWING_DIMENSIONAL_TEARS.get(), RenderType.translucent());
         ClientHelper.registerFluidRenderType(ModFluids.DIMENSIONAL_TEARS.get(), RenderType.translucent());
 
-        ClientHelper.registerRenderType(ModBlocks.DIMENSIONAL_TEARS.get(), RenderType.translucent());
+        ClientHelper.registerRenderType(ModBlocks.DIMENSIONAL_TEARS.get(), RenderType.translucent());*/
 
         finishedSetup = true;
     }

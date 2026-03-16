@@ -3,10 +3,14 @@ package com.ordana.dimensional_tears.fabric;
 import com.ordana.dimensional_tears.DimensionalTearsClient;
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
+import com.ordana.dimensional_tears.fluids.DimensionalTearsFluidRenderer;
 import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModFluids;
 import com.ordana.dimensional_tears.reg.ModInteractionEvents;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
@@ -29,8 +33,12 @@ public class DimensionalTearsRootFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(s -> currentServer = s);
 
-        if (PlatHelper.getPhysicalSide().isClient())
+        if (PlatHelper.getPhysicalSide().isClient()) {
             DimensionalTearsClient.init();
+            ClientLifecycleEvents.CLIENT_STARTED.register(minecraft ->
+                FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.DIMENSIONAL_TEARS.get(), ModFluids.FLOWING_DIMENSIONAL_TEARS.get(), (FluidRenderHandler) new DimensionalTearsFluidRenderer())
+            );
+        }
 
         UseBlockCallback.EVENT.register(DimensionalTearsRootFabric::onRightClickBlock);
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {

@@ -22,6 +22,7 @@ public class CommonConfigs {
     public static Supplier<Boolean> END_OCEAN_BUCKETABLE;
     public static Supplier<Integer> TELEPORTATION_DELAY_SECONDS;
     public static Supplier<Float> PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE;
+    public static Supplier<Boolean> DIMENSIONAL_TEARS_SOURCE_CONVERSION;
 
     public static void init() {
         // bump class load bootstrap
@@ -47,6 +48,7 @@ public class CommonConfigs {
 
         DIMENSIONAL_TEARS_OCEAN = builder.define("dimensional_tears_ocean", true);
         END_OCEAN_BUCKETABLE = builder.define("end_ocean_bucketable", false);
+        DIMENSIONAL_TEARS_SOURCE_CONVERSION = builder.define("dimensional_tears_source_conversion", false);
         builder.pop();
 
         SERVER_SPEC = builder.build();

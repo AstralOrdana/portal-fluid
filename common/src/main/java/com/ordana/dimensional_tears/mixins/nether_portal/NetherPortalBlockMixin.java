@@ -33,20 +33,21 @@ public class NetherPortalBlockMixin {
 
         float chance = CommonConfigs.PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE.get();
 
-        if (!portalShape.isComplete() && chance > 0) {
-            RandomSource random = levelAccessor.getRandom();
+        if (portalShape.isComplete() || chance <= 0)
+            return;
 
-            for (Direction potentialCryingDirection : Direction.values()) {
-                Direction.Axis axis2 = potentialCryingDirection.getAxis();
-                if (axis2.isHorizontal() && potentialCryingDirection.getClockWise().getAxis() == axis)
-                    continue;
+        RandomSource random = levelAccessor.getRandom();
 
-                BlockPos potentialCryingPos = blockPos.relative(potentialCryingDirection);
-                BlockState potentialCryingState = levelAccessor.getBlockState(potentialCryingPos);
+        for (Direction potentialCryingDirection : Direction.values()) {
+            Direction.Axis axis2 = potentialCryingDirection.getAxis();
+            if (axis2.isHorizontal() && potentialCryingDirection.getClockWise().getAxis() == axis)
+                continue;
 
-                if (random.nextDouble() <= chance && potentialCryingState.is(Blocks.OBSIDIAN))
-                    levelAccessor.setBlock(potentialCryingPos, Blocks.CRYING_OBSIDIAN.defaultBlockState(), Block.UPDATE_ALL);
-            }
+            BlockPos potentialCryingPos = blockPos.relative(potentialCryingDirection);
+            BlockState potentialCryingState = levelAccessor.getBlockState(potentialCryingPos);
+
+            if (random.nextDouble() <= chance && potentialCryingState.is(Blocks.OBSIDIAN))
+                levelAccessor.setBlock(potentialCryingPos, Blocks.CRYING_OBSIDIAN.defaultBlockState(), Block.UPDATE_ALL);
         }
     }
 

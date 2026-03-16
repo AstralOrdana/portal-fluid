@@ -15,7 +15,7 @@
         "defaultRequire": 1
     },
     "client": [
-        "dimensional_tears.EndSkyboxHideInFluidMixin",
+        "dimensional_tears.LevelRendererMixin",
         "dimensional_tears.ScreenEffectRendererMixin",
         "tooltip.RhymingGaslightTooltipMixin"
     ]

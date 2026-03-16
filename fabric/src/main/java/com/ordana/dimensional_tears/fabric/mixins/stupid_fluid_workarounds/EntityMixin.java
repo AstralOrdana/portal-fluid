@@ -1,4 +1,4 @@
-package com.ordana.dimensional_tears.mixins.fabric.stupid_fluid_workarounds;
+package com.ordana.dimensional_tears.fabric.mixins.stupid_fluid_workarounds;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
@@ -19,7 +19,7 @@ public abstract class EntityMixin {
     @Shadow
     public abstract void resetFallDistance();
 
-    @ModifyReturnValue(method = "updateInWaterStateAndDoFluidPushing", at = @At(value = "RETURN"))
+    @ModifyReturnValue(method = "updateInWaterStateAndDoFluidPushing", at = @At("RETURN"))
     private boolean nonWaterFluidPush(boolean original) {
         if (original)
             return true;

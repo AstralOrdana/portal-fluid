@@ -1,5 +1,7 @@
 package com.ordana.dimensional_tears.mixins;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.ordana.dimensional_tears.reg.ModItems;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.reg.ModTags;
@@ -18,10 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BottleItem.class)
 public class GlassBottleMixin extends Item {
@@ -30,25 +28,23 @@ public class GlassBottleMixin extends Item {
         super(properties);
     }
 
-    @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    public void useInject(Level level, Player player, InteractionHand usedHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        ItemStack itemStack = player.getItemInHand(usedHand);
-
+    @WrapMethod(method = "use")
+    public InteractionResultHolder<ItemStack> useInject(Level level, Player player, InteractionHand interactionHand, Operation<InteractionResultHolder<ItemStack>> original) {
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
         BlockPos blockPos = blockHitResult.getBlockPos();
 
-        if (level.getFluidState(blockPos).is(ModTags.DIMENSIONAL_TEARS)) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSoundEvents.BOTTLE_FILL_DIMENSIONAL_TEARS.get(), SoundSource.NEUTRAL);
-            level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
+        if (!level.getFluidState(blockPos).is(ModTags.DIMENSIONAL_TEARS))
+            return original.call(level, player, interactionHand);
 
-            cir.setReturnValue(InteractionResultHolder.sidedSuccess(this.dimensional_tears$turnBottleIntoItem(itemStack, player, ModItems.DIMENSIONAL_TEARS_BOTTLE.get().getDefaultInstance()), level.isClientSide()));
-        }
-    }
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSoundEvents.BOTTLE_FILL_DIMENSIONAL_TEARS.get(), SoundSource.NEUTRAL);
+        level.gameEvent(player, GameEvent.FLUID_PICKUP, blockPos);
 
-    @Unique
-    protected ItemStack dimensional_tears$turnBottleIntoItem(ItemStack bottleStack, Player player, ItemStack filledBottleStack) {
         player.awardStat(Stats.ITEM_USED.get(this));
-        return ItemUtils.createFilledResult(bottleStack, player, filledBottleStack);
+
+        ItemStack itemStack = player.getItemInHand(interactionHand);
+        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.DIMENSIONAL_TEARS_BOTTLE.get().getDefaultInstance());
+
+        return InteractionResultHolder.sidedSuccess(filledResult, level.isClientSide());
     }
 
 }

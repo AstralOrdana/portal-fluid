@@ -1,16 +1,17 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "com.ordana.dimensional_tears.mixins.fabric",
-  "compatibilityLevel": "JAVA_17",
-  "client": [
-    "stupid_fluid_workarounds.FogRendererMixin"
-  ],
-  "mixins": [
-    "stupid_fluid_workarounds.EntityMixin",
-    "stupid_fluid_workarounds.LivingEntityMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
+    "required": true,
+    "minVersion": "0.8",
+    "package": "com.ordana.dimensional_tears.fabric.mixins",
+    "compatibilityLevel": "JAVA_17",
+    "client": [
+        "stupid_fluid_workarounds.FogRendererMixin"
+    ],
+    "mixins": [
+        "stupid_fluid_workarounds.EntityMixin",
+        "stupid_fluid_workarounds.LivingEntityMixin",
+        "stupid_fluid_workarounds.WalkNodeEvaluatorMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
   }
 }
