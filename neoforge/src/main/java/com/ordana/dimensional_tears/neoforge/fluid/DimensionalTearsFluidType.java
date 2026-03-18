@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 public class DimensionalTearsFluidType extends FluidType {
 
@@ -25,9 +26,9 @@ public class DimensionalTearsFluidType extends FluidType {
     }
 
     @Override
-    public boolean move(FluidState state, LivingEntity entity, Vec3 movementVector, double gravity) {
+    public boolean move(@NotNull FluidState state, @NotNull LivingEntity entity, @NotNull Vec3 movementVector, double gravity) {
         DimensionalTearsFluid.move(entity, gravity, entity.getDeltaMovement().y <= 0.0, movementVector);
-        return true;
+        return true; // the physics are slightly different on fabric and i have truly no fucking idea why--axia
     }
 
 }

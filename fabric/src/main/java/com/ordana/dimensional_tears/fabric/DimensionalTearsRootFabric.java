@@ -27,6 +27,7 @@ public class DimensionalTearsRootFabric implements ModInitializer {
 
     public static MinecraftServer currentServer;
 
+    @SuppressWarnings({ "CastToIncompatibleInterface", "DataFlowIssue" })
     @Override
     public void onInitialize() {
         DimensionalTearsRoot.commonInit();

@@ -49,6 +49,11 @@ public final class TeleportHelper {
         }
     }
 
+    public static void tryRemoveRiftingEffect(@Nullable Entity entity) {
+        if (entity instanceof LivingEntity livingEntity)
+            livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
+    }
+
     public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
         entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
         playTeleportSound(serverLevel, entity);

@@ -59,12 +59,12 @@ public abstract class LivingEntityMixin extends Entity {
         return in ? DimensionalTearsFluid.getHeight(this) : original.call(instance, tagKey);
     }
 
-    @WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInLava()Z", ordinal = 1))
+    @WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInWater()Z"))
     private boolean shouldHandleJumpingLikeLava(LivingEntity instance, Operation<Boolean> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
         return original.call(instance) || isInDimTearsRef.get();
     }
 
-    @WrapOperation(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/tags/FluidTags;LAVA:Lnet/minecraft/tags/TagKey;", ordinal = 1, opcode = Opcodes.GETSTATIC))
+    @WrapOperation(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/tags/FluidTags;WATER:Lnet/minecraft/tags/TagKey;", ordinal = 1, opcode = Opcodes.GETSTATIC))
     private TagKey<Fluid> finalizeTagForMovement(Operation<TagKey<Fluid>> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
         return isInDimTearsRef.get() ? ModTags.DIMENSIONAL_TEARS : original.call();
     }

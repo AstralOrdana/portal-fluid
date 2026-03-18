@@ -1,7 +1,6 @@
 package com.ordana.dimensional_tears;
 
 import com.ordana.dimensional_tears.particles.RiftFlameParticle;
-import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModFluids;
 import com.ordana.dimensional_tears.reg.ModParticles;
 import net.mehvahdjukaar.moonlight.api.platform.ClientHelper;
@@ -16,16 +15,15 @@ public class DimensionalTearsClient {
     }
 
     public static void setup() {
-/*        ClientHelper.registerFluidRenderType(ModFluids.FLOWING_DIMENSIONAL_TEARS.get(), RenderType.translucent());
+        // the textures are opaque but need to be registered as translucent for the boat's "water patch" to work
+        ClientHelper.registerFluidRenderType(ModFluids.FLOWING_DIMENSIONAL_TEARS.get(), RenderType.translucent());
         ClientHelper.registerFluidRenderType(ModFluids.DIMENSIONAL_TEARS.get(), RenderType.translucent());
-
-        ClientHelper.registerRenderType(ModBlocks.DIMENSIONAL_TEARS.get(), RenderType.translucent());*/
 
         finishedSetup = true;
     }
 
     public static void checkIfFailed() {
-        if(!finishedSetup) {
+        if (!finishedSetup) {
             throw new RuntimeException("Failed to run client setup. This is likely due to the mod integration code being outdated, crashing with other mods new versions. Terminating");
         }
     }

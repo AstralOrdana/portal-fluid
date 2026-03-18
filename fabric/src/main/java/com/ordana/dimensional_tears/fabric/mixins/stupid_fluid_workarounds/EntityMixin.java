@@ -16,8 +16,7 @@ public abstract class EntityMixin {
     @Shadow protected boolean firstTick;
     @Shadow public abstract boolean updateFluidHeightAndDoFluidPushing(TagKey<Fluid> tagKey, double d);
 
-    @Shadow
-    public abstract void resetFallDistance();
+    @Shadow public abstract void resetFallDistance();
 
     @ModifyReturnValue(method = "updateInWaterStateAndDoFluidPushing", at = @At("RETURN"))
     private boolean nonWaterFluidPush(boolean original) {

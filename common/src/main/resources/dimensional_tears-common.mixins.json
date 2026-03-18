@@ -7,8 +7,10 @@
         "GlassBottleMixin",
         "dimensional_tears.BoatPaddleSoundMixin",
         "dimensional_tears.LakeFeatureMixin",
+        "gateway.TheEndGatewayBlockEntityMixin",
         "nether_portal.NetherPortalBlockMixin",
         "nether_portal.NetherPortalSoundMixin",
+        "rifting.EntityDimChangeMixin",
         "tooltip.TooltipMixin"
     ],
     "injectors": {

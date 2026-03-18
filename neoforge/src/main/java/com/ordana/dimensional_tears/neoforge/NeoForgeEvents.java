@@ -34,6 +34,7 @@ public class NeoForgeEvents {
         event.register(ModBlocks.DIMENSIONAL_TEARS.get(), ModFluids.DIMENSIONAL_TEARS.get(), FluidType.BUCKET_VOLUME, DimensionalTearsCauldronBlock.LEVEL);
     }
 
+    @SuppressWarnings({ "CastToIncompatibleInterface", "DataFlowIssue" })
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerClientFluid(RegisterClientExtensionsEvent event) {
         event.registerFluidType((IClientFluidTypeExtensions) new DimensionalTearsFluidRenderer(), ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
