@@ -1,10 +1,12 @@
 package com.ordana.dimensional_tears.reg;
 
+import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
 import com.ordana.dimensional_tears.items.DimensionalTearsBucketItem;
 import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
@@ -35,6 +37,7 @@ public interface ModItems {
     );
 
     static <T extends Item> RegSupplier<T> regItem(String path, Supplier<T> itemSupplier) {
+        DimensionalTearsPlatform.addAlias(BuiltInRegistries.ITEM, path);
         return RegHelper.registerItem(DimensionalTearsRoot.res(path), itemSupplier);
     }
 

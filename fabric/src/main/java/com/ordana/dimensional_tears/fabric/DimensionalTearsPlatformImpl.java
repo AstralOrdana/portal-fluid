@@ -5,7 +5,9 @@ import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
@@ -35,6 +37,10 @@ public class DimensionalTearsPlatformImpl {
 
     public static boolean isEyeInDimTears(Entity entity) {
         return entity.isEyeInFluid(ModTags.DIMENSIONAL_TEARS);
+    }
+
+    public static void addAlias(Registry<?> registry, ResourceLocation oldPath, ResourceLocation newPath) {
+        registry.addAlias(oldPath, newPath);
     }
 
 }

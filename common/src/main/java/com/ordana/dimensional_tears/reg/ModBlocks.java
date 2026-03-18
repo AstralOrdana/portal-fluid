@@ -5,6 +5,7 @@ import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -38,6 +39,9 @@ public interface ModBlocks {
         return RegHelper.registerBlock(DimensionalTearsRoot.res(path), blockSupplier);
     }
 
-    static void init() {}
+    static void init() {
+        DimensionalTearsPlatform.addAlias(BuiltInRegistries.BLOCK, "portal_fluid", "dimensional_tears");
+        DimensionalTearsPlatform.addAlias(BuiltInRegistries.BLOCK, "portal_cauldron", "dimensional_tears_cauldron");
+    }
 
 }

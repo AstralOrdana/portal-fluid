@@ -43,7 +43,7 @@ public class DimensionalTearsRootFabric implements ModInitializer {
         UseBlockCallback.EVENT.register(DimensionalTearsRootFabric::onRightClickBlock);
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             // delayed to prevent a crash from accessing it before registration
-            CauldronFluidContent.registerCauldron(ModBlocks.DIMENSIONAL_TEARS.get(), ModFluids.DIMENSIONAL_TEARS.get(), FluidConstants.BOTTLE, DimensionalTearsCauldronBlock.LEVEL);
+            CauldronFluidContent.registerCauldron(ModBlocks.DIMENSIONAL_TEARS_CAULDRON.get(), ModFluids.DIMENSIONAL_TEARS.get(), FluidConstants.BOTTLE, DimensionalTearsCauldronBlock.LEVEL);
         });
     }
 
