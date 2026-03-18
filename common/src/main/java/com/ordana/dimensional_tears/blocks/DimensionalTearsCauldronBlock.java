@@ -20,7 +20,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -139,4 +141,8 @@ public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
+    @Override
+    public ItemStack getCloneItemStack(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
+        return Items.CAULDRON.getDefaultInstance();
+    }
 }

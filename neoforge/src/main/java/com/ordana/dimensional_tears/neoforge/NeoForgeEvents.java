@@ -31,7 +31,7 @@ public class NeoForgeEvents {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerCauldron(RegisterCauldronFluidContentEvent event) {
-        event.register(ModBlocks.DIMENSIONAL_TEARS.get(), ModFluids.DIMENSIONAL_TEARS.get(), FluidType.BUCKET_VOLUME, DimensionalTearsCauldronBlock.LEVEL);
+        event.register(ModBlocks.DIMENSIONAL_TEARS_CAULDRON.get(), ModFluids.DIMENSIONAL_TEARS.get(), FluidType.BUCKET_VOLUME, DimensionalTearsCauldronBlock.LEVEL);
     }
 
     @SuppressWarnings({ "CastToIncompatibleInterface", "DataFlowIssue" })
