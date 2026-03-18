@@ -164,8 +164,10 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
     @NotNull
     public ItemStack finishUsingItem(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
         if (CommonConfigs.DIMENSIONAL_TEARS_DRINKING.get() && level instanceof ServerLevel serverLevel && livingEntity instanceof ServerPlayer serverPlayer) {
-            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, serverPlayer, Items.GLASS_BOTTLE.getDefaultInstance());
-            serverPlayer.setItemInHand(serverPlayer.getUsedItemHand(), filledResult);
+            if (!serverPlayer.hasInfiniteMaterials()) {
+                ItemStack filledResult = ItemUtils.createFilledResult(itemStack, serverPlayer, Items.GLASS_BOTTLE.getDefaultInstance());
+                serverPlayer.setItemInHand(serverPlayer.getUsedItemHand(), filledResult);
+            }
 
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
@@ -191,8 +193,10 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
             if (CommonConfigs.PORTAL_CREATION_SOUND.get())
                 level.playSound(player, blockPos, ModSoundEvents.PORTAL_SPAWN.get(), SoundSource.BLOCKS);
 
-            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
-            player.setItemInHand(interactionHand, filledResult);
+            if (!player.hasInfiniteMaterials()) {
+                ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
+                player.setItemInHand(interactionHand, filledResult);
+            }
 
             optional.get().createPortalBlocks();
 
@@ -209,9 +213,12 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
             return InteractionResult.PASS;
 
         playSound(level, blockPos, player, false);
-        ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
 
-        player.setItemInHand(interactionHand, filledResult);
+        if (!player.hasInfiniteMaterials()) {
+            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
+            player.setItemInHand(interactionHand, filledResult);
+        }
+ 
         level.setBlockAndUpdate(blockPos, DimensionalTearsCauldronBlock.getNextCauldronState(blockState));
 
         if (player instanceof ServerPlayer serverPlayer)
