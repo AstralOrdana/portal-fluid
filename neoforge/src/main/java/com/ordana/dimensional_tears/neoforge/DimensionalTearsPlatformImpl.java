@@ -3,7 +3,9 @@ package com.ordana.dimensional_tears.neoforge;
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsBlock;
 import com.ordana.dimensional_tears.neoforge.reg.ModFluidTypes;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
@@ -31,6 +33,10 @@ public class DimensionalTearsPlatformImpl {
 
     public static boolean isEyeInDimTears(Entity entity) {
         return DimensionalTearsRoot.isInitiated() && entity.isEyeInFluidType(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
+    }
+
+    public static void addAlias(Registry<?> registry, ResourceLocation oldPath, ResourceLocation newPath) {
+        registry.addAlias(oldPath, newPath);
     }
 
 }
