@@ -1,7 +1,5 @@
 package com.ordana.dimensional_tears.fabric;
 
-import com.ordana.dimensional_tears.blocks.DimensionalTearsBlock;
-import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -11,14 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.material.FlowingFluid;
-
-import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class DimensionalTearsPlatformImpl {
@@ -31,8 +24,8 @@ public class DimensionalTearsPlatformImpl {
         BiomeModifications.addCarver(BiomeSelectors.tag(tagKey), step, carver);
     }
 
-    public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
-        return new DimensionalTearsBlock(flowingFluid, properties, DimensionalTearsFluid::isIn);
+    public static double getDimTearsHeight(Entity entity) {
+        return entity.getFluidHeight(ModTags.DIMENSIONAL_TEARS);
     }
 
     public static boolean isEyeInDimTears(Entity entity) {

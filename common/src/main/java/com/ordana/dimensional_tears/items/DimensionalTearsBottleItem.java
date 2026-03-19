@@ -122,10 +122,10 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
         return Objects.requireNonNullElse(emptyIntoCauldronResult, createPortalResult);
     }
 
-    @Override
+/*    @Override
     public boolean isFoil(@NotNull ItemStack stack) {
         return true;
-    }
+    }*/
 
     @Override
     @NotNull
@@ -163,7 +163,10 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
     @Override
     @NotNull
     public ItemStack finishUsingItem(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
-        if (CommonConfigs.DIMENSIONAL_TEARS_DRINKING.get() && level instanceof ServerLevel serverLevel && livingEntity instanceof ServerPlayer serverPlayer) {
+        if (!CommonConfigs.DIMENSIONAL_TEARS_DRINKING.get())
+            return itemStack;
+
+        if (level instanceof ServerLevel serverLevel && livingEntity instanceof ServerPlayer serverPlayer) {
             if (!serverPlayer.hasInfiniteMaterials()) {
                 ItemStack filledResult = ItemUtils.createFilledResult(itemStack, serverPlayer, Items.GLASS_BOTTLE.getDefaultInstance());
                 serverPlayer.setItemInHand(serverPlayer.getUsedItemHand(), filledResult);
@@ -172,7 +175,7 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemStack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
 
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, serverPlayer, itemStack);
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, serverPlayer, false, itemStack);
         }
 
         return itemStack;

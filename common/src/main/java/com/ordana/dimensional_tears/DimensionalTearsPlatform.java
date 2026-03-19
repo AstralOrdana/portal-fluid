@@ -7,15 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.material.FlowingFluid;
 import org.jetbrains.annotations.Contract;
-
-import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class DimensionalTearsPlatform {
@@ -33,13 +28,18 @@ public class DimensionalTearsPlatform {
     }
 
     @ExpectPlatform
-    public static LiquidBlock doPortalFluid(Supplier<FlowingFluid> flowingFluid, BlockBehaviour.Properties properties) {
+    public static boolean isEyeInDimTears(Entity entity) {
         throw new AssertionError();
     }
 
+    @Contract
     @ExpectPlatform
-    public static boolean isEyeInDimTears(Entity entity) {
+    public static double getDimTearsHeight(Entity entity) {
         throw new AssertionError();
+    }
+
+    public static boolean isInDimTears(Entity entity) {
+        return getDimTearsHeight(entity) > 0;
     }
 
     public static void addAlias(Registry<?> registry, String path) {

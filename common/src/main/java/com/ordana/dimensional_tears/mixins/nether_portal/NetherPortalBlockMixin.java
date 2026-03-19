@@ -31,9 +31,9 @@ public class NetherPortalBlockMixin {
         Direction.Axis axis = blockState.getValue(AXIS);
         PortalShape portalShape = new PortalShape(levelAccessor, blockPos, axis);
 
-        float chance = CommonConfigs.PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE.get();
+        double chance = CommonConfigs.PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE.get();
 
-        if (portalShape.isComplete() || chance <= 0)
+        if (portalShape.isComplete() || chance <= 0.0)
             return;
 
         RandomSource random = levelAccessor.getRandom();

@@ -1,8 +1,9 @@
 package com.ordana.dimensional_tears.fluids;
 
+import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.reg.*;
-import com.ordana.dimensional_tears.util.DimensionalTearsVisuals;
+import com.ordana.dimensional_tears.util.DimensionalTearsAmbience;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -10,7 +11,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.item.Item;
@@ -37,7 +37,7 @@ import java.util.function.UnaryOperator;
 
 public abstract class DimensionalTearsFluid extends FlowingFluid {
 
-    public static final double MOTION_SCALE = 0.007; // same as nether lava
+    public static final int LUMINANCE = 5;
 
     @Override
     protected boolean canConvertToSource(Level level) {
@@ -82,7 +82,7 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
 
     @Override
     public void animateTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
-        DimensionalTearsVisuals.onAnimateTick(level, blockPos.above(), randomSource);
+        DimensionalTearsAmbience.tryAnimate(level, blockPos, fluidState.getHeight(level, blockPos), randomSource);
     }
 
     @Override
@@ -97,7 +97,7 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
 
     @Override
     public int getTickDelay(@NotNull LevelReader level) {
-        return 10;
+        return CommonConfigs.FLUID_FLOWING_TICK_RATE.get();
     }
 
     @Override
@@ -114,14 +114,6 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
     @Override
     public boolean isSame(Fluid fluid) {
         return fluid == ModFluids.DIMENSIONAL_TEARS.get() || fluid == ModFluids.FLOWING_DIMENSIONAL_TEARS.get();
-    }
-
-    public static double getHeight(Entity entity) {
-        return entity.getFluidHeight(ModTags.DIMENSIONAL_TEARS);
-    }
-
-    public static boolean isIn(Entity entity) {
-        return getHeight(entity) > 0.0;
     }
 
     public static boolean isBoatRowingIn(Level level, AABB boundingBox, Supplier<Double> waterLevelGetter, Consumer<Double> waterLevelSetter) {
@@ -154,7 +146,7 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
         livingEntity.moveRelative(0.02F, original);
         livingEntity.move(MoverType.SELF, livingEntity.getDeltaMovement());
 
-        if (getHeight(livingEntity) <= livingEntity.getFluidJumpThreshold()) {
+        if (DimensionalTearsPlatform.getDimTearsHeight(livingEntity) <= livingEntity.getFluidJumpThreshold()) {
             manipulateDeltaMovement(livingEntity, movement -> movement.multiply(0.5, 0.8F, 0.5));
             manipulateDeltaMovement(livingEntity, movement -> livingEntity.getFluidFallingAdjustedMovement(gravity, falling, movement));
         }
@@ -171,6 +163,10 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
 
     private static void manipulateDeltaMovement(LivingEntity livingEntity, UnaryOperator<Vec3> operation) {
         livingEntity.setDeltaMovement(operation.apply(livingEntity.getDeltaMovement()));
+    }
+
+    public static double motionScale() {
+        return 0.07 * (1.0 / CommonConfigs.FLUID_FLOWING_TICK_RATE.get());
     }
 
     public static class Flowing extends DimensionalTearsFluid {

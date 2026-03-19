@@ -6,7 +6,7 @@ import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
 import com.ordana.dimensional_tears.items.DimensionalTearsBucketItem;
 import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModItems;
-import com.ordana.dimensional_tears.util.DimensionalTearsVisuals;
+import com.ordana.dimensional_tears.util.DimensionalTearsAmbience;
 import com.ordana.dimensional_tears.util.TeleportHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -46,7 +46,7 @@ public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
     public static final int MAX_FILL_LEVEL = 3;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL_CAULDRON;
     private static final int BASE_CONTENT_HEIGHT = 6;
-    private static final double HEIGHT_PER_LEVEL = 3.0D;
+    private static final double HEIGHT_PER_LEVEL = 3.0;
 
     public DimensionalTearsCauldronBlock(Properties properties, CauldronInteraction.InteractionMap map) {
         super(properties, map);
@@ -61,7 +61,7 @@ public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     protected double getContentHeight(BlockState blockState) {
-        return (BASE_CONTENT_HEIGHT + blockState.getValue(LEVEL) * HEIGHT_PER_LEVEL) / 16.0D;
+        return (BASE_CONTENT_HEIGHT + blockState.getValue(LEVEL) * HEIGHT_PER_LEVEL) / 16.0;
     }
 
     @Override
@@ -71,13 +71,13 @@ public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
-        DimensionalTearsVisuals.onAnimateTick(level, blockPos.above(), randomSource);
+        DimensionalTearsAmbience.tryAnimate(level, blockPos.above(), this.getContentHeight(blockState), randomSource);
     }
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
         if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(blockState, blockPos, entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, false, null);
     }
 
     @Override
@@ -142,7 +142,9 @@ public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
     }
 
     @Override
+    @NotNull
     public ItemStack getCloneItemStack(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
         return Items.CAULDRON.getDefaultInstance();
     }
+
 }

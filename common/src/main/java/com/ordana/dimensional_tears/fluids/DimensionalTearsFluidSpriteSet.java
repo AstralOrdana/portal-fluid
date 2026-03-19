@@ -3,7 +3,6 @@ package com.ordana.dimensional_tears.fluids;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
-import com.ordana.dimensional_tears.configs.ClientConfigs;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -172,8 +171,7 @@ public class DimensionalTearsFluidSpriteSet {
 
     @SuppressWarnings("deprecation")
     private static boolean isRandomlySelectedPosition(BlockPos pos, int rarity) {
-        long seed = (long) (Mth.getSeed(pos) * ClientConfigs.DIMENSIONAL_TEARS_SEED.get());
-        return RandomSource.create(seed).nextInt(rarity) == 0;
+        return RandomSource.create(Mth.getSeed(pos)).nextInt(rarity) == 0;
     }
 
     private static boolean areAllNeighborsNonFluid(BlockAndTintGetter getter, BlockPos pos) {

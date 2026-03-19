@@ -2,7 +2,9 @@ package com.ordana.dimensional_tears.reg;
 
 import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
+import com.ordana.dimensional_tears.blocks.DimensionalTearsBlock;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
+import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,20 +19,20 @@ public interface ModBlocks {
 
     Supplier<LiquidBlock> DIMENSIONAL_TEARS = regBlock(
         "dimensional_tears",
-        () -> DimensionalTearsPlatform.doPortalFluid(
+        () -> new DimensionalTearsBlock(
             ModFluids.DIMENSIONAL_TEARS,
             BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                 .noCollission()
                 .strength(100f)
                 .noLootTable()
-                .lightLevel(blockState -> 5)
+                .lightLevel(blockState -> DimensionalTearsFluid.LUMINANCE)
         )
     );
 
     Supplier<DimensionalTearsCauldronBlock> DIMENSIONAL_TEARS_CAULDRON = regBlock(
         "dimensional_tears_cauldron",
         () -> new DimensionalTearsCauldronBlock(
-            BlockBehaviour.Properties.ofFullCopy(Blocks.CAULDRON).lightLevel(blockStatex -> 5),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.CAULDRON).lightLevel(blockStatex -> DimensionalTearsFluid.LUMINANCE),
             CauldronInteraction.WATER
         )
     );

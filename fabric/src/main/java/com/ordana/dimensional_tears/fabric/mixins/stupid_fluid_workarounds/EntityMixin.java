@@ -1,6 +1,7 @@
 package com.ordana.dimensional_tears.fabric.mixins.stupid_fluid_workarounds;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.tags.TagKey;
@@ -23,7 +24,7 @@ public abstract class EntityMixin {
         if (original)
             return true;
 
-        if (this.updateFluidHeightAndDoFluidPushing(ModTags.DIMENSIONAL_TEARS, DimensionalTearsFluid.MOTION_SCALE)) {
+        if (this.updateFluidHeightAndDoFluidPushing(ModTags.DIMENSIONAL_TEARS, DimensionalTearsFluid.motionScale())) {
             this.resetFallDistance();
             return true;
         }
@@ -33,7 +34,7 @@ public abstract class EntityMixin {
 
     @ModifyReturnValue(method = "canSpawnSprintParticle", at = @At("RETURN"))
     private boolean canSpawnSprintParticleImpl(boolean original) {
-        return original && !(DimensionalTearsFluid.isIn(Entity.class.cast(this)) && !this.firstTick);
+        return original && (!DimensionalTearsPlatform.isInDimTears(Entity.class.cast(this)) || this.firstTick);
     }
 
 }

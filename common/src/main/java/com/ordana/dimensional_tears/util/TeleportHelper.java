@@ -25,10 +25,8 @@ import java.util.Objects;
 
 public final class TeleportHelper {
 
-    public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
-        int delaySeconds = CommonConfigs.TELEPORTATION_DELAY_SECONDS.get();
-
-        if (!(entity instanceof LivingEntity livingEntity) || delaySeconds <= 0) {
+    public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity, boolean fullySubmerged, @Nullable ItemStack causingStack) {
+        if (!(entity instanceof LivingEntity livingEntity) || fullySubmerged && CommonConfigs.FULLY_SUBMERGED_INSTANT_TELEPORT.get()) {
             teleportEntity(serverLevel, entity, causingStack);
             return;
         }
@@ -38,7 +36,7 @@ public final class TeleportHelper {
         if (livingEntity.hasEffect(mobEffectHolder) || livingEntity.isSpectator())
             return;
 
-        int delayTicks = SharedConstants.TICKS_PER_SECOND * delaySeconds;
+        int delayTicks = SharedConstants.TICKS_PER_SECOND * CommonConfigs.RIFTING_DELAY_SECONDS.get();
         livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, delayTicks));
 
         if (causingStack != null) {

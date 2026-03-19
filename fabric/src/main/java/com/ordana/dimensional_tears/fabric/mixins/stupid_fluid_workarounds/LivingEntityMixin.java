@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.core.Holder;
@@ -37,7 +38,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (!original)
             return false;
 
-        if (!DimensionalTearsFluid.isIn(this))
+        if (!DimensionalTearsPlatform.isInDimTears(this))
             return true;
 
         double gravity = this.getGravity();
@@ -53,10 +54,10 @@ public abstract class LivingEntityMixin extends Entity {
 
     @WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidHeight(Lnet/minecraft/tags/TagKey;)D", ordinal = 1))
     private double getDimTearsFluidHeight(LivingEntity instance, TagKey<Fluid> tagKey, Operation<Double> original, @Share("isInDimTears") LocalBooleanRef isInDimTearsRef) {
-        boolean in = DimensionalTearsFluid.isIn(this);
+        boolean in = DimensionalTearsPlatform.isInDimTears(this);
         isInDimTearsRef.set(in);
 
-        return in ? DimensionalTearsFluid.getHeight(this) : original.call(instance, tagKey);
+        return in ? DimensionalTearsPlatform.getDimTearsHeight(this) : original.call(instance, tagKey);
     }
 
     @WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInWater()Z"))

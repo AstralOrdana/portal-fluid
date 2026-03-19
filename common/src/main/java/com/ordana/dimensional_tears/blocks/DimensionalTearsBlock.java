@@ -1,5 +1,6 @@
 package com.ordana.dimensional_tears.blocks;
 
+import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.util.TeleportHelper;
 import net.minecraft.core.BlockPos;
@@ -21,17 +22,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class DimensionalTearsBlock extends LiquidBlock {
 
     public static final BooleanProperty IS_OCEAN = BooleanProperty.create("is_ocean");
-    private final Predicate<Entity> inFluidPredicate;
 
-    public DimensionalTearsBlock(Supplier<FlowingFluid> flowingFluid, Properties properties, Predicate<Entity> inFluidPredicate) {
+    public DimensionalTearsBlock(Supplier<FlowingFluid> flowingFluid, Properties properties) {
         super(flowingFluid.get(), properties);
-        this.inFluidPredicate = inFluidPredicate;
         this.registerDefaultState(this.getStateDefinition().any().setValue(IS_OCEAN, false));
     }
 
@@ -43,8 +41,8 @@ public class DimensionalTearsBlock extends LiquidBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.inFluidPredicate.test(entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, null);
+        if (level instanceof ServerLevel serverLevel && DimensionalTearsPlatform.isInDimTears(entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, DimensionalTearsPlatform.isEyeInDimTears(entity), null);
     }
 
     @Override

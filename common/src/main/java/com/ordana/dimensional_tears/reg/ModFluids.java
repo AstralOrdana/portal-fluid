@@ -5,7 +5,6 @@ import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 

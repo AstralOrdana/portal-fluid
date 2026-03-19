@@ -2,11 +2,11 @@ package com.ordana.dimensional_tears.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class RiftFlameParticle extends CylindricalBillboardParticle {
+public class RiftFlameParticle extends TextureSheetParticle {
 
     private static final int MAX_AGE_TICKS = 10;
     private final SpriteSet spriteSet;
@@ -15,19 +15,34 @@ public class RiftFlameParticle extends CylindricalBillboardParticle {
         super(clientLevel, x, y, z, velocityX, velocityY, velocityZ);
         this.spriteSet = spriteSet;
         this.lifetime = MAX_AGE_TICKS;
-        this.scale(2F);
+        this.scale(2.0F);
         this.setSpriteFromAge(spriteSet);
     }
 
     @Override
     public int getLightColor(float partialTick) {
-        return LightTexture.FULL_BLOCK;
+        float g = (this.age + partialTick) / this.lifetime;
+        g = Mth.clamp(g, 0.0F, 1.0F);
+        int i = super.getLightColor(partialTick);
+        int j = i & 0xFF;
+        int k = i >> 16 & 0xFF;
+        j += (int) (g * 15.0F * 16.0F);
+        if (j > 240)
+            j = 240;
+
+        return j | k << 16;
     }
 
     @Override
     @NotNull
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    }
+
+    @Override
+    @NotNull
+    public FacingCameraMode getFacingCameraMode() {
+        return FacingCameraMode.LOOKAT_Y;
     }
 
     @Override
