@@ -19,7 +19,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -48,11 +47,12 @@ public final class TeleportHelper {
     }
 
     public static void tryRemoveRiftingEffect(@Nullable Entity entity) {
-        if (entity instanceof LivingEntity livingEntity)
+        if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder()))
             livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
     }
 
     public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
+        tryRemoveRiftingEffect(entity);
         entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
         playTeleportSound(serverLevel, entity);
     }
