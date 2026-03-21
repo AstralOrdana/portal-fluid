@@ -35,7 +35,7 @@ public class DimensionalTearsFluidSpriteSet {
 
     public static final ResourceLocation FLOWING = DimensionalTearsRoot.res("block/dimensional_tears_flowing");
     public static final ResourceLocation OVERLAY = DimensionalTearsRoot.res("block/dimensional_tears_overlay");
-    public static final ResourceLocation SCREEN = DimensionalTearsRoot.res("textures/block/dimensional_tears_screen.png");
+    public static final ResourceLocation UNDER = DimensionalTearsRoot.res("textures/misc/under_dimensional_tears.png");
 
     public static final DimensionalTearsFluidSpriteSet
         NORTH = createSpriteSet("block/dimensional_tears_n"),

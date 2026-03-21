@@ -12,6 +12,8 @@
         "nether_portal.NetherPortalBlockMixin",
         "nether_portal.NetherPortalSoundMixin",
         "rifting.EntityDimChangeMixin",
+        "rifting.LivingEntityMixin",
+        "rifting.MobEffectInstanceMixin",
         "tooltip.TooltipMixin"
     ],
     "injectors": {

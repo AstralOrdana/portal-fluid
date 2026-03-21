@@ -14,8 +14,8 @@ public abstract class CountdownEffect extends MobEffect {
 
     private final Supplier<SimpleParticleType> mobEffect;
 
-    public CountdownEffect(MobEffectCategory mobEffectCategory, int i, Supplier<SimpleParticleType> mobEffect) {
-        super(mobEffectCategory, i);
+    public CountdownEffect(MobEffectCategory mobEffectCategory, int color, Supplier<SimpleParticleType> mobEffect) {
+        super(mobEffectCategory, color);
         this.mobEffect = mobEffect;
     }
 

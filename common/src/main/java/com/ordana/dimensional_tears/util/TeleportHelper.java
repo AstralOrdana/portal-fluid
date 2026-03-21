@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -35,8 +36,7 @@ public final class TeleportHelper {
         if (livingEntity.hasEffect(mobEffectHolder) || livingEntity.isSpectator())
             return;
 
-        int delayTicks = SharedConstants.TICKS_PER_SECOND * CommonConfigs.RIFTING_DELAY_SECONDS.get();
-        livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, delayTicks));
+        livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, RiftingEffect.teleportDelayTicks()));
 
         if (causingStack != null) {
             ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
@@ -52,9 +52,8 @@ public final class TeleportHelper {
     }
 
     public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
-        tryRemoveRiftingEffect(entity);
-        entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
         playTeleportSound(serverLevel, entity);
+        entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
     }
 
     private static DimensionTransition getDimensionTransition(ServerLevel serverLevel, Entity entity, @Nullable ItemStack itemStack) {
@@ -63,7 +62,7 @@ public final class TeleportHelper {
         if (entity instanceof ServerPlayer serverPlayer) {
             return Objects.requireNonNullElse(
                 DimensionalTearsBottleItem.getAnchorDimensionTransition(server, serverPlayer, itemStack),
-                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.PLACE_PORTAL_TICKET)
+                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.PLACE_PORTAL_TICKET.then(TeleportHelper::tryRemoveRiftingEffect))
             );
         }
 
@@ -75,15 +74,15 @@ public final class TeleportHelper {
     }
 
     public static DimensionTransition createDimensionTransition(ServerLevel serverLevel, Entity entity, Vec3 spawnPosition) {
-        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET);
+        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET.then(TeleportHelper::tryRemoveRiftingEffect));
     }
 
-    private static void playTeleportSound(ServerLevel serverLevel, Entity entity) {
+    public static void playTeleportSound(ServerLevel serverLevel, Entity entity) {
         playTeleportSound(serverLevel, entity, 1.0F);
     }
 
     private static void playTeleportSound(ServerLevel serverLevel, Entity entity, float volume) {
-        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.DIMENSIONAL_TEARS_TELEPORT.get(), SoundSource.NEUTRAL, volume, 1.0F);
+        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.DIMENSIONAL_TEARS_TELEPORT.get(), SoundSource.BLOCKS, volume, 1.0F);
     }
 
     public static boolean canTeleportTo(Entity entity) {

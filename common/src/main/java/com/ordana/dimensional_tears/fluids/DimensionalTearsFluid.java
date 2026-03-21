@@ -1,6 +1,5 @@
 package com.ordana.dimensional_tears.fluids;
 
-import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.reg.*;
 import com.ordana.dimensional_tears.util.DimensionalTearsAmbience;
@@ -146,22 +145,16 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
         livingEntity.moveRelative(0.02F, original);
         livingEntity.move(MoverType.SELF, livingEntity.getDeltaMovement());
 
-        if (DimensionalTearsPlatform.getDimTearsHeight(livingEntity) <= livingEntity.getFluidJumpThreshold()) {
-            manipulateDeltaMovement(livingEntity, movement -> movement.multiply(0.5, 0.8F, 0.5));
-            manipulateDeltaMovement(livingEntity, movement -> livingEntity.getFluidFallingAdjustedMovement(gravity, falling, movement));
-        }
-        else manipulateDeltaMovement(livingEntity, movement -> movement.scale(0.5));
-
-        if (gravity != 0.0)
-            manipulateDeltaMovement(livingEntity, movement -> movement.add(0.0, -gravity / 4.0, 0.0));
+        applyDelta(livingEntity, v -> v.multiply(0.5, 0.8, 0.5));
+        applyDelta(livingEntity, v -> livingEntity.getFluidFallingAdjustedMovement(gravity, falling, v));
 
         Vec3 vec = livingEntity.getDeltaMovement().add(0.0, 0.6 - livingEntity.getY() + oldY, 0.0);
 
         if (livingEntity.horizontalCollision && livingEntity.isFree(vec.x, vec.y, vec.z))
-            manipulateDeltaMovement(livingEntity, movement -> movement.with(Direction.Axis.Y, 0.3));
+            applyDelta(livingEntity, v -> v.with(Direction.Axis.Y, 0.3));
     }
 
-    private static void manipulateDeltaMovement(LivingEntity livingEntity, UnaryOperator<Vec3> operation) {
+    private static void applyDelta(LivingEntity livingEntity, UnaryOperator<Vec3> operation) {
         livingEntity.setDeltaMovement(operation.apply(livingEntity.getDeltaMovement()));
     }
 

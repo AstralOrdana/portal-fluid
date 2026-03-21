@@ -29,7 +29,7 @@ public final class DimensionalTearsAmbience {
     public static void particle(Level level, BlockPos blockPos, double fluidHeight, RandomSource randomSource) {
         if (randomSource.nextDouble() <= ClientConfigs.AMBIENT_PARTICLE_CHANCE.get()) {
             double x = blockPos.getX() + randomSource.nextDouble();
-            double y = blockPos.getY() + fluidHeight + ClientConfigs.AMBIENT_PARTICLE_VERTICAL_OFFSET.get();
+            double y = blockPos.getY() + fluidHeight;
             double z = blockPos.getZ() + randomSource.nextDouble();
 
             level.addParticle(ModParticles.RIFT_FLAME.get(), x, y, z, 0.0, 0.0, 0.0);

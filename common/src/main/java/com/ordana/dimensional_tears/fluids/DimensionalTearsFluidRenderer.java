@@ -44,7 +44,7 @@ public class DimensionalTearsFluidRenderer extends ModFluidRenderProperties {
     @Nullable
     @Override
     public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-        return DimensionalTearsFluidSpriteSet.SCREEN;
+        return DimensionalTearsFluidSpriteSet.UNDER;
     }
 
     @NotNull
@@ -94,7 +94,7 @@ public class DimensionalTearsFluidRenderer extends ModFluidRenderProperties {
      */
     public static void renderScreenEffect(LevelReader levelReader, LocalPlayer player, PoseStack poseStack) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, DimensionalTearsFluidSpriteSet.SCREEN);
+        RenderSystem.setShaderTexture(0, DimensionalTearsFluidSpriteSet.UNDER);
 
         BlockPos blockPos = BlockPos.containing(player.getX(), player.getEyeY(), player.getZ());
         float brightness = LightTexture.getBrightness(levelReader.dimensionType(), levelReader.getMaxLocalRawBrightness(blockPos));

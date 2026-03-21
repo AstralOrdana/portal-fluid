@@ -16,7 +16,6 @@ public class ClientConfigs {
     public static ModConfigHolder CONFIG_SPEC;
 
     public static Supplier<Double> AMBIENT_PARTICLE_CHANCE;
-    public static Supplier<Double> AMBIENT_PARTICLE_VERTICAL_OFFSET;
 
     public static Supplier<Double> AMBIENT_SOUND_CHANCE;
     public static Supplier<Double> MAX_SOUND_PITCH_DEVIATION;
@@ -28,7 +27,6 @@ public class ClientConfigs {
 
         builder.push("particles");
         AMBIENT_PARTICLE_CHANCE = builder.define("ambient_particle_rarity", 0.05, 0.0, 1.0);
-        AMBIENT_PARTICLE_VERTICAL_OFFSET = builder.define("particle_vertical_offset", 0.3, 0.0, 1.0);
         builder.pop();
 
         builder.push("sounds");

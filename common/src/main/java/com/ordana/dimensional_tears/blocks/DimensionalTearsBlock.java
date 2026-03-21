@@ -40,9 +40,17 @@ public class DimensionalTearsBlock extends LiquidBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && DimensionalTearsPlatform.isInDimTears(entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, DimensionalTearsPlatform.isEyeInDimTears(entity), null);
+    public void entityInside(BlockState state, Level level, BlockPos blockPos, Entity entity) {
+        if (level instanceof ServerLevel serverLevel && DimensionalTearsPlatform.isInDimTears(entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching()) {
+            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, isFullySubmerged(level, blockPos, entity), null);
+        }
+    }
+
+    /**
+     * Fixes teleporting multiple times in the same tick and spamming the client with sounds.
+     */
+    private static boolean isFullySubmerged(Level level, BlockPos blockPos, Entity entity) {
+        return level.getFluidState(blockPos).getShape(level, blockPos).bounds().move(blockPos).contains(entity.getEyePosition());
     }
 
     @Override

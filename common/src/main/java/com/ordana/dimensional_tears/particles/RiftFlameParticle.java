@@ -8,13 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class RiftFlameParticle extends TextureSheetParticle {
 
-    private static final int MAX_AGE_TICKS = 10;
+    private static final int MAX_LIFETIME = 10;
     private final SpriteSet spriteSet;
 
-    RiftFlameParticle(ClientLevel clientLevel, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteSet) {
-        super(clientLevel, x, y, z, velocityX, velocityY, velocityZ);
+    RiftFlameParticle(ClientLevel clientLevel, double x, double y, double z, SpriteSet spriteSet) {
+        super(clientLevel, x, y, z);
         this.spriteSet = spriteSet;
-        this.lifetime = MAX_AGE_TICKS;
+        this.lifetime = MAX_LIFETIME;
+
         this.scale(2.0F);
         this.setSpriteFromAge(spriteSet);
     }
@@ -55,8 +56,9 @@ public class RiftFlameParticle extends TextureSheetParticle {
 
     public record Provider(SpriteSet sprites) implements ParticleProvider<SimpleParticleType> {
 
+        @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new RiftFlameParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
+            return new RiftFlameParticle(level, x, y, z, this.sprites);
         }
 
     }
