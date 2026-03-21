@@ -13,7 +13,7 @@ public class EntityDimChangeMixin {
 
     @ModifyReturnValue(method = "changeDimension", at = @At("RETURN"))
     private Entity removeRiftingOnDimChange(@Nullable Entity original) {
-        TeleportHelper.tryRemoveRiftingEffect(original);
+        TeleportHelper.tryRemoveRiftingEffect(original, true);
         return original;
     }
 

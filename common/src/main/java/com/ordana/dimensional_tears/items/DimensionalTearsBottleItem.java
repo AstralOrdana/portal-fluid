@@ -187,26 +187,25 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
     }
 
     private static InteractionResult tryCreatePortal(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand, Direction clickedFace) {
-        if (inPortalDimension(level)) {
-            Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(level, blockPos.relative(clickedFace), Direction.Axis.X);
+        if (!inPortalDimension(level))
+            return InteractionResult.PASS;
 
-            if (optional.isEmpty())
-                return InteractionResult.PASS;
+        Optional<PortalShape> optional = PortalShape.findEmptyPortalShape(level, blockPos.relative(clickedFace), Direction.Axis.X);
 
-            if (CommonConfigs.PORTAL_CREATION_SOUND.get())
-                level.playSound(player, blockPos, ModSoundEvents.PORTAL_SPAWN.get(), SoundSource.BLOCKS);
+        if (optional.isEmpty())
+            return InteractionResult.PASS;
 
-            if (!player.hasInfiniteMaterials()) {
-                ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
-                player.setItemInHand(interactionHand, filledResult);
-            }
+        if (CommonConfigs.PORTAL_CREATION_SOUND.get())
+            level.playSound(player, blockPos, ModSoundEvents.PORTAL_SPAWN.get(), SoundSource.BLOCKS);
 
-            optional.get().createPortalBlocks();
-
-            return InteractionResult.sidedSuccess(level.isClientSide());
+        if (!player.hasInfiniteMaterials()) {
+            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
+            player.setItemInHand(interactionHand, filledResult);
         }
 
-        return InteractionResult.PASS;
+        optional.get().createPortalBlocks();
+
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     private static InteractionResult tryEmptyIntoCauldron(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand) {

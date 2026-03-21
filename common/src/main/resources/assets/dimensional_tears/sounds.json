@@ -84,13 +84,13 @@
         ],
         "subtitle": "subtitles.event.mob_effect.rifting"
     },
-    "block.mob_effect.rifting_extinguish": {
+    "entity.generic.extinguish_rifting": {
         "sounds": [
             {
-                "name": "minecraft:block.fire.extinguish",
+                "name": "minecraft:entity.generic.extinguish_fire",
                 "type": "event"
             }
         ],
-        "subtitle": "subtitles.event.mob_effect.rifting_extinguish"
+        "subtitle": "subtitles.entity.generic.extinguish_rifting"
     }
 }
