@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.item.Item;
@@ -113,6 +114,10 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
     @Override
     public boolean isSame(Fluid fluid) {
         return fluid == ModFluids.DIMENSIONAL_TEARS.get() || fluid == ModFluids.FLOWING_DIMENSIONAL_TEARS.get();
+    }
+
+    public static boolean isEntityInFluid(Level level, Entity entity) {
+        return (level.getFluidState(BlockPos.containing(entity.position())).is(ModTags.DIMENSIONAL_TEARS));
     }
 
     public static boolean isBoatRowingIn(Level level, AABB boundingBox, Supplier<Double> waterLevelGetter, Consumer<Double> waterLevelSetter) {

@@ -1,9 +1,13 @@
 package com.ordana.dimensional_tears.mixins.nether_portal;
 
 import com.ordana.dimensional_tears.configs.CommonConfigs;
+import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -46,8 +50,10 @@ public class NetherPortalBlockMixin {
             BlockPos potentialCryingPos = blockPos.relative(potentialCryingDirection);
             BlockState potentialCryingState = levelAccessor.getBlockState(potentialCryingPos);
 
-            if (random.nextDouble() <= chance && potentialCryingState.is(Blocks.OBSIDIAN))
+            if (random.nextDouble() <= chance && potentialCryingState.is(Blocks.OBSIDIAN)) {
                 levelAccessor.setBlock(potentialCryingPos, Blocks.CRYING_OBSIDIAN.defaultBlockState(), Block.UPDATE_ALL);
+                levelAccessor.playSound(null, blockPos, ModSoundEvents.PORTAL_DESTROY.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
         }
     }
 

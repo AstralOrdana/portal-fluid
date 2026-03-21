@@ -2,15 +2,19 @@ package com.ordana.dimensional_tears.util;
 
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.effects.RiftingEffect;
+import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
 import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
 import com.ordana.dimensional_tears.reg.ModEffects;
+import com.ordana.dimensional_tears.reg.ModParticles;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -46,9 +50,14 @@ public final class TeleportHelper {
         }
     }
 
-    public static void tryRemoveRiftingEffect(@Nullable Entity entity) {
-        if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder()))
+    public static boolean tryRemoveRiftingEffect(@Nullable Entity entity) {
+        if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder())) {
+            if (entity.getFluidHeight(ModTags.DIMENSIONAL_TEARS) > (double) 0.0F) return false;
             livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
+            if (entity.level() instanceof ServerLevel) RiftingEffect.addParticles((ServerLevel) entity.level(), entity, RiftingEffect.MAX_PARTICLE_ITERATIONS * 10, 0.95f);
+            return true;
+        }
+        else return false;
     }
 
     public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {

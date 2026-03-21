@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class RiftingEffect extends CountdownEffect {
 
-    private static final int MAX_PARTICLE_ITERATIONS = 5;
-    private static final double PARTICLE_HITBOX_RADIUS = 0.65;
+    public static final int MAX_PARTICLE_ITERATIONS = 25;
+    private static final double PARTICLE_HITBOX_RADIUS = 1.65;
     private static final float MIN_PARTICLE_HEIGHT_MUL = 0.6F;
     private static final float MAX_PARTICLE_HEIGHT_MUL = 1.1F;
 
@@ -58,5 +58,4 @@ public class RiftingEffect extends CountdownEffect {
             serverLevel.sendParticles(ModParticles.RIFT_FLAME.get(), x, y, z, 1, 0, 0, 0, 0);
         }
     }
-
 }

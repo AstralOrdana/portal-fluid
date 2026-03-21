@@ -32,6 +32,7 @@ public interface ModItems {
             ModFluids.DIMENSIONAL_TEARS.get(),
             new Item.Properties()
                 .stacksTo(1)
+                .rarity(Rarity.UNCOMMON)
                 .craftRemainder(Items.BUCKET)
         )
     );
