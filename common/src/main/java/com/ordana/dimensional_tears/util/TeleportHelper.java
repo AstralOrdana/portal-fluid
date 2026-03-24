@@ -50,9 +50,9 @@ public final class TeleportHelper {
     public static void tryRemoveRiftingEffect(@Nullable Entity entity, boolean withFlourish) {
         if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder())) {
             livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
-            if (withFlourish && entity.level() instanceof ServerLevel serverLevel) {
-                serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.GENERIC_EXTINGUISH_RIFTING.get(), SoundSource.NEUTRAL, 0.7F, (float) serverLevel.getRandom().triangle(1.6, 0.4));
-                RiftingEffect.addParticles(serverLevel, entity, RiftingEffect.MAX_PARTICLE_ITERATIONS, 0.85F);
+            if (entity.level() instanceof ServerLevel serverLevel) {
+                if (withFlourish) serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.GENERIC_EXTINGUISH_RIFTING.get(), SoundSource.NEUTRAL, 0.7F, (float) serverLevel.getRandom().triangle(1.6, 0.4));
+                RiftingEffect.addParticles(serverLevel, entity, RiftingEffect.MAX_PARTICLE_ITERATIONS, 0.85F, withFlourish);
             }
         }
     }
