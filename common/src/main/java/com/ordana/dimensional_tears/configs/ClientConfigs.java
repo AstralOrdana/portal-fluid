@@ -16,6 +16,8 @@ public class ClientConfigs {
     public static ModConfigHolder CONFIG_SPEC;
 
     public static Supplier<Double> AMBIENT_PARTICLE_CHANCE;
+    public static Supplier<Integer> EFFECT_PARTICLE_DENSITY;
+    public static Supplier<Double> EFFECT_PARTICLE_RADIUS;
 
     public static Supplier<Double> AMBIENT_SOUND_CHANCE;
     public static Supplier<Double> MAX_SOUND_PITCH_DEVIATION;
@@ -27,6 +29,8 @@ public class ClientConfigs {
 
         builder.push("particles");
         AMBIENT_PARTICLE_CHANCE = builder.define("ambient_particle_rarity", 0.05, 0.0, 1.0);
+        EFFECT_PARTICLE_DENSITY = builder.define("effect_particle_density", 10, 0, 50);
+        EFFECT_PARTICLE_RADIUS = builder.define("effect_particle_radius", 1.65, 0, 2);
         builder.pop();
 
         builder.push("sounds");

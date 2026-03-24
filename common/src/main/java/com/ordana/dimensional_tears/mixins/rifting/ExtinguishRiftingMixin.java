@@ -16,7 +16,8 @@ public class ExtinguishRiftingMixin {
 
     @Inject(method = "extinguishFire", at = @At("TAIL"))
     private void getSoundGroupMixin(CallbackInfo ci) {
-        if (TeleportHelper.tryRemoveRiftingEffect((Entity)(Object)this))
+        if (TeleportHelper.extinguishRifting((Entity)(Object)this)) {
             ((Entity)(Object)this).level().playSound(null, BlockPos.containing(((Entity)(Object)this).position()), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
     }
 }

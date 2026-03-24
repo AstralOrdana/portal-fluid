@@ -1,9 +1,11 @@
 package com.ordana.dimensional_tears.effects;
 
+import com.ordana.dimensional_tears.configs.ClientConfigs;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.reg.ModParticles;
 import com.ordana.dimensional_tears.util.TeleportHelper;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -15,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class RiftingEffect extends CountdownEffect {
 
-    public static final int MAX_PARTICLE_ITERATIONS = 25;
-    private static final double PARTICLE_HITBOX_RADIUS = 1.65;
+    public static final int MAX_PARTICLE_ITERATIONS = ClientConfigs.EFFECT_PARTICLE_DENSITY.get();
+    private static final double PARTICLE_HITBOX_RADIUS = ClientConfigs.EFFECT_PARTICLE_RADIUS.get();
     private static final float MIN_PARTICLE_HEIGHT_MUL = 0.6F;
     private static final float MAX_PARTICLE_HEIGHT_MUL = 1.1F;
 
@@ -45,17 +47,17 @@ public class RiftingEffect extends CountdownEffect {
 
         if (duration > 1) {
             float f = 1.0F - Math.clamp((float) duration / teleportDelayTicks(), 0.0F, 1.0F);
-            addParticles(serverLevel, livingEntity, Mth.lerpDiscrete(f * f * f, 0, MAX_PARTICLE_ITERATIONS), f);
+            addParticles(serverLevel, livingEntity, Mth.lerpDiscrete(f * f * f, 0, MAX_PARTICLE_ITERATIONS), f, false);
         }
     }
 
-    public static void addParticles(ServerLevel serverLevel, Entity entity, int iterations, float delta) {
+    public static void addParticles(ServerLevel serverLevel, Entity entity, int iterations, float delta, boolean smoke) {
         for (int i = 0; i < iterations; i++) {
             double x = entity.getRandomX(PARTICLE_HITBOX_RADIUS);
             double y = entity.getY(delta * Mth.randomBetween(serverLevel.getRandom(), MIN_PARTICLE_HEIGHT_MUL, MAX_PARTICLE_HEIGHT_MUL));
             double z = entity.getRandomZ(PARTICLE_HITBOX_RADIUS);
 
-            serverLevel.sendParticles(ModParticles.RIFT_FLAME.get(), x, y, z, 1, 0, 0, 0, 0);
+            serverLevel.sendParticles(smoke ? ParticleTypes.SMOKE : ModParticles.RIFT_FLAME.get(), x, y, z, 1, 0, 0, 0, 0);
         }
     }
 }
