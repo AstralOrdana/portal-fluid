@@ -47,22 +47,14 @@ public final class TeleportHelper {
         }
     }
 
-    public static void tryRemoveRiftingEffect(@Nullable Entity entity) {
+    public static void tryRemoveRiftingEffect(@Nullable Entity entity, boolean withFlourish) {
         if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder())) {
-            if (entity.getFluidHeight(ModTags.DIMENSIONAL_TEARS) > (double) 0.0F) return;
             livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
-            if (entity.level() instanceof ServerLevel) RiftingEffect.addParticles((ServerLevel) entity.level(), entity, RiftingEffect.MAX_PARTICLE_ITERATIONS * 10, 1.2f, false);
+            if (withFlourish && entity.level() instanceof ServerLevel serverLevel) {
+                serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.GENERIC_EXTINGUISH_RIFTING.get(), SoundSource.NEUTRAL, 0.7F, (float) serverLevel.getRandom().triangle(1.6, 0.4));
+                RiftingEffect.addParticles(serverLevel, entity, RiftingEffect.MAX_PARTICLE_ITERATIONS, 0.85F);
+            }
         }
-    }
-
-    public static boolean extinguishRifting(@Nullable Entity entity) {
-        if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder())) {
-            if (entity.getFluidHeight(ModTags.DIMENSIONAL_TEARS) > (double) 0.0F) return false;
-            livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
-            if (entity.level() instanceof ServerLevel) RiftingEffect.addParticles((ServerLevel) entity.level(), entity, RiftingEffect.MAX_PARTICLE_ITERATIONS * 10, 1.2f, true);
-            return true;
-        }
-        else return false;
     }
 
     public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
@@ -76,7 +68,7 @@ public final class TeleportHelper {
         if (entity instanceof ServerPlayer serverPlayer) {
             return Objects.requireNonNullElse(
                 DimensionalTearsBottleItem.getAnchorDimensionTransition(server, serverPlayer, itemStack),
-                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.PLACE_PORTAL_TICKET.then(TeleportHelper::tryRemoveRiftingEffect))
+                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.PLACE_PORTAL_TICKET.then(entity1 -> tryRemoveRiftingEffect(entity1, false)))
             );
         }
 
@@ -88,7 +80,7 @@ public final class TeleportHelper {
     }
 
     public static DimensionTransition createDimensionTransition(ServerLevel serverLevel, Entity entity, Vec3 spawnPosition) {
-        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET.then(TeleportHelper::tryRemoveRiftingEffect));
+        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET.then(entity1 -> tryRemoveRiftingEffect(entity1, false)));
     }
 
     public static void playTeleportSound(ServerLevel serverLevel, Entity entity) {

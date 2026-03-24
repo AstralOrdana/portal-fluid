@@ -8,9 +8,9 @@ modId = "dimensional_tears"
 version = "${version}"
 displayName = "Dimensional Tears"
 authors = "Ordana"
-credits="Ordana, cassiancc" #optional
+credits="Ordana, cassiancc, axialeaa" #optional
 description = '''
-Rymes with "fears" or "scares"
+Rhymes with "fears" or "scares"
 '''
 logoFile = "icon.png"
 

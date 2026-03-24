@@ -10,6 +10,7 @@
         "gateway.TheEndGatewayBlockEntityMixin",
         "nether_portal.BaseFireBlockMixin",
         "nether_portal.NetherPortalBlockMixin",
+        "nether_portal.NetherPortalSoundMixin",
         "rifting.EntityDimChangeMixin",
         "rifting.ExtinguishRiftingMixin",
         "rifting.LivingEntityMixin",

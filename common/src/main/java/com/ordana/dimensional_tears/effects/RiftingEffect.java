@@ -54,7 +54,7 @@ public class RiftingEffect extends CountdownEffect {
     public static void addParticles(ServerLevel serverLevel, Entity entity, int iterations, float delta, boolean smoke) {
         for (int i = 0; i < iterations; i++) {
             double x = entity.getRandomX(PARTICLE_HITBOX_RADIUS);
-            double y = entity.getY(delta * Mth.randomBetween(serverLevel.getRandom(), MIN_PARTICLE_HEIGHT_MUL, MAX_PARTICLE_HEIGHT_MUL));
+            double y = entity.getY(boxHeightDelta * Mth.randomBetween(serverLevel.getRandom(), MIN_PARTICLE_HEIGHT_MUL, MAX_PARTICLE_HEIGHT_MUL));
             double z = entity.getRandomZ(PARTICLE_HITBOX_RADIUS);
 
             serverLevel.sendParticles(smoke ? ParticleTypes.SMOKE : ModParticles.RIFT_FLAME.get(), x, y, z, 1, 0, 0, 0, 0);
