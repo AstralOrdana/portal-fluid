@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 /**
- * <a href="https://tangled.org/lerariemann.nekoweb.org/ProjectInfinity/blob/master/src/main/java/net/lerariemann/infinity/mixin/fixes/LakeFeatureMixin.java">Originally authored by LeraRiemann</a> (modified from)
+ * <a href="https://tangled.org/lerariemann.nekoweb.org/ProjectInfinity/blob/master/src/main/java/net/lerariemann/infinity/mixin/fixes/LakeFeatureMixin.java">Originally authored by LeraRiemann</a>. Simplified by axialeaa.
  */
 @SuppressWarnings("deprecation")
 @Mixin(LakeFeature.class)

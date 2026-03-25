@@ -50,7 +50,8 @@ public class NetherPortalBlockMixin {
 
             if (random.nextDouble() <= chance && potentialCryingState.is(Blocks.OBSIDIAN)) {
                 levelAccessor.setBlock(potentialCryingPos, Blocks.CRYING_OBSIDIAN.defaultBlockState(), Block.UPDATE_ALL);
-                levelAccessor.playSound(null, blockPos, ModSoundEvents.PORTAL_DESTROY.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                // TODO next release: improve this impl so that it doesn't depend on the config option being set above 0
+                levelAccessor.playSound(null, blockPos, ModSoundEvents.PORTAL_DESTROY.get(), SoundSource.BLOCKS);
             }
         }
     }

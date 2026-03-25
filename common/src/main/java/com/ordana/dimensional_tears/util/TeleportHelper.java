@@ -1,18 +1,21 @@
 package com.ordana.dimensional_tears.util;
 
+import com.ordana.dimensional_tears.configs.ClientConfigs;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.effects.RiftingEffect;
 import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
+import com.ordana.dimensional_tears.networking.RiftingParticleS2CMessage;
 import com.ordana.dimensional_tears.reg.ModEffects;
+import com.ordana.dimensional_tears.reg.ModItems;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -26,6 +29,8 @@ import java.util.Objects;
 
 public final class TeleportHelper {
 
+    private static final DimensionTransition.PostDimensionTransition ON_TRANSITION = DimensionTransition.PLACE_PORTAL_TICKET.then(entity -> tryRemoveRiftingEffect(entity, true));
+
     public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity, boolean fullySubmerged, @Nullable ItemStack causingStack) {
         if (!(entity instanceof LivingEntity livingEntity) || fullySubmerged && CommonConfigs.FULLY_SUBMERGED_INSTANT_TELEPORT.get()) {
             teleportEntity(serverLevel, entity, causingStack);
@@ -33,32 +38,29 @@ public final class TeleportHelper {
         }
 
         Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
+        MobEffectInstance mobEffectInstance = new MobEffectInstance(mobEffectHolder, RiftingEffect.teleportDelayTicks());
 
-        if (livingEntity.hasEffect(mobEffectHolder) || livingEntity.isSpectator())
-            return;
-
-        livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, RiftingEffect.teleportDelayTicks()));
-
-        if (causingStack != null) {
+        if (!livingEntity.isSpectator() && livingEntity.addEffect(mobEffectInstance) && causingStack != null) {
             ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
 
             if (entity instanceof ServerPlayer serverPlayer)
-                serverPlayer.getCooldowns().addCooldown(causingStack.getItem(), SharedConstants.TICKS_PER_SECOND * 10);
+                serverPlayer.getCooldowns().addCooldown(ModItems.DIMENSIONAL_TEARS_BOTTLE.get(), SharedConstants.TICKS_PER_SECOND * 10);
         }
     }
 
-    public static void tryRemoveRiftingEffect(@Nullable Entity entity, boolean withFlourish) {
+    public static void tryRemoveRiftingEffect(@Nullable Entity entity, boolean silent) {
         if (entity instanceof LivingEntity livingEntity && livingEntity.hasEffect(ModEffects.RIFTING.getHolder())) {
             livingEntity.removeEffect(ModEffects.RIFTING.getHolder());
-            if (entity.level() instanceof ServerLevel serverLevel) {
-                if (withFlourish) serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.GENERIC_EXTINGUISH_RIFTING.get(), SoundSource.NEUTRAL, 0.7F, (float) serverLevel.getRandom().triangle(1.6, 0.4));
-                RiftingEffect.addParticles(serverLevel, entity, RiftingEffect.MAX_PARTICLE_ITERATIONS, 0.85F, withFlourish);
+
+            if (!silent && entity.level() instanceof ServerLevel serverLevel) {
+                serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.GENERIC_EXTINGUISH_RIFTING.get(), SoundSource.NEUTRAL, 0.7F, Mth.randomBetween(entity.getRandom(), 0.9F, 1.1F));
+                RiftingParticleS2CMessage.send(serverLevel, entity, ClientConfigs.EFFECT_PARTICLE_DENSITY.get().byteValue(), 0.5F, true);
             }
         }
     }
 
     public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
-        playTeleportSound(serverLevel, entity);
+        playTeleportSound(serverLevel, entity.position());
         entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
     }
 
@@ -68,7 +70,7 @@ public final class TeleportHelper {
         if (entity instanceof ServerPlayer serverPlayer) {
             return Objects.requireNonNullElse(
                 DimensionalTearsBottleItem.getAnchorDimensionTransition(server, serverPlayer, itemStack),
-                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.PLACE_PORTAL_TICKET.then(entity1 -> tryRemoveRiftingEffect(entity1, false)))
+                serverPlayer.findRespawnPositionAndUseSpawnBlock(false, ON_TRANSITION)
             );
         }
 
@@ -80,15 +82,11 @@ public final class TeleportHelper {
     }
 
     public static DimensionTransition createDimensionTransition(ServerLevel serverLevel, Entity entity, Vec3 spawnPosition) {
-        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET.then(entity1 -> tryRemoveRiftingEffect(entity1, false)));
+        return new DimensionTransition(serverLevel, spawnPosition, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot(), ON_TRANSITION);
     }
 
-    public static void playTeleportSound(ServerLevel serverLevel, Entity entity) {
-        playTeleportSound(serverLevel, entity, 1.0F);
-    }
-
-    private static void playTeleportSound(ServerLevel serverLevel, Entity entity, float volume) {
-        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(), ModSoundEvents.DIMENSIONAL_TEARS_TELEPORT.get(), SoundSource.BLOCKS, volume, 1.0F);
+    public static void playTeleportSound(ServerLevel serverLevel, Vec3 vec3) {
+        serverLevel.playSound(null, vec3.x, vec3.y, vec3.z, ModSoundEvents.DIMENSIONAL_TEARS_TELEPORT.get(), SoundSource.BLOCKS);
     }
 
     public static boolean canTeleportTo(Entity entity) {

@@ -24,6 +24,7 @@ public class CommonConfigs {
     public static Supplier<Boolean> RESPAWN_ANCHOR_DIMENSIONAL_TEARS;
     public static Supplier<Boolean> DIMENSIONAL_TEARS_SOURCE_CONVERSION;
     public static Supplier<Double> PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE;
+    public static Supplier<Double> LAVA_INTERACTION_CRYING_OBSIDIAN_CHANCE;
     public static Supplier<Boolean> PIGLINS_GIVE_CRYING_OBSIDIAN;
 
     public static Supplier<Integer> RIFTING_DELAY_SECONDS;
@@ -54,6 +55,7 @@ public class CommonConfigs {
         CRYING_OBSIDIAN_DIMENSIONAL_TEARS = builder.define("dimensional_tears_from_crying_obsidian", false);
         RESPAWN_ANCHOR_DIMENSIONAL_TEARS = builder.define("dimensional_tears_from_respawn_anchor", true);
         PORTAL_DESTRUCTION_CRYING_OBSIDIAN_CHANCE = builder.define("portal_destruction_crying_obsidian_chance", 0.25, 0.0, 1.0);
+        LAVA_INTERACTION_CRYING_OBSIDIAN_CHANCE = builder.define("lava_interaction_crying_obsidian_chance", 0.1, 0.0, 1.0);
         PIGLINS_GIVE_CRYING_OBSIDIAN = builder.define("piglins_give_crying_obsidian", true);
         builder.pop();
 

@@ -19,6 +19,7 @@ public interface ModSoundEvents {
     RegSupplier<SoundEvent> GENERIC_EXTINGUISH_RIFTING = registerSoundEvent("entity.generic.extinguish_rifting");
     RegSupplier<SoundEvent> PORTAL_DESTROY = registerSoundEvent("block.portal.destroy");
     RegSupplier<SoundEvent> PORTAL_SPAWN = registerSoundEvent("block.portal.spawn");
+    RegSupplier<SoundEvent> WATER_FREEZE = registerSoundEvent("block.water.freeze");
 
     private static RegSupplier<SoundEvent> registerSoundEvent(String path) {
         return RegHelper.registerSound(DimensionalTearsRoot.res(path));

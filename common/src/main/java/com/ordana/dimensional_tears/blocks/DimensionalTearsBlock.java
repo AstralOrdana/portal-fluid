@@ -41,9 +41,10 @@ public class DimensionalTearsBlock extends LiquidBlock {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos blockPos, Entity entity) {
-        entity.resetFallDistance();
-        if (level instanceof ServerLevel serverLevel && DimensionalTearsPlatform.isInDimTears(entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching()) {
-            TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, isFullySubmerged(level, blockPos, entity), null);
+        if (DimensionalTearsPlatform.isInDimTears(entity)) {
+            entity.resetFallDistance();
+            if (level instanceof ServerLevel serverLevel && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
+                TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, isFullySubmerged(level, blockPos, entity), null);
         }
     }
 

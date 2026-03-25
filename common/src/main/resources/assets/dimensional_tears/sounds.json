@@ -1,22 +1,4 @@
 {
-    "block.portal.spawn": {
-        "sounds": [
-            {
-                "name": "minecraft:block.respawn_anchor.set_spawn",
-                "type": "event"
-            }
-        ],
-        "subtitle": "subtitles.block.portal.spawn"
-    },
-    "block.portal.destroy": {
-        "sounds": [
-            {
-                "name": "minecraft:block.respawn_anchor.deplete",
-                "type": "event"
-            }
-        ],
-        "subtitle": "subtitles.block.portal.destroy"
-    },
     "block.dimensional_tears.ambient": {
         "sounds": [
             "dimensional_tears:liquid/dimensional_tears0",
@@ -30,6 +12,32 @@
         ],
         "subtitle": "subtitles.block.dimensional_tears.teleport"
     },
+    "block.portal.destroy": {
+        "sounds": [
+            {
+                "name": "minecraft:block.respawn_anchor.deplete",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.block.portal.destroy"
+    },
+    "block.portal.spawn": {
+        "sounds": [
+            {
+                "name": "minecraft:block.respawn_anchor.set_spawn",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.block.portal.spawn"
+    },
+    "block.water.freeze": {
+        "sounds": [
+            "dimensional_tears:liquid/water_freeze0",
+            "dimensional_tears:liquid/water_freeze1",
+            "dimensional_tears:liquid/water_freeze2"
+        ],
+        "subtitle": "subtitles.block.water.freeze"
+    },
     "entity.boat.paddle_dimensional_tears": {
         "sounds": [
             "dimensional_tears:entity/boat/paddle_dimensional_tears0",
@@ -38,6 +46,18 @@
             "dimensional_tears:entity/boat/paddle_dimensional_tears3"
         ],
         "subtitle": "subtitles.entity.boat.paddle_water"
+    },
+    "entity.generic.extinguish_rifting": {
+        "sounds": [
+            "dimensional_tears:random/extinguish_rifting"
+        ],
+        "subtitle": "subtitles.entity.generic.extinguish_rifting"
+    },
+    "event.mob_effect.rifting": {
+        "sounds": [
+            "dimensional_tears:event/mob_effects/rifting"
+        ],
+        "subtitle": "subtitles.event.mob_effect.rifting"
     },
     "item.bottle.empty_dimensional_tears": {
         "sounds": [
@@ -71,26 +91,10 @@
     },
     "item.dimensional_tears_bottle.drink": {
         "sounds": [
-            {
-                "name": "minecraft:item.honey_bottle.drink",
-                "type": "event"
-            }
+            "dimensional_tears:item/bottle/drink_dimensional_tears0",
+            "dimensional_tears:item/bottle/drink_dimensional_tears1",
+            "dimensional_tears:item/bottle/drink_dimensional_tears2"
         ],
         "subtitle": "subtitles.item.honey_bottle.drink"
-    },
-    "event.mob_effect.rifting": {
-        "sounds": [
-            "dimensional_tears:event/mob_effects/rifting"
-        ],
-        "subtitle": "subtitles.event.mob_effect.rifting"
-    },
-    "entity.generic.extinguish_rifting": {
-        "sounds": [
-            {
-                "name": "minecraft:entity.generic.extinguish_fire",
-                "type": "event"
-            }
-        ],
-        "subtitle": "subtitles.entity.generic.extinguish_rifting"
     }
 }

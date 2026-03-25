@@ -9,14 +9,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public abstract class ExtinguishRiftingMixin {
+public class ExtinguishRiftingMixin {
 
-    @Inject(method = "extinguishFire", at = @At("TAIL"))
+    @Inject(method = "clearFire", at = @At("HEAD"))
     private void removeRiftingEffectWithSound(CallbackInfo ci) {
         Entity thisEntity = (Entity) (Object) this;
 
         if (!DimensionalTearsPlatform.isInDimTears(thisEntity))
-            TeleportHelper.tryRemoveRiftingEffect(thisEntity, true);
+            TeleportHelper.tryRemoveRiftingEffect(thisEntity, false);
     }
 
 }

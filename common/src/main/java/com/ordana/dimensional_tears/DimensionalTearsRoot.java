@@ -2,9 +2,11 @@ package com.ordana.dimensional_tears;
 
 import com.ordana.dimensional_tears.configs.ClientConfigs;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
+import com.ordana.dimensional_tears.networking.RiftingParticleS2CMessage;
 import com.ordana.dimensional_tears.reg.*;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.mehvahdjukaar.moonlight.api.platform.network.NetworkHelper;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,11 +44,17 @@ public class DimensionalTearsRoot {
         ModSoundEvents.init();
         ModCreativeTabs.bootstrap();
         ModWorldgenFeatures.bootstrap();
+
         RegHelper.addLootTableInjects(ModLootInjects::onLootInject);
+        NetworkHelper.addNetworkRegistration(DimensionalTearsRoot::registerMessages, 1);
     }
 
     public static boolean isInitiated() {
         return initiated;
+    }
+
+    private static void registerMessages(NetworkHelper.RegisterMessagesEvent event) {
+        event.registerClientBound(RiftingParticleS2CMessage.TYPE);
     }
 
 }

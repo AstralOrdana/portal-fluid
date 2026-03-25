@@ -3,26 +3,29 @@ package com.ordana.dimensional_tears.fluids;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.reg.*;
 import com.ordana.dimensional_tears.util.DimensionalTearsAmbience;
+import com.ordana.dimensional_tears.util.TeleportHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -30,6 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -44,10 +48,35 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
         return CommonConfigs.DIMENSIONAL_TEARS_SOURCE_CONVERSION.get();
     }
 
+    /**
+     * Spawns the drops directly at the overworld spawn position. More performant than spawning the item entities and having them teleport of their own accord.
+     */
     @Override
     protected void beforeDestroyingBlock(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-        BlockEntity blockEntity = blockState.hasBlockEntity() ? levelAccessor.getBlockEntity(blockPos) : null;
-        Block.dropResources(blockState, levelAccessor, blockPos, blockEntity);
+        if (levelAccessor instanceof ServerLevel serverLevel && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+            BlockEntity blockEntity = blockState.hasBlockEntity() ? levelAccessor.getBlockEntity(blockPos) : null;
+            List<ItemStack> drops = Block.getDrops(blockState, serverLevel, blockPos, blockEntity);
+
+            if (drops.isEmpty())
+                return;
+
+            boolean poppedResource = false;
+
+            ServerLevel overworld = serverLevel.getServer().overworld();
+            BlockPos heightmapPos = overworld.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, overworld.getSharedSpawnPos());
+
+            for (ItemStack itemStack : drops) {
+                if (!itemStack.isEmpty()) {
+                    Block.popResource(overworld, heightmapPos, itemStack);
+                    poppedResource = true;
+                }
+            }
+
+            if (poppedResource) {
+                overworld.getChunkSource().addRegionTicket(TicketType.PORTAL, new ChunkPos(heightmapPos), 3, heightmapPos);
+                TeleportHelper.playTeleportSound(serverLevel, blockPos.getCenter());
+            }
+        }
     }
 
     @NotNull
@@ -116,8 +145,14 @@ public abstract class DimensionalTearsFluid extends FlowingFluid {
         return fluid == ModFluids.DIMENSIONAL_TEARS.get() || fluid == ModFluids.FLOWING_DIMENSIONAL_TEARS.get();
     }
 
-    public static boolean isEntityInFluid(Level level, Entity entity) {
-        return (level.getFluidState(BlockPos.containing(entity.position())).is(ModTags.DIMENSIONAL_TEARS));
+    @Override
+    protected void spreadTo(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState, Direction direction, FluidState fluidState) {
+        if (levelAccessor.getFluidState(blockPos).is(FluidTags.LAVA) && blockState.getBlock() instanceof LiquidBlock) {
+            levelAccessor.setBlock(blockPos, Blocks.CRYING_OBSIDIAN.defaultBlockState(), Block.UPDATE_ALL);
+            return;
+        }
+
+        super.spreadTo(levelAccessor, blockPos, blockState, direction, fluidState);
     }
 
     public static boolean isBoatRowingIn(Level level, AABB boundingBox, Supplier<Double> waterLevelGetter, Consumer<Double> waterLevelSetter) {

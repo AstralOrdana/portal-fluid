@@ -7,6 +7,7 @@
         "GlassBottleMixin",
         "dimensional_tears.BoatPaddleSoundMixin",
         "dimensional_tears.LakeFeatureMixin",
+        "dimensional_tears.FluidInteractionMixin",
         "gateway.TheEndGatewayBlockEntityMixin",
         "nether_portal.BaseFireBlockMixin",
         "nether_portal.NetherPortalBlockMixin",

@@ -11,14 +11,13 @@ import net.minecraft.world.level.Level;
 public final class DimensionalTearsAmbience {
 
     public static void tryAnimate(Level level, BlockPos blockPos, double fluidHeight, RandomSource randomSource) {
-        if (!isAnimatable(level, blockPos))
-            return;
+        if (isAnimatable(level, blockPos)) {
+            if (ClientConfigs.AMBIENT_PARTICLE_CHANCE.get() > 0.0)
+                particle(level, blockPos, fluidHeight, randomSource);
 
-        if (ClientConfigs.AMBIENT_PARTICLE_CHANCE.get() > 0.0)
-            particle(level, blockPos, fluidHeight, randomSource);
-
-        if (ClientConfigs.AMBIENT_SOUND_CHANCE.get() > 0.0)
-            sound(level, blockPos, randomSource);
+            if (ClientConfigs.AMBIENT_SOUND_CHANCE.get() > 0.0)
+                sound(level, blockPos, randomSource);
+        }
     }
 
     public static boolean isAnimatable(Level level, BlockPos blockPos) {

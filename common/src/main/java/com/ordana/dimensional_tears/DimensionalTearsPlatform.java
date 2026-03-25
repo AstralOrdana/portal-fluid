@@ -43,11 +43,11 @@ public class DimensionalTearsPlatform {
     }
 
     public static void addAlias(Registry<?> registry, String path) {
-        addAlias(registry, ResourceLocation.fromNamespaceAndPath("portal_fluid", path.replace("dimensional_tears", "portal_fluid")), ResourceLocation.fromNamespaceAndPath("dimensional_tears", path));
+        addAlias(registry, path.replace(DimensionalTearsRoot.MOD_ID, "portal_fluid"), path);
     }
 
 	public static void addAlias(Registry<?> registry, String oldPath, String newPath) {
-        addAlias(registry, ResourceLocation.fromNamespaceAndPath("portal_fluid", oldPath), ResourceLocation.fromNamespaceAndPath("dimensional_tears", newPath));
+        addAlias(registry, ResourceLocation.fromNamespaceAndPath("portal_fluid", oldPath), DimensionalTearsRoot.res(newPath));
 	}
 
     @ExpectPlatform
