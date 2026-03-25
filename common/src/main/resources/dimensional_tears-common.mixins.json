@@ -6,8 +6,9 @@
     "mixins": [
         "GlassBottleMixin",
         "dimensional_tears.BoatPaddleSoundMixin",
+        "dimensional_tears.fluid_interaction.FlowingFluidMixin",
+        "dimensional_tears.fluid_interaction.LiquidBlockMixin",
         "dimensional_tears.LakeFeatureMixin",
-        "dimensional_tears.FluidInteractionMixin",
         "gateway.TheEndGatewayBlockEntityMixin",
         "nether_portal.BaseFireBlockMixin",
         "nether_portal.NetherPortalBlockMixin",
@@ -18,12 +19,12 @@
         "rifting.MobEffectInstanceMixin",
         "tooltip.TooltipMixin"
     ],
-    "injectors": {
-        "defaultRequire": 1
-    },
     "client": [
         "dimensional_tears.LevelRendererMixin",
         "dimensional_tears.ScreenEffectRendererMixin",
         "tooltip.RhymingGaslightTooltipMixin"
-    ]
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }

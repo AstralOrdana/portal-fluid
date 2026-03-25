@@ -6,67 +6,56 @@ import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.reg.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.function.Consumer;
+import java.util.List;
 
 public final class FluidInteractionHelper {
 
-    public static boolean tryGenerate(Level level, BlockPos blockPos, FluidState fluidState) {
-        if (fluidState.is(FluidTags.WATER))
-            return createDimensionalTearsInteraction(level, blockPos, Lists.newArrayList(Direction.values()), Blocks.ICE, serverLevel -> serverLevel.playSound(null, blockPos, ModSoundEvents.WATER_FREEZE.get(), SoundSource.BLOCKS, 0.5F, 1.0F));
-
-        if (fluidState.is(FluidTags.LAVA))
-            return createDimensionalTearsInteraction(level, blockPos, LiquidBlock.POSSIBLE_FLOW_DIRECTIONS, getLavaInteractionResult(level, level.getFluidState(blockPos), Blocks.END_STONE), serverLevel -> serverLevel.levelEvent(LevelEvent.LAVA_FIZZ, blockPos, 0));
-
-        if (fluidState.is(ModTags.DIMENSIONAL_TEARS))
-            return createInteraction(level, blockPos, Lists.newArrayList(Direction.DOWN), getLavaInteractionResult(level, level.getFluidState(blockPos), null), FluidTags.LAVA, serverLevel -> serverLevel.levelEvent(LevelEvent.LAVA_FIZZ, blockPos, 0));
-
-        return false;
-    }
-
-    @Nullable
-    private static Block getLavaInteractionResult(Level level, FluidState fluidState, @Nullable Block ifNotSource) {
+    private static Block getLavaInteractionResult(Level level, FluidState fluidState) {
         if (fluidState.isSource())
             return level.getRandom().nextDouble() <= CommonConfigs.LAVA_INTERACTION_CRYING_OBSIDIAN_CHANCE.get() ? Blocks.CRYING_OBSIDIAN : Blocks.OBSIDIAN;
 
-        return ifNotSource;
+        return Blocks.END_STONE;
     }
 
-    private static boolean createDimensionalTearsInteraction(Level level, BlockPos blockPos, Collection<Direction> directions, @Nullable Block block, Consumer<ServerLevel> onServerGenerated) {
-        return createInteraction(level, blockPos, directions, block, ModTags.DIMENSIONAL_TEARS, onServerGenerated);
+    public static void playWaterFreezeSound(LevelAccessor levelAccessor, BlockPos blockPos) {
+        levelAccessor.playSound(null, blockPos, ModSoundEvents.WATER_FREEZE.get(), SoundSource.BLOCKS, 0.5F, 1.0F);
     }
 
-    private static boolean createInteraction(Level level, BlockPos blockPos, Collection<Direction> directions, Block block, TagKey<Fluid> fluidTag, Consumer<ServerLevel> onServerGenerated) {
-        boolean generated = false;
+    public static boolean tryInteract(Level level, BlockPos currentPos, FluidState currentState) {
+        boolean isWater = currentState.is(FluidTags.WATER);
+        List<Direction> directions = isWater ? Lists.newArrayList(Direction.values()) : LiquidBlock.POSSIBLE_FLOW_DIRECTIONS;
 
         for (Direction direction : directions) {
-            BlockPos relativePos = blockPos.relative(direction.getOpposite());
-            FluidState relativeFluid = level.getFluidState(relativePos);
+            BlockPos relativePos = currentPos.relative(direction.getOpposite());
 
-            if (relativeFluid.is(fluidTag) && block != null) {
-                level.setBlockAndUpdate(blockPos, block.defaultBlockState());
+            if (level.getFluidState(relativePos).is(ModTags.DIMENSIONAL_TEARS)) {
+                if (currentState.is(FluidTags.WATER)) {
+                    level.setBlockAndUpdate(currentPos, Blocks.ICE.defaultBlockState());
+                    playWaterFreezeSound(level, currentPos);
 
-                if (level instanceof ServerLevel serverLevel)
-                    onServerGenerated.accept(serverLevel);
+                    return true;
+                }
 
-                generated = true;
+                if (currentState.is(FluidTags.LAVA)) {
+                    level.setBlockAndUpdate(currentPos, getLavaInteractionResult(level, currentState).defaultBlockState());
+                    level.levelEvent(LevelEvent.LAVA_FIZZ, currentPos, 0);
+
+                    return true;
+                }
             }
         }
 
-        return generated;
+        return false;
     }
 
 }
