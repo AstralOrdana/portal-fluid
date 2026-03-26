@@ -38,9 +38,13 @@ public final class TeleportHelper {
         }
 
         Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
-        MobEffectInstance mobEffectInstance = new MobEffectInstance(mobEffectHolder, RiftingEffect.teleportDelayTicks());
 
-        if (!livingEntity.isSpectator() && livingEntity.addEffect(mobEffectInstance) && causingStack != null) {
+        if (livingEntity.isSpectator() || livingEntity.hasEffect(mobEffectHolder))
+            return;
+
+        livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, RiftingEffect.teleportDelayTicks()));
+
+        if (causingStack != null) {
             ((RiftingEffect) mobEffectHolder.value()).setCausingStack(causingStack);
 
             if (entity instanceof ServerPlayer serverPlayer)

@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,7 @@ import java.util.function.Supplier;
 
 public class DimensionalTearsBlock extends LiquidBlock {
 
+    private static final VoxelShape BELOW_BLOCK = Shapes.block().move(0.0, -1.0, 0.0);
     public static final BooleanProperty IS_OCEAN = BooleanProperty.create("is_ocean");
 
     public DimensionalTearsBlock(Supplier<FlowingFluid> flowingFluid, Properties properties) {
@@ -58,10 +60,21 @@ public class DimensionalTearsBlock extends LiquidBlock {
     @Override
     @NotNull
     protected VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        if (blockState.getValue(IS_OCEAN) && blockGetter.getBlockState(blockPos.below()).isAir())
-            return Shapes.block().move(0.0, -1.0, 0.0);
+        if (this.hasBottomCollision(blockState, blockGetter, blockPos) && canCollideWith(blockPos, collisionContext))
+            return BELOW_BLOCK;
 
         return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
+    }
+
+    private boolean hasBottomCollision(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+        return blockState.getValue(IS_OCEAN) && !blockGetter.getBlockState(blockPos.below()).is(this);
+    }
+
+    private static boolean canCollideWith(BlockPos blockPos, CollisionContext collisionContext) {
+        if (!collisionContext.isAbove(BELOW_BLOCK, blockPos, true))
+            return false;
+
+        return collisionContext instanceof EntityCollisionContext entityCollisionContext && entityCollisionContext.getEntity() != null;
     }
 
     @Override

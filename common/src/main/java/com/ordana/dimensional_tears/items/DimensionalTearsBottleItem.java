@@ -48,7 +48,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
@@ -116,10 +115,10 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
         ItemStack itemStack = context.getItemInHand();
         InteractionHand interactionHand = context.getHand();
 
-        InteractionResult emptyIntoCauldronResult = tryEmptyIntoCauldron(level, blockPos, itemStack, player, interactionHand);
         InteractionResult createPortalResult = tryCreatePortal(level, blockPos, itemStack, player, interactionHand, context.getClickedFace());
+        InteractionResult emptyIntoCauldronResult = tryEmptyIntoCauldron(level, blockPos, itemStack, player, interactionHand);
 
-        return Objects.requireNonNullElse(emptyIntoCauldronResult, createPortalResult);
+        return createPortalResult == InteractionResult.PASS ? emptyIntoCauldronResult : createPortalResult;
     }
 
 /*    @Override
@@ -195,17 +194,17 @@ public class DimensionalTearsBottleItem extends HoneyBottleItem implements Rhymi
         if (optional.isEmpty())
             return InteractionResult.PASS;
 
+        optional.get().createPortalBlocks();
+
         if (CommonConfigs.PORTAL_CREATION_SOUND.get())
-            level.playSound(player, blockPos, ModSoundEvents.PORTAL_SPAWN.get(), SoundSource.BLOCKS);
+            level.playSound(null, blockPos, ModSoundEvents.PORTAL_SPAWN.get(), SoundSource.BLOCKS);
 
         if (!player.hasInfiniteMaterials()) {
             ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, Items.GLASS_BOTTLE.getDefaultInstance());
             player.setItemInHand(interactionHand, filledResult);
         }
 
-        optional.get().createPortalBlocks();
-
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private static InteractionResult tryEmptyIntoCauldron(Level level, BlockPos blockPos, ItemStack itemStack, Player player, InteractionHand interactionHand) {

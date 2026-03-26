@@ -6,7 +6,7 @@
     "mixins": [
         "GlassBottleMixin",
         "dimensional_tears.BoatPaddleSoundMixin",
-        "dimensional_tears.fluid_interaction.FlowingFluidMixin",
+        "dimensional_tears.fluid_interaction.LavaFluidMixin",
         "dimensional_tears.fluid_interaction.LiquidBlockMixin",
         "dimensional_tears.LakeFeatureMixin",
         "gateway.TheEndGatewayBlockEntityMixin",
