@@ -32,14 +32,19 @@ public final class TeleportHelper {
     private static final DimensionTransition.PostDimensionTransition ON_TRANSITION = DimensionTransition.PLACE_PORTAL_TICKET.then(entity -> tryRemoveRiftingEffect(entity, true));
 
     public static void tryDelegateTeleportationToRiftingEffect(ServerLevel serverLevel, Entity entity, boolean fullySubmerged, @Nullable ItemStack causingStack) {
-        if (!(entity instanceof LivingEntity livingEntity) || fullySubmerged && CommonConfigs.FULLY_SUBMERGED_INSTANT_TELEPORT.get()) {
-            teleportEntity(serverLevel, entity, causingStack);
+        if (!(entity instanceof LivingEntity livingEntity) || shouldLivingEntityTeleportInstantly(livingEntity, fullySubmerged)) {
+            int squaredRange = Mth.square(CommonConfigs.SPAWN_BYPASS_INSTANT_TELEPORTATION_RANGE.get());
+            DimensionTransition dimensionTransition = getDimensionTransition(serverLevel, entity, causingStack);
+
+            if (squaredRange == 0 || entity.distanceToSqr(dimensionTransition.pos()) > squaredRange)
+                teleportEntity(serverLevel, entity, dimensionTransition);
+
             return;
         }
 
         Holder<MobEffect> mobEffectHolder = ModEffects.RIFTING.getHolder();
 
-        if (livingEntity.isSpectator() || livingEntity.hasEffect(mobEffectHolder))
+        if (entity.isSpectator() || livingEntity.hasEffect(mobEffectHolder))
             return;
 
         livingEntity.addEffect(new MobEffectInstance(mobEffectHolder, RiftingEffect.teleportDelayTicks()));
@@ -50,6 +55,10 @@ public final class TeleportHelper {
             if (entity instanceof ServerPlayer serverPlayer)
                 serverPlayer.getCooldowns().addCooldown(ModItems.DIMENSIONAL_TEARS_BOTTLE.get(), SharedConstants.TICKS_PER_SECOND * 10);
         }
+    }
+
+    private static boolean shouldLivingEntityTeleportInstantly(LivingEntity livingEntity, boolean fullySubmerged) {
+        return !livingEntity.isSteppingCarefully() && fullySubmerged && CommonConfigs.FULLY_SUBMERGED_INSTANT_TELEPORT.get();
     }
 
     public static void tryRemoveRiftingEffect(@Nullable Entity entity, boolean silent) {
@@ -63,9 +72,13 @@ public final class TeleportHelper {
         }
     }
 
-    public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
+    public static void teleportEntity(ServerLevel serverLevel, Entity entity, DimensionTransition dimensionTransition) {
         playTeleportSound(serverLevel, entity.position());
-        entity.changeDimension(getDimensionTransition(serverLevel, entity, causingStack));
+        entity.changeDimension(dimensionTransition);
+    }
+
+    public static void teleportEntity(ServerLevel serverLevel, Entity entity, @Nullable ItemStack causingStack) {
+        teleportEntity(serverLevel, entity, getDimensionTransition(serverLevel, entity, causingStack));
     }
 
     private static DimensionTransition getDimensionTransition(ServerLevel serverLevel, Entity entity, @Nullable ItemStack itemStack) {

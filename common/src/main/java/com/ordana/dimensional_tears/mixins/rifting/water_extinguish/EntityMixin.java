@@ -1,4 +1,4 @@
-package com.ordana.dimensional_tears.mixins.rifting;
+package com.ordana.dimensional_tears.mixins.rifting.water_extinguish;
 
 import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.util.TeleportHelper;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public class ExtinguishRiftingMixin {
+public class EntityMixin {
 
     @Inject(method = "clearFire", at = @At("HEAD"))
     private void removeRiftingEffectWithSound(CallbackInfo ci) {

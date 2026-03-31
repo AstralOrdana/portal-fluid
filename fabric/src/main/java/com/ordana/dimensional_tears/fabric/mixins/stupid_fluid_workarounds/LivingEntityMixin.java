@@ -29,6 +29,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public abstract boolean hasEffect(Holder<MobEffect> holder);
 
+    @Shadow
+    protected abstract boolean isAffectedByFluids();
+
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -38,7 +41,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (!original)
             return false;
 
-        if (!DimensionalTearsPlatform.isInDimTears(this))
+        if (!DimensionalTearsPlatform.isInDimTears(this) || !this.isAffectedByFluids())
             return true;
 
         double gravity = this.getGravity();

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -45,7 +46,7 @@ public class DimensionalTearsBlock extends LiquidBlock {
     public void entityInside(BlockState state, Level level, BlockPos blockPos, Entity entity) {
         if (DimensionalTearsPlatform.isInDimTears(entity)) {
             entity.resetFallDistance();
-            if (level instanceof ServerLevel serverLevel && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
+            if (level instanceof ServerLevel serverLevel && TeleportHelper.canTeleportTo(entity))
                 TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, isFullySubmerged(level, blockPos, entity), null);
         }
     }
@@ -54,7 +55,8 @@ public class DimensionalTearsBlock extends LiquidBlock {
      * Fixes teleporting multiple times in the same tick and spamming the client with sounds.
      */
     private static boolean isFullySubmerged(Level level, BlockPos blockPos, Entity entity) {
-        return level.getFluidState(blockPos).getShape(level, blockPos).bounds().move(blockPos).contains(entity.getEyePosition());
+        AABB fluidBounds = level.getFluidState(blockPos).getShape(level, blockPos).bounds();
+        return fluidBounds.move(blockPos).contains(entity.getEyePosition());
     }
 
     @Override

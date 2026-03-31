@@ -28,7 +28,7 @@ public class RiftingEffect extends CountdownEffect {
 
     @Override
     public void onFinalTick(LivingEntity livingEntity, int amplifier) {
-        if (livingEntity.level() instanceof ServerLevel serverLevel && TeleportHelper.canTeleportTo(livingEntity))
+        if (livingEntity.level() instanceof ServerLevel serverLevel)
             TeleportHelper.teleportEntity(serverLevel, livingEntity, this.causingStack);
     }
 

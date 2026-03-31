@@ -76,7 +76,7 @@ public class DimensionalTearsCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(blockState, blockPos, entity) && TeleportHelper.canTeleportTo(entity) && !entity.isCrouching())
+        if (level instanceof ServerLevel serverLevel && this.isEntityInsideContent(blockState, blockPos, entity) && TeleportHelper.canTeleportTo(entity))
             TeleportHelper.tryDelegateTeleportationToRiftingEffect(serverLevel, entity, false, null);
     }
 

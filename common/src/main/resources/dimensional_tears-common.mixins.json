@@ -6,17 +6,19 @@
     "mixins": [
         "GlassBottleMixin",
         "dimensional_tears.BoatPaddleSoundMixin",
+        "dimensional_tears.LakeFeatureMixin",
         "dimensional_tears.fluid_interaction.LavaFluidMixin",
         "dimensional_tears.fluid_interaction.LiquidBlockMixin",
-        "dimensional_tears.LakeFeatureMixin",
         "gateway.TheEndGatewayBlockEntityMixin",
         "nether_portal.BaseFireBlockMixin",
         "nether_portal.NetherPortalBlockMixin",
         "nether_portal.NetherPortalSoundMixin",
         "rifting.EntityDimChangeMixin",
-        "rifting.ExtinguishRiftingMixin",
         "rifting.LivingEntityMixin",
         "rifting.MobEffectInstanceMixin",
+        "rifting.water_extinguish.EntityMixin",
+        "rifting.water_extinguish.LayeredCauldronBlockMixin",
+        "rifting.water_extinguish.ThrownPotionMixin",
         "tooltip.TooltipMixin"
     ],
     "client": [
