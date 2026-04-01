@@ -3,6 +3,8 @@ package com.ordana.dimensional_tears.items;
 import com.mojang.logging.LogUtils;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
+import com.ordana.dimensional_tears.entity.DimensionalBear;
+import com.ordana.dimensional_tears.reg.ModEntityTypes;
 import com.ordana.dimensional_tears.reg.ModItems;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.util.TeleportHelper;

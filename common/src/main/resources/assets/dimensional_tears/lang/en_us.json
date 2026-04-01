@@ -3,8 +3,9 @@
     "effect.dimensional_tears.rifting": "Rifting",
     "fluid.dimensional_tears.dimensional_tears": "Dimensional Tears",
     "fluid_type.dimensional_tears.dimensional_tears": "Dimensional Tears",
-    "item.dimensional_tears.dimensional_tears_bottle": "Dimensional Tears Bottle",
+    "item.dimensional_tears.dimensional_tears_bottle": "Dimensional Beer",
     "item.dimensional_tears.dimensional_tears_bucket": "Dimensional Tears Bucket",
+    "item.dimensional_tears.bear_claw": "Dimensional Bear Claw",
     "entity.dimensional_tears.dimensional_bear": "Dimensional Bear Spawn Egg",
     "item.dimensional_tears.dimensional_bear_spawn_egg": "Dimensional Bear Spawn Egg",
     "moonlight.configuration.download_library": "Download Cloth Config on Modrinth",
@@ -31,6 +32,6 @@
     "tooltip.dimensional_tears.from_either": "  Collected from the tears of Crying Obsidian or a filled Respawn Anchor",
     "tooltip.dimensional_tears.from_respawn_anchor": "  Collected from a filled Respawn Anchor",
     "tooltip.dimensional_tears.hold_crouch": "Hold %1$s for more details",
-    "tooltip.dimensional_tears.rhymes_with_tears_0": "Rhymes with \"FEARS\"",
-    "tooltip.dimensional_tears.rhymes_with_tears_1": "Rhymes with \"SCARES\""
+    "tooltip.dimensional_tears.rhymes_with_tears_0": "Rhymes with \"BEARS!!!\"",
+    "tooltip.dimensional_tears.rhymes_with_tears_1": "Rhymes with \"BEARS!!!\""
 }

@@ -8,10 +8,9 @@ import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.*;
 
 import java.util.function.Supplier;
 
@@ -42,9 +41,20 @@ public interface ModItems {
     RegSupplier<SpawnEggItem> DIMENSIONAL_BEAR_SPAWN_EGG = regItem(
             "dimensional_bear_spawn_egg",
             () -> PlatHelper.newSpawnEgg(
-                    ModEntityTypes.DIMENSIONAL_BEAR, 0x161616, 0x6e6e6e, new Item.Properties()
+                    ModEntityTypes.DIMENSIONAL_BEAR, 0x120c24, 0x8308e4, new Item.Properties()
             )
     );
+
+    RegSupplier<ChorusFruitItem> BEAR_CLAW = regItem(
+            "bear_claw",
+            () -> new ChorusFruitItem(
+                    new Item.Properties()
+                            .food(Foods.CHORUS_FRUIT)
+                            .stacksTo(16)
+                            .rarity(Rarity.UNCOMMON)
+            )
+    );
+
 
     static <T extends Item> RegSupplier<T> regItem(String path, Supplier<T> itemSupplier) {
         DimensionalTearsPlatform.addAlias(BuiltInRegistries.ITEM, path);

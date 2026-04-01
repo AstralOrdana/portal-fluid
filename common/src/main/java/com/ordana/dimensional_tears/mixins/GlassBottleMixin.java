@@ -2,6 +2,7 @@ package com.ordana.dimensional_tears.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.ordana.dimensional_tears.entity.DimensionalBear;
 import com.ordana.dimensional_tears.reg.ModItems;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
 import com.ordana.dimensional_tears.reg.ModTags;
@@ -9,7 +10,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BottleItem;
 import net.minecraft.world.item.Item;
@@ -45,6 +48,20 @@ public class GlassBottleMixin extends Item {
         ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.DIMENSIONAL_TEARS_BOTTLE.get().getDefaultInstance());
 
         return InteractionResultHolder.sidedSuccess(filledResult, level.isClientSide());
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
+        if (livingEntity instanceof DimensionalBear) {
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSoundEvents.BOTTLE_FILL_DIMENSIONAL_TEARS.get(), SoundSource.NEUTRAL);
+            player.level().gameEvent(player, GameEvent.FLUID_PICKUP, livingEntity.position());
+
+            player.awardStat(Stats.ITEM_USED.get(this));
+
+            ItemStack filledResult = ItemUtils.createFilledResult(itemStack, player, ModItems.DIMENSIONAL_TEARS_BOTTLE.get().getDefaultInstance());
+            player.setItemInHand(interactionHand, filledResult);
+        }
+        return InteractionResult.PASS;
     }
 
 }

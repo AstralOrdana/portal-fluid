@@ -45,6 +45,10 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand version: inputs.properties.version
     }
+
+    from(rootProject.file("common/src/main/resources")) {
+        include("dimensional_tears.accesswidener")
+    }
 }
 
 loom {
