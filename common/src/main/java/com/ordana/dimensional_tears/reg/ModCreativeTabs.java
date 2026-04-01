@@ -15,7 +15,7 @@ public interface ModCreativeTabs {
 
     static void registerItemsToTabs(RegHelper.ItemToTabEvent event) {
         after(event, Items.MILK_BUCKET, CreativeModeTabs.TOOLS_AND_UTILITIES,
-            ModItems.DIMENSIONAL_TEARS_BUCKET, ModItems.DIMENSIONAL_TEARS_BOTTLE
+            ModItems.DIMENSIONAL_TEARS_BUCKET, ModItems.DIMENSIONAL_TEARS_BOTTLE, ModItems.DIMENSIONAL_BEAR_SPAWN_EGG
         );
     }
 

@@ -6,11 +6,11 @@ license = "LGPLv3"
 [[mods]]
 modId = "dimensional_tears"
 version = "${version}"
-displayName = "Dimensional Tears"
+displayName = "Dimensional Bears"
 authors = "Ordana"
 credits="Ordana, cassiancc, axialeaa" #optional
 description = '''
-Rhymes with "fears" or "scares"
+Rhymes with "AAAHHHHH" or "WHO LET THE BEARS GET IN THE DESCRIPTION"
 '''
 logoFile = "icon.png"
 

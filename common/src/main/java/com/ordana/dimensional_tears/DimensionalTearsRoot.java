@@ -37,6 +37,7 @@ public class DimensionalTearsRoot {
         ModLootOverrides.INSTANCE.register();
         ModBlocks.init();
         ModFluids.init();
+        ModEntityTypes.init();
         ModItems.init();
         ModEffects.init();
         ModComponents.init();

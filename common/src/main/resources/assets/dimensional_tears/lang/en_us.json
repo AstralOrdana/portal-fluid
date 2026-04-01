@@ -5,6 +5,8 @@
     "fluid_type.dimensional_tears.dimensional_tears": "Dimensional Tears",
     "item.dimensional_tears.dimensional_tears_bottle": "Dimensional Tears Bottle",
     "item.dimensional_tears.dimensional_tears_bucket": "Dimensional Tears Bucket",
+    "entity.dimensional_tears.dimensional_bear": "Dimensional Bear Spawn Egg",
+    "item.dimensional_tears.dimensional_bear_spawn_egg": "Dimensional Bear Spawn Egg",
     "moonlight.configuration.download_library": "Download Cloth Config on Modrinth",
     "moonlight.configuration.no_library": "Please install Cloth Config in order to edit this mod's configs in-game.",
     "neoforge.configuration.uitext.client": "Client Options",

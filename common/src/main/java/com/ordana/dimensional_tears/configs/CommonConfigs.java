@@ -32,6 +32,8 @@ public class CommonConfigs {
     public static Supplier<Boolean> FULLY_SUBMERGED_INSTANT_TELEPORT;
     public static Supplier<Integer> SPAWN_BYPASS_INSTANT_TELEPORTATION_RANGE;
 
+    public static Supplier<Double> BEAR_SPAWN_CHANCE;
+
     public static void init() {
         // bump class load bootstrap
     }
@@ -70,6 +72,10 @@ public class CommonConfigs {
         RIFTING_DELAY_SECONDS = builder.define("rifting_delay_seconds", 10, 1, 300);
         FULLY_SUBMERGED_INSTANT_TELEPORT = builder.define("fully_submerged_instant_teleport", true);
         SPAWN_BYPASS_INSTANT_TELEPORTATION_RANGE = builder.define("spawn_bypass_instant_teleportation_range", 4, 0, 32);
+        builder.pop();
+
+        builder.push("april_fools");
+        BEAR_SPAWN_CHANCE = builder.define("bear_spawn_chance", 0.25, 0.0, 1);
         builder.pop();
 
         SERVER_SPEC = builder.build();

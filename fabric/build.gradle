@@ -47,6 +47,10 @@ processResources {
     }
 }
 
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
 shadowJar {
     exclude "architectury.common.json"
 
