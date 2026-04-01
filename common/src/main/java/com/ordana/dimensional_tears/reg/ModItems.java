@@ -5,11 +5,13 @@ import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.items.DimensionalTearsBottleItem;
 import com.ordana.dimensional_tears.items.DimensionalTearsBucketItem;
 import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.function.Supplier;
 
@@ -35,6 +37,13 @@ public interface ModItems {
                 .rarity(Rarity.UNCOMMON)
                 .craftRemainder(Items.BUCKET)
         )
+    );
+
+    RegSupplier<SpawnEggItem> DIMENSIONAL_BEAR_SPAWN_EGG = regItem(
+            "dimensional_bear_spawn_egg",
+            () -> PlatHelper.newSpawnEgg(
+                    ModEntityTypes.DIMENSIONAL_BEAR, 0x161616, 0x6e6e6e, new Item.Properties()
+            )
     );
 
     static <T extends Item> RegSupplier<T> regItem(String path, Supplier<T> itemSupplier) {
