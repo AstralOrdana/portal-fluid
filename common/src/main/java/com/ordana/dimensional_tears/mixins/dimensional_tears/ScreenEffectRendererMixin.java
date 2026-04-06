@@ -1,6 +1,6 @@
 package com.ordana.dimensional_tears.mixins.dimensional_tears;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.ordana.dimensional_tears.DimensionalTearsPlatform;
 import com.ordana.dimensional_tears.fluids.DimensionalTearsFluidRenderer;
 import net.minecraft.client.Minecraft;
