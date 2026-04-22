@@ -3,6 +3,7 @@ package com.ordana.dimensional_tears.effects;
 import com.ordana.dimensional_tears.configs.ClientConfigs;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
 import com.ordana.dimensional_tears.networking.RiftingParticleS2CMessage;
+import com.ordana.dimensional_tears.reg.ModEffects;
 import com.ordana.dimensional_tears.reg.ModParticles;
 import com.ordana.dimensional_tears.util.TeleportHelper;
 import net.minecraft.SharedConstants;
@@ -44,6 +45,10 @@ public class RiftingEffect extends CountdownEffect {
             RiftingParticleS2CMessage.send(serverLevel, livingEntity, (byte) Mth.lerpDiscrete(f * f * f, 0, ClientConfigs.EFFECT_PARTICLE_DENSITY.get()), f, false);
             // addParticles(serverLevel, livingEntity, Mth.lerpDiscrete(f * f * f, 0, ClientConfigs.EFFECT_PARTICLE_DENSITY.get()), f, false);
         }
+    }
+
+    public static boolean has(LivingEntity livingEntity) {
+        return livingEntity.hasEffect(ModEffects.RIFTING.getHolder());
     }
 
 }
