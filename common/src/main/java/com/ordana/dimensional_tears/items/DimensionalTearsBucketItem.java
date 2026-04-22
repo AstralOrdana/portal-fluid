@@ -3,7 +3,6 @@ package com.ordana.dimensional_tears.items;
 import com.ordana.dimensional_tears.blocks.DimensionalTearsCauldronBlock;
 import com.ordana.dimensional_tears.reg.ModBlocks;
 import com.ordana.dimensional_tears.reg.ModSoundEvents;
-// import com.ordana.dimensional_tears.util.Translation;
 import com.ordana.dimensional_tears.tooltip.RhymingGaslightTooltipItem;
 import com.ordana.dimensional_tears.tooltip.RhymingGaslightTooltipState;
 import dev.architectury.injectables.annotations.PlatformOnly;
