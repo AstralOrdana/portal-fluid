@@ -4,7 +4,6 @@
     "minecraft:enderman",
     "minecraft:endermite",
     "minecraft:ender_dragon",
-    "minecraft:boat",
-    "minecraft:chest_boat"
+    "#c:boats"
   ]
 }
