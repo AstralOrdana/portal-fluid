@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "dimensional_tears",
+  "version": "${version}",
+  "name": "Dimensional Tears",
+  "description": "Rhymes with \"fears\" or \"scares\"",
+  "authors": [
+    "Ordana"
+  ],
+  "contributors": [
+    "cassiancc",
+    "axialeaa"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/dimensional-tears",
+    "sources": "https://github.com/Silversmith-Mods/portal-fluid",
+    "issues": "https://github.com/Silversmith-Mods/portal-fluid/issues"
+  },
+  "license": "LGPLv3",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+        "com.ordana.dimensional_tears.fabric.DimensionalTearsRootFabric"
+    ],
+    "client": [
+      "com.ordana.dimensional_tears.fabric.DimensionalTearsRootFabricClient"
+    ]
+  },
+  "mixins": [
+    "dimensional_tears.mixins.json",
+    "dimensional_tears-fabric.mixins.json"
+  ],
+  "depends": {
+    "fabric-api": "*",
+    "minecraft": "~26.1"
+  },
+  "recommends": {
+    "mcqoy": "*"
+  }
+}
