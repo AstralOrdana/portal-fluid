@@ -1,3 +1,4 @@
+//? fabric {
 package com.ordana.dimensional_tears.fabric;
 
 import com.ordana.dimensional_tears.fluids.DimensionalTearsFluid;
@@ -60,3 +61,4 @@ public class DimensionalTearsBehavior implements FluidBehavior {
         return FluidBehavior.super.canSprintInFluid(fluid, entity);
     }
 }
+//?}

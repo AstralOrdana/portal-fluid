@@ -2,7 +2,11 @@ package com.ordana.dimensional_tears.fluids;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+//? fabric {
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+//?} else {
+/*import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+*///?}
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -11,6 +15,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.fog.FogData;
+import net.minecraft.client.renderer.fog.environment.FogEnvironment;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -23,11 +29,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.jspecify.annotations.Nullable;
 
-public class DimensionalTearsFluidRenderer implements FluidRenderHandler {
+import static com.ordana.dimensional_tears.fluids.DimensionalTearsFluidSpriteSet.renderFog;
+
+public class DimensionalTearsFluidRenderer
+    //? fabric
+        implements FluidRenderHandler
+    //? neoforge
+    //implements IClientFluidTypeExtensions
+{
 
     public static final float FOG_START = 0.1F;
     public static final float FOG_END = 2.0F;
@@ -40,13 +54,29 @@ public class DimensionalTearsFluidRenderer implements FluidRenderHandler {
         return new FluidModel.Unbaked(new Material(DimensionalTearsFluidSpriteSet.DISCONNECTED.location, true), new Material(DimensionalTearsFluidSpriteSet.FLOWING, true), new Material(DimensionalTearsFluidSpriteSet.OVERLAY), null);
     }
 
+    //? fabric {
     @Override
     public void renderFluid(FluidRenderer fluidRenderer, BlockPos pos, BlockAndTintGetter level, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
         FluidRenderHandler.super.renderFluid(fluidRenderer, pos, level, output, blockState, fluidState);
     }
+    //?}
+    
     public static void renderScreenEffect(LevelReader levelReader, LocalPlayer player, PoseStack poseStack) {
         //fixme
     }
+
+    //? neoforge {
+    /*@Override
+    public @Nullable Identifier getRenderOverlayTexture(Minecraft mc) {
+        return DimensionalTearsFluidSpriteSet.UNDER;
+    }
+
+    @Override
+    public void modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
+        IClientFluidTypeExtensions.super.modifyFogColor(camera, partialTick, level, renderDistance, darkenWorldAmount, new Vector4f(FOG_COLOR.x, FOG_COLOR.y, FOG_COLOR.z, 255));
+    }
+
+    *///?}
 
     /*
 

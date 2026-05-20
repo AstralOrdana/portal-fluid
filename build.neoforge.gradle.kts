@@ -144,6 +144,8 @@ neoForge {
 
 dependencies {
     implementation("cc.cassian.rrv:reliable-recipe-viewer-neoforge:${property("deps.rrv")}+${property("deps.minecraft")}")
+    implementation("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    jarJar("folk.sisby:kaleido-config:${property("deps.kaleido")}")
 }
 
 

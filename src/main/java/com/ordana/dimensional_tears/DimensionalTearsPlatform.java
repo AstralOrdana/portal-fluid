@@ -12,6 +12,7 @@ import net.fabricmc.loader.api.FabricLoader;
 *///?}
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Contract;
 
 import java.nio.file.Path;
@@ -45,18 +48,14 @@ public class DimensionalTearsPlatform {
     }
 
     public static boolean isEyeInDimTears(Entity entity) {
-        //? fabric
         return entity.isEyeInFluid(ModTags.DIMENSIONAL_TEARS);
-        //? neoforge
-        //return DimensionalTearsRoot.isInitiated() && entity.isEyeInFluidType(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
+//        return DimensionalTearsRoot.isInitiated() && entity.isEyeInFluidType(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
     }
 
     @Contract
     public static double getDimTearsHeight(Entity entity) {
-        //? fabric
         return entity.getFluidHeight(ModTags.DIMENSIONAL_TEARS);
-        //? neoforge
-        //return entity.getFluidTypeHeight(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
+//        return entity.getFluidTypeHeight(ModFluidTypes.DIMENSIONAL_TEARS_TYPE.get());
     }
 
     public static boolean isInDimTears(Entity entity) {
@@ -76,7 +75,10 @@ public class DimensionalTearsPlatform {
     }
 
     public static Path getConfigDirectory() {
+        //? fabric
         return FabricLoader.getInstance().getConfigDir();
+        //? neoforge
+        //return FMLPaths.CONFIGDIR.get();
     }
 
     public static void sendToAllClientPlayersInParticleRange(ServerLevel serverLevel, BlockPos blockPos, RiftingParticleS2CMessage riftingParticleS2CMessage) {
@@ -84,9 +86,16 @@ public class DimensionalTearsPlatform {
            //? fabric {
            ServerPlayNetworking.send(player, riftingParticleS2CMessage);
            //?} else {
-           /*PacketDistributor.send(player, riftingParticleS2CMessage);
+           /*PacketDistributor.sendToPlayer(player, riftingParticleS2CMessage);
            *///?}
         });
+    }
+
+    public static SimpleParticleType simpleParticle() {
+        //? fabric
+        return net.fabricmc.fabric.api.particle.v1.FabricParticleTypes.simple();
+        //? neoforge
+        //return new SimpleParticleType(false);
     }
 
     public interface RegisterMessagesEvent {

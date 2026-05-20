@@ -2,8 +2,10 @@ package com.ordana.dimensional_tears.fluids;
 
 import com.ordana.dimensional_tears.DimensionalTearsRoot;
 import com.ordana.dimensional_tears.configs.CommonConfigs;
-//? neoforge
-//import com.ordana.dimensional_tears.neoforge.reg.ModFluidTypes;
+//? neoforge {
+/*import com.ordana.dimensional_tears.neoforge.reg.ModFluidTypes;
+import net.neoforged.neoforge.fluids.FluidType;
+*///?}
 import com.ordana.dimensional_tears.reg.*;
 import com.ordana.dimensional_tears.util.DimensionalTearsAmbience;
 import com.ordana.dimensional_tears.util.TeleportHelper;

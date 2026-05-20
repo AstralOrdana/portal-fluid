@@ -11,10 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.FlowingFluid;
 
 public class ClientHelper {
-    public static void registerFluidRenderType(FlowingFluid flowingFluid, ChunkSectionLayer chunkSectionLayer) {
-        //fixme
-
-    }
 
     public interface ParticleEvent {
         <T extends ParticleOptions> void register(SimpleParticleType particle, ParticleProvider<SimpleParticleType> aNew);

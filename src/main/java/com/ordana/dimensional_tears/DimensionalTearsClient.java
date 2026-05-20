@@ -10,9 +10,7 @@ public class DimensionalTearsClient {
     public static ClientConfigs CONFIG = ClientConfigs.createToml(DimensionalTearsPlatform.getConfigDirectory(), MOD_ID, "client", ClientConfigs.class);
 
     public static void init() {
-        // the textures are opaque but need to be registered as translucent for the boat's "water patch" to work
-        ClientHelper.registerFluidRenderType(ModFluids.FLOWING_DIMENSIONAL_TEARS.get(), ChunkSectionLayer.TRANSLUCENT);
-        ClientHelper.registerFluidRenderType(ModFluids.DIMENSIONAL_TEARS.get(), ChunkSectionLayer.TRANSLUCENT);
+
     }
 
 }
