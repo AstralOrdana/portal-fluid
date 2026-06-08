@@ -1,4 +1,7 @@
 {
   "type": "dimensional_tears:dimensional_tears_ocean",
-  "config": {}
+  "config": {
+      "ocean_floor_elevation": 0,
+      "ocean_surface_elevation": 4
+  }
 }
